@@ -1,3 +1,6 @@
+/**
+ * This example generated adds content to the repos README.md file
+ */
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
@@ -34,7 +37,7 @@ const opts = {
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
       comments.forEach(function(data) {
-         md += '- ' + data.description.full + '\n'
+         md += data.description.full + '\n'
       });
       return md.replace(/^\s+|\s+$/g, '')
     }
@@ -44,4 +47,5 @@ const opts = {
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
+// const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
 markdownSteriods(markdownPath, opts)

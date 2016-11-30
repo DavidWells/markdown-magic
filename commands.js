@@ -5,7 +5,11 @@ var isLocalPath = require('is-local-path')
 
 const commands = {
   /**
-   * `CODE` Get code from file or URL and put in markdown
+   * ### `CODE` Get code from file or URL and put in markdown
+   *
+   * **Options**
+   * - src: The relative path to the code to pull in, or the `URL` where the raw code lives
+   * - syntax (optional): Syntax will be inferred by fileType if not specified
    *
    * @param {string} content The current content of the comment block
    * @param {object} options The options passed in from the comment declaration
@@ -14,12 +18,12 @@ const commands = {
   CODE(content, options, config) {
     let code
     let syntax = options.syntax
-
     if(!options.src) {
       return false
     }
     if(isLocalPath(options.src)) {
-      const filePath = path.join(__dirname, options.src)
+      const fileDir = path.dirname(config.originalPath)
+      const filePath = path.join(fileDir, options.src)
       try {
          code = fs.readFileSync(filePath, 'utf8', (err, contents) => {
            if (err) {
@@ -51,7 +55,10 @@ ${code}
 \`\`\``
   },
   /**
-   * `REMOTE` Get any remote Data and put in markdown
+   * ### `REMOTE` Get any remote Data and put in markdown
+   *
+   * **Options**
+   * - url: The URL of the remote content to pull in
    *
    * @param {string} content The current content of the comment block
    * @param {object} options The options passed in from the comment declaration

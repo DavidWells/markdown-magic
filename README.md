@@ -10,12 +10,22 @@ Automatically keep markdown files up to date with external sources and code snip
 
 **Built in commands:**
 <!-- AUTO-GENERATED-CONTENT:START (LIST_COMMANDS) - Do not remove or modify this section -->
-- `CODE` Get code from file or URL and put in markdown
-- `REMOTE` Get any remote Data and put in markdown
+### `CODE` Get code from file or URL and put in markdown
+
+**Options**
+- src: The relative path to the code to pull in, or the `URL` where the raw code lives
+- syntax (optional): Syntax will be inferred by fileType if not specified
+### `REMOTE` Get any remote Data and put in markdown
+
+**Options**
+- url: The URL of the remote content to pull in
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
+/**
+ * This example generated adds content to the repos README.md file
+ */
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
@@ -52,7 +62,7 @@ const opts = {
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
       comments.forEach(function(data) {
-         md += '- ' + data.description.full + '\n'
+         md += data.description.full + '\n'
       });
       return md.replace(/^\s+|\s+$/g, '')
     }
@@ -62,10 +72,12 @@ const opts = {
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
+//const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
 markdownSteriods(markdownPath, opts)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Prior Art
 
-This was inspired by the one and only Kent C Dodds and his all contributors package
+This was inspired by the one and only [Kent C Dodds](https://twitter.com/kentcdodds) and his [all contributors](https://github.com/kentcdodds/all-contributors) project.
+

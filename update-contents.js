@@ -4,7 +4,7 @@
 module.exports = function updateContents(block, config) {
   let newContent
   let cmd
-  const tag = '<!-- AUTO-GENERATED-CONTENT:'
+  const tag = `<!-- ${config.matchWord}:`
   const closeTag = '-->'
   const openTagStart = block.indexOf(`${tag}START`)
   const openTagEnd = block.indexOf(closeTag, openTagStart)

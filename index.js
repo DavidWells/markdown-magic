@@ -3,7 +3,7 @@ const fs = require('fs')
 const merge = require('deepmerge')
 const commands = require('./commands')
 const updateContents = require('./update-contents')
-const regex = /\<\!--.*AUTO-GENERATED-CONTENT:START((.|\n|)*?:END.*--\>)/g
+
 
 module.exports = function markdownSteriods(mdPath, config) {
   let markdown = fs.readFileSync(mdPath, 'utf8', (err, contents) => {
@@ -15,6 +15,9 @@ module.exports = function markdownSteriods(mdPath, config) {
 
   const userConfig = config || {}
   const defaultConfig = {
+    // Comment pattern to look for and replace inner contents
+    matchWord: 'AUTO-GENERATED-CONTENT',
+    // transform functions
     commands: commands,
     // replace original MD file by default
     outputPath: mdPath,
@@ -23,18 +26,27 @@ module.exports = function markdownSteriods(mdPath, config) {
   }
 
   const mergedOptions = merge(defaultConfig, userConfig)
+  const CONSTANTS = {
+    // original path of md, needed for relative path lookups
+    originalPath: mdPath,
+  }
+  const finalConfig = merge(mergedOptions, CONSTANTS)
 
+  const word = finalConfig.matchWord
+  // pattern /\<\!--.*AUTO-GENERATED-CONTENT:START((.|\n|)*?:END.*--\>)/g
+  const regex = new RegExp('\\<\\!--.*'+word+':START((.|\\n|)*?:END.*--\\>)', 'g')
   const match = markdown.match(regex)
 
   if (match && match.length) {
     match.forEach(function(element) {
-       var newContent = updateContents(element, mergedOptions)
+       var newContent = updateContents(element, finalConfig)
        markdown = markdown.replace(element, newContent)
     });
     // then write to file
-    fs.writeFileSync(mergedOptions.outputPath, markdown)
+    fs.writeFileSync(finalConfig.outputPath, markdown)
+    console.log(`${mdPath} updated`)
   } else {
-    console.log(`no AUTO-GENERATED-CONTENT found in markdown file.
+    console.log(`no ${word} comment block found in markdown file.
 path: ${mdPath}
 `)
   }
