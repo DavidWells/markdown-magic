@@ -4,7 +4,6 @@ const merge = require('deepmerge')
 const commands = require('./commands')
 const updateContents = require('./update-contents')
 
-
 module.exports = function markdownSteriods(mdPath, config) {
   let markdown = fs.readFileSync(mdPath, 'utf8', (err, contents) => {
     if (err) {
@@ -36,7 +35,7 @@ module.exports = function markdownSteriods(mdPath, config) {
   // pattern /\<\!--.*AUTO-GENERATED-CONTENT:START((.|\n|)*?:END.*--\>)/g
   const regex = new RegExp('\\<\\!--.*'+word+':START((.|\\n|)*?'+word+':END.*--\\>)', 'g')
   const match = markdown.match(regex)
-  console.log('match', match)
+
   if (match && match.length) {
     match.forEach(function(element) {
        var newContent = updateContents(element, finalConfig)

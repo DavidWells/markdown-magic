@@ -1,6 +1,8 @@
 # Markdown Steriods
 
-Automatically keep markdown files up to date with external sources and code snippets
+Automatically keep markdown files up to date from source code or via external sources.
+
+This readme is generated with `markdown-steriods` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/README.md) to see how.
 
 ## Install
 
@@ -8,11 +10,16 @@ Automatically keep markdown files up to date with external sources and code snip
 npm install markdown-steriods --save-dev
 ```
 
+```js
+import markdownSteriods from 'markdown-steriods'
+markdownSteriods(markdownPath, config)
+```
+
 ## Built in commands (aka transforms)
 
 Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Usage Example with Custom Transforms' below.
 
-<!-- AUTO-GENERATED-CONTENT:START (LIST_COMMANDS) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (listCommands) - Do not remove or modify this section -->
 ### `CODE`
 
 Get code from file or URL and put in markdown
@@ -54,24 +61,18 @@ const path = require('path')
 const dox = require('dox')
 const markdownSteriods = require('../index')
 
-const opts = {
+const config = {
   commands: {
-    /**
-     * Custom transform command matching CUSTOM
-     *
-     * AUTO-GENERATED-CONTENT:START (CUSTOM:lolz=what&wow=dude)
-     */
-    CUSTOM: function(content, options) {
+    /* Custom transform example */
+    customTransform: function(content, options) {
       console.log('original inner content', content)
       console.log(options) // { lolz: what, wow: dude}
       return 'This will replace all the contents of inside the comment block'
     },
     /**
-     * Custom transform command matching LIST_COMMANDS
-     *
-     * AUTO-GENERATED-CONTENT:START (LIST_COMMANDS)
+     * This is used in the readme.md to generate the docs of `markdown-steroids`
      */
-    LIST_COMMANDS: function(content, options) {
+    listCommands: function(content, options) {
       const commandsFile = path.join(__dirname, '..', 'commands.js')
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
         if (err) {
@@ -96,7 +97,7 @@ const opts = {
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 // const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
-markdownSteriods(markdownPath, opts)
+markdownSteriods(markdownPath, config)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 

@@ -6,24 +6,18 @@ const path = require('path')
 const dox = require('dox')
 const markdownSteriods = require('../index')
 
-const opts = {
+const config = {
   commands: {
-    /**
-     * Custom transform command matching CUSTOM
-     *
-     * AUTO-GENERATED-CONTENT:START (CUSTOM:lolz=what&wow=dude)
-     */
-    CUSTOM: function(content, options) {
+    /* Custom transform example */
+    customTransform: function(content, options) {
       console.log('original inner content', content)
       console.log(options) // { lolz: what, wow: dude}
       return 'This will replace all the contents of inside the comment block'
     },
     /**
-     * Custom transform command matching LIST_COMMANDS
-     *
-     * AUTO-GENERATED-CONTENT:START (LIST_COMMANDS)
+     * This is used in the readme.md to generate the docs of `markdown-steroids`
      */
-    LIST_COMMANDS: function(content, options) {
+    listCommands: function(content, options) {
       const commandsFile = path.join(__dirname, '..', 'commands.js')
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
         if (err) {
@@ -48,4 +42,4 @@ const opts = {
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 // const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
-markdownSteriods(markdownPath, opts)
+markdownSteriods(markdownPath, config)

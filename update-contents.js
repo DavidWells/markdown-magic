@@ -6,7 +6,6 @@ module.exports = function updateContents(block, config) {
   let cmd
   const tag = `<!-- ${config.matchWord}:`
   const closeTag = '-->'
-  console.log('tag', tag)
   const openTagStart = block.indexOf(`${tag}START`)
   const openTagEnd = block.indexOf(closeTag, openTagStart)
   const closeTagStart = block.indexOf(`${tag}END`, openTagEnd)
