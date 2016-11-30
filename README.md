@@ -113,5 +113,5 @@ markdownSteriods(markdownPath, config)
 
 ## Prior Art
 
-This was inspired by the one and only [Kent C Dodds](https://twitter.com/kentcdodds) and his [all contributors](https://github.com/kentcdodds/all-contributors) project.
+This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmengels](https://github.com/jfmengels)'s [all contributors cli](https://github.com/jfmengels/all-contributors-cli) project.
 
