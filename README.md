@@ -107,6 +107,10 @@ markdownSteriods(markdownPath, config)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+## Other usage examples:
+
+- [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-docs.js)
+
 ## Prior Art
 
 This was inspired by the one and only [Kent C Dodds](https://twitter.com/kentcdodds) and his [all contributors](https://github.com/kentcdodds/all-contributors) project.
