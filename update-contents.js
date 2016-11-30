@@ -15,7 +15,6 @@ module.exports = function updateContents(block, config) {
   }
   const originalContent = block.slice(openTagEnd + closeTag.length, closeTagStart).replace(/^\s+|\s+$/g, '')
   const hasCommand = block.slice(openTagStart + tag.length, openTagEnd + closeTag.length).match(/\((.*)\)/)
-  console.log('hasCommand', hasCommand)
   if (hasCommand && hasCommand[1]) {
     // check for options after first :
     const hasOptions = hasCommand[1].match(/([^:]*):(.*)/)

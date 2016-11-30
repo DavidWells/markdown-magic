@@ -4,6 +4,7 @@
   "description": "Automatically update markdown files with content from external sources",
   "main": "index.js",
   "scripts": {
+    "docs": "node example/example.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "David Wells",

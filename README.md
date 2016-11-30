@@ -10,17 +10,16 @@ Automatically keep markdown files up to date with external sources and code snip
 
 **Built in commands:**
 <!-- AUTO-GENERATED-CONTENT:START (LIST_COMMANDS) - Do not remove or modify this section -->
-**CODE** Get code from file or URL and put in markdown
-
-**REMOTE** Get any remote Data and put in markdown
+- `CODE` Get code from file or URL and put in markdown
+- `REMOTE` Get any remote Data and put in markdown
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
-const markdownSteriods = require('./index')
+const markdownSteriods = require('../index')
 
 const opts = {
   commands: {
@@ -40,7 +39,7 @@ const opts = {
      * AUTO-GENERATED-CONTENT:START (LIST_COMMANDS)
      */
     LIST_COMMANDS: function(content, options) {
-      const commandsFile = path.join(__dirname, 'commands.js')
+      const commandsFile = path.join(__dirname, '..', 'commands.js')
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
         if (err) {
           throw err
@@ -53,9 +52,8 @@ const opts = {
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
       comments.forEach(function(data) {
-         md += data.description.full + '\n\n'
+         md += '- ' + data.description.full + '\n'
       });
-      console.log('result', md)
       return md.replace(/^\s+|\s+$/g, '')
     }
   },
@@ -63,7 +61,7 @@ const opts = {
   // outputPath: path.join(__dirname, 'different-path.md')
 }
 
-const markdownPath = path.join(__dirname, 'README.md')
+const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownSteriods(markdownPath, opts)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->

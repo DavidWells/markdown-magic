@@ -5,7 +5,7 @@ var isLocalPath = require('is-local-path')
 
 const commands = {
   /**
-   * **CODE** Get code from file or URL and put in markdown
+   * `CODE` Get code from file or URL and put in markdown
    *
    * @param {string} content The current content of the comment block
    * @param {object} options The options passed in from the comment declaration
@@ -51,7 +51,7 @@ ${code}
 \`\`\``
   },
   /**
-   * **REMOTE** Get any remote Data and put in markdown
+   * `REMOTE` Get any remote Data and put in markdown
    *
    * @param {string} content The current content of the comment block
    * @param {object} options The options passed in from the comment declaration
