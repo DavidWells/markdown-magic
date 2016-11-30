@@ -34,9 +34,9 @@ module.exports = function markdownSteriods(mdPath, config) {
 
   const word = finalConfig.matchWord
   // pattern /\<\!--.*AUTO-GENERATED-CONTENT:START((.|\n|)*?:END.*--\>)/g
-  const regex = new RegExp('\\<\\!--.*'+word+':START((.|\\n|)*?:END.*--\\>)', 'g')
+  const regex = new RegExp('\\<\\!--.*'+word+':START((.|\\n|)*?'+word+':END.*--\\>)', 'g')
   const match = markdown.match(regex)
-
+  console.log('match', match)
   if (match && match.length) {
     match.forEach(function(element) {
        var newContent = updateContents(element, finalConfig)

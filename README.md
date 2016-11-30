@@ -6,7 +6,7 @@ Automatically keep markdown files up to date with external sources and code snip
 
 `npm install markdown-steriods --save-dev`
 
-## Built in commands
+## Usage
 
 **Built in commands:**
 <!-- AUTO-GENERATED-CONTENT:START (LIST_COMMANDS) - Do not remove or modify this section -->
@@ -18,6 +18,13 @@ Get code from file or URL and put in markdown
 - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
 - `syntax` (optional): Syntax will be inferred by fileType if not specified
 
+**Example:**
+```md
+<-- MATCHWORD:START (CODE:src=./relative/path/to/code.js) -->
+This content will be dynamically replaced with code from the file
+<-- MATCHWORD:END -->
+```
+
 ### `REMOTE`
 
 Get any remote Data and put in markdown
@@ -25,15 +32,15 @@ Get any remote Data and put in markdown
 **Options**
 - `url`: The URL of the remote content to pull in
 
-Usage:
-```
+**Example:**
+```md
 <-- MATCHWORD:START (REMOTE:url=http://url-to-raw-md.md) -->
-content to be dynamically replaced
+This content will be dynamically replace from the remote url
 <-- MATCHWORD:END -->
 ```
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-## Usage
+## Usage Example with Custom Transforms
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
 /**
