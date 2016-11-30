@@ -10,10 +10,16 @@ This readme is generated with `markdown-steriods` [view the raw file](https://ra
 npm install markdown-steriods --save-dev
 ```
 
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/exampleTwo.js) - Do not remove or modify this section -->
 ```js
 import markdownSteriods from 'markdown-steriods'
+import path from 'path'
+
+const config = {} // optional
+const markdownPath = path.join(__dirname, 'README.md')
 markdownSteriods(markdownPath, config)
 ```
+<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ## Built in commands (aka transforms)
 
