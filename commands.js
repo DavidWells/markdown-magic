@@ -5,11 +5,20 @@ var isLocalPath = require('is-local-path')
 
 const commands = {
   /**
-   * ### `CODE` Get code from file or URL and put in markdown
+   * ### `CODE`
+   *
+   * Get code from file or URL and put in markdown
    *
    * **Options**
-   * - src: The relative path to the code to pull in, or the `URL` where the raw code lives
-   * - syntax (optional): Syntax will be inferred by fileType if not specified
+   * - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
+   * - `syntax` (optional): Syntax will be inferred by fileType if not specified
+   *
+   * Usage:
+   * ```md
+   * <-- MATCHWORD:START (CODE:src=./relative/path/to/code.js) -->
+   * content to be dynamically replaced with code from file
+   * <-- MATCHWORD:END -->
+   * ```
    *
    * @param {string} content The current content of the comment block
    * @param {object} options The options passed in from the comment declaration
@@ -55,10 +64,19 @@ ${code}
 \`\`\``
   },
   /**
-   * ### `REMOTE` Get any remote Data and put in markdown
+   * ### `REMOTE`
+   *
+   * Get any remote Data and put in markdown
    *
    * **Options**
-   * - url: The URL of the remote content to pull in
+   * - `url`: The URL of the remote content to pull in
+   *
+   * Usage:
+   * ```md
+   * <-- MATCHWORD:START (REMOTE:url=http://url-to-raw-md.md) -->
+   * content to be dynamically replaced
+   * <-- MATCHWORD:END -->
+   * ```
    *
    * @param {string} content The current content of the comment block
    * @param {object} options The options passed in from the comment declaration

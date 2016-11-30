@@ -37,7 +37,7 @@ const opts = {
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
       comments.forEach(function(data) {
-         md += data.description.full + '\n'
+         md += data.description.full + '\n\n'
       });
       return md.replace(/^\s+|\s+$/g, '')
     }
