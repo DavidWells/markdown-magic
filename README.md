@@ -4,11 +4,14 @@ Automatically keep markdown files up to date with external sources and code snip
 
 ## Install
 
-`npm install markdown-steriods --save-dev`
+```bash
+npm install markdown-steriods --save-dev
+```
 
-## Usage
+## Built in commands (aka transforms)
 
-**Built in commands:**
+Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Usage Example with Custom Transforms' below.
+
 <!-- AUTO-GENERATED-CONTENT:START (LIST_COMMANDS) - Do not remove or modify this section -->
 ### `CODE`
 
