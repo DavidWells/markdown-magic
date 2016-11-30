@@ -13,10 +13,10 @@ const commands = {
    * - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
    * - `syntax` (optional): Syntax will be inferred by fileType if not specified
    *
-   * Usage:
+   * **Example:**
    * ```md
    * <-- MATCHWORD:START (CODE:src=./relative/path/to/code.js) -->
-   * content to be dynamically replaced with code from file
+   * This content will be dynamically replaced with code from the file
    * <-- MATCHWORD:END -->
    * ```
    *
@@ -71,10 +71,10 @@ ${code}
    * **Options**
    * - `url`: The URL of the remote content to pull in
    *
-   * Usage:
+   * **Example:**
    * ```md
    * <-- MATCHWORD:START (REMOTE:url=http://url-to-raw-md.md) -->
-   * content to be dynamically replaced
+   * This content will be dynamically replace from the remote url
    * <-- MATCHWORD:END -->
    * ```
    *

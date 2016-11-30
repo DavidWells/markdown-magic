@@ -6,7 +6,7 @@ Automatically keep markdown files up to date with external sources and code snip
 
 `npm install markdown-steriods --save-dev`
 
-## Usage
+## Built in commands
 
 **Built in commands:**
 <!-- AUTO-GENERATED-CONTENT:START (LIST_COMMANDS) - Do not remove or modify this section -->
@@ -33,6 +33,7 @@ content to be dynamically replaced
 ```
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
+## Usage
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
 /**
