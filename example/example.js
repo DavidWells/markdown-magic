@@ -5,21 +5,16 @@ const markdownSteriods = require('../index') // require('markdown-steriods')
 
 const config = {
   commands: {
-    /* In README.md the below comment block adds the list to the readme
-      // note: MATCHWORD default is 'AUTO-GENERATED-CONTENT'
-      <!-- MATCHWORD:START (customTransform:lolz=what&wow=dude)-->
-        This content will get replaced
-      <!-- MATCHWORD:END -->
-    */
+    // Update the content in comment matching
+    // AUTO-GENERATED-CONTENT (customTransform:lolz=what&wow=dude)
     customTransform: function(content, options) {
       console.log('original innerContent', content) // "This content will get replaced"
       console.log(options) // { lolz: what, wow: dude}
       return `This will replace all the contents of inside the comment ${options.wow}`
     },
-    /* <!-- MATCHWORD:START (RENDERDOCS:path=../file.js)-->
-        This content will get replaced with auto generated docs
-       <!-- MATCHWORD:END -->
-    */
+
+    // Update the content in comment matching
+    // AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js)
     RENDERDOCS: function(content, options) {
       const commandsFile = path.join(__dirname, options.path)
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
