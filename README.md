@@ -30,7 +30,7 @@ markdownSteriods(filename, config, callback)
 
 ### Configuration Options
 
-`matchWord` - *string* - (optional) Comment pattern to look for and replace inner contents
+`matchWord` - *string* - (optional) Comment pattern to look for and replace inner contents. Default value is `AUTO-GENERATED-CONTENT`
 
 `commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
 
@@ -39,12 +39,10 @@ markdownSteriods(filename, config, callback)
 
 ### Commands (aka transforms)
 
-Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Usage Example with Custom Transforms' below.
-
-The default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Custom Commands' below.
 
 <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../commands.js) - Do not remove or modify this section -->
-### *CODE* - Get code from file or URL and put in markdown
+#### `CODE` - Get code from file or URL and put in markdown
 
 **Options**
 - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
@@ -58,7 +56,7 @@ This content will be dynamically replaced with code from the file
 ```
 ---
 
-### *REMOTE* - Get any remote Data and put in markdown
+#### `REMOTE` - Get any remote Data and put in markdown
 
 **Options**
 - `url`: The URL of the remote content to pull in

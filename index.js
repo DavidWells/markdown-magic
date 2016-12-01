@@ -27,7 +27,7 @@ module.exports = function markdownSteriods(filePath, config, callback) {
    */
   const defaultConfig = {
     /**
-     * `matchWord` - *string* - (optional) Comment pattern to look for and replace inner contents
+     * `matchWord` - *string* - (optional) Comment pattern to look for and replace inner contents. Default value is `AUTO-GENERATED-CONTENT`
      * @type {String}
      * @default [AUTO-GENERATED-CONTENT]
      */
