@@ -90,11 +90,11 @@ const markdownSteriods = require('../index') // require('markdown-steriods')
 const config = {
   commands: {
     // Update the content in comment matching
-    // AUTO-GENERATED-CONTENT (customTransform:lolz=what&wow=dude)
+    // AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     customTransform: function(content, options) {
-      console.log('original innerContent', content) // "This content will get replaced"
-      console.log(options) // { lolz: what, wow: dude}
-      return `This will replace all the contents of inside the comment ${options.wow}`
+      console.log('original innerContent', content)
+      console.log(options) // { optionOne: hi, optionOne: DUDE}
+      return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
 
     // Update the content in comment matching
@@ -138,9 +138,9 @@ markdownSteriods(markdownPath, config, callback)
 
 View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/example.js` works
 
-<!-- AUTO-GENERATED-CONTENT:START (customTransform:lolz=what&wow=dude) - Do not remove or modify this section -->
-This will replace all the contents of inside the comment dude
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
+This will replace all the contents of inside the comment DUDE
+<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ## Prior Art
 
