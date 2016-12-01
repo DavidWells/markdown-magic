@@ -21,14 +21,28 @@ markdownSteriods(markdownPath, config)
 ```
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
+<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js) - Do not remove or modify this section -->
+```js
+markdownSteriods(filename, config, callback)
+```
+
+### Configuration Options
+
+`matchWord` - (optional) Comment pattern to look for and replace inner contents
+
+`commands` - (optional) Custom commands to transform block contents
+
+`outputPath` - (optional) Change output path of new content. Default behavior is replacing the original file
+<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+
 ## Built in commands (aka transforms)
 
 Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Usage Example with Custom Transforms' below.
 
-<!-- AUTO-GENERATED-CONTENT:START (listCommands) - Do not remove or modify this section -->
-### `CODE`
+The default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
-Get code from file or URL and put in markdown
+<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../commands.js) - Do not remove or modify this section -->
+### *CODE* - Get code from file or URL and put in markdown
 
 **Options**
 - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
@@ -40,10 +54,9 @@ Get code from file or URL and put in markdown
 This content will be dynamically replaced with code from the file
 <-- MATCHWORD:END -->
 ```
+---
 
-### `REMOTE`
-
-Get any remote Data and put in markdown
+### *REMOTE* - Get any remote Data and put in markdown
 
 **Options**
 - `url`: The URL of the remote content to pull in
@@ -54,6 +67,7 @@ Get any remote Data and put in markdown
 This content will be dynamically replace from the remote url
 <-- MATCHWORD:END -->
 ```
+---
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ## Usage Example with Custom Transforms
@@ -69,17 +83,22 @@ const markdownSteriods = require('../index')
 
 const config = {
   commands: {
-    /* Custom transform example */
+    /* Custom transform example
+      In README.md the below comment block adds the list to the readme
+      <!-- MATCHWORD:START (customTransform:lolz=what&wow=dude)-->
+        This content will get replaced
+      <!-- MATCHWORD:END -->
+    */
     customTransform: function(content, options) {
-      console.log('original inner content', content)
+      console.log('original innerContent', content)
       console.log(options) // { lolz: what, wow: dude}
-      return 'This will replace all the contents of inside the comment block'
+      return `This will replace all the contents of inside the comment ${options.wow}`
     },
     /**
-     * This is used in the readme.md to generate the docs of `markdown-steroids`
+     * This is used in the README.md to generate the docs of `markdown-steroids`
      */
-    listCommands: function(content, options) {
-      const commandsFile = path.join(__dirname, '..', 'commands.js')
+    RENDERDOCS: function(content, options) {
+      const commandsFile = path.join(__dirname, options.path)
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
         if (err) {
           throw err
@@ -87,23 +106,27 @@ const config = {
         return contents
       })
       const doxOptions = {
-        raw: true
+        raw: true,
+        skipSingleStar: true
       }
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
+      console.log('comments', comments[0])
       comments.forEach(function(data) {
          md += data.description.full + '\n\n'
       });
       return md.replace(/^\s+|\s+$/g, '')
     }
   },
-  /* (optional) Specify different output path */
-  // outputPath: path.join(__dirname, 'different-path.md')
+  // outputPath: path.join(__dirname, 'different-path.md') // Specify different outputPath
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 // const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
-markdownSteriods(markdownPath, config)
+markdownSteriods(markdownPath, config, (updatedContent) => {
+  // callback on completion
+  // console.log(updatedContent)
+})
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -111,7 +134,14 @@ markdownSteriods(markdownPath, config)
 
 - [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-docs.js)
 
+## Demo
+
+View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/example.js` works
+
+<!-- AUTO-GENERATED-CONTENT:START (customTransform:lolz=what&wow=dude) - Do not remove or modify this section -->
+This will replace all the contents of inside the comment dude
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 ## Prior Art
 
 This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmengels](https://github.com/jfmengels)'s [all contributors cli](https://github.com/jfmengels/all-contributors-cli) project.
-
