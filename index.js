@@ -5,8 +5,10 @@ const defaultCommands = require('./commands')
 const updateContents = require('./update-contents')
 
 /**
+ * ### Function signature
  * ```js
  * markdownSteriods(filename, config, callback)
+ * // config and callback are optional params
  * ```
  * @param  {string} filePath - Path to markdown file
  * @param  {object} [config] - configuration object
@@ -25,18 +27,18 @@ module.exports = function markdownSteriods(filePath, config, callback) {
    */
   const defaultConfig = {
     /**
-     * `matchWord` - (optional) Comment pattern to look for and replace inner contents
+     * `matchWord` - *string* - (optional) Comment pattern to look for and replace inner contents
      * @type {String}
      * @default [AUTO-GENERATED-CONTENT]
      */
     matchWord: 'AUTO-GENERATED-CONTENT',
     /**
-     * `commands` - (optional) Custom commands to transform block contents
+     * `commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
      * @type {Object}
      */
     commands: defaultCommands,
     /**
-     * `outputPath` - (optional) Change output path of new content. Default behavior is replacing the original file
+     * `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
      * @type {string}
      */
     outputPath: filePath,

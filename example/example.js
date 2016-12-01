@@ -1,27 +1,25 @@
-/**
- * This example generated adds content to the repos README.md file
- */
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
-const markdownSteriods = require('../index')
+const markdownSteriods = require('../index') // require('markdown-steriods')
 
 const config = {
   commands: {
-    /* Custom transform example
-      In README.md the below comment block adds the list to the readme
+    /* In README.md the below comment block adds the list to the readme
+      // note: MATCHWORD default is 'AUTO-GENERATED-CONTENT'
       <!-- MATCHWORD:START (customTransform:lolz=what&wow=dude)-->
         This content will get replaced
       <!-- MATCHWORD:END -->
     */
     customTransform: function(content, options) {
-      console.log('original innerContent', content)
+      console.log('original innerContent', content) // "This content will get replaced"
       console.log(options) // { lolz: what, wow: dude}
       return `This will replace all the contents of inside the comment ${options.wow}`
     },
-    /**
-     * This is used in the README.md to generate the docs of `markdown-steroids`
-     */
+    /* <!-- MATCHWORD:START (RENDERDOCS:path=../file.js)-->
+        This content will get replaced with auto generated docs
+       <!-- MATCHWORD:END -->
+    */
     RENDERDOCS: function(content, options) {
       const commandsFile = path.join(__dirname, options.path)
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
@@ -36,7 +34,6 @@ const config = {
       }
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
-      console.log('comments', comments[0])
       comments.forEach(function(data) {
          md += data.description.full + '\n\n'
       });
@@ -47,8 +44,7 @@ const config = {
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
-// const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
-markdownSteriods(markdownPath, config, (updatedContent) => {
-  // callback on completion
-  // console.log(updatedContent)
-})
+const callback = function(updatedContent) {
+  console.log('updated MD contents', updatedContent)
+}
+markdownSteriods(markdownPath, config, callback)

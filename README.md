@@ -9,7 +9,7 @@ This readme is generated with `markdown-steriods` [view the raw file](https://ra
 ```bash
 npm install markdown-steriods --save-dev
 ```
-
+## Usage
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/exampleTwo.js) - Do not remove or modify this section -->
 ```js
 import markdownSteriods from 'markdown-steriods'
@@ -22,20 +22,22 @@ markdownSteriods(markdownPath, config)
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js) - Do not remove or modify this section -->
+### Function signature
 ```js
 markdownSteriods(filename, config, callback)
+// config and callback are optional params
 ```
 
 ### Configuration Options
 
-`matchWord` - (optional) Comment pattern to look for and replace inner contents
+`matchWord` - *string* - (optional) Comment pattern to look for and replace inner contents
 
-`commands` - (optional) Custom commands to transform block contents
+`commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
 
-`outputPath` - (optional) Change output path of new content. Default behavior is replacing the original file
+`outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-## Built in commands (aka transforms)
+### Commands (aka transforms)
 
 Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Usage Example with Custom Transforms' below.
 
@@ -70,33 +72,34 @@ This content will be dynamically replace from the remote url
 ---
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-## Usage Example with Custom Transforms
+## Custom Commands (aka transforms)
+
+Markdown steriods is completely extendable and allows you to plugin in any rendering engine or logic you want in `config.commands`. Below is an example that is used to generate these docs.
+
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
-/**
- * This example generated adds content to the repos README.md file
- */
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
-const markdownSteriods = require('../index')
+const markdownSteriods = require('../index') // require('markdown-steriods')
 
 const config = {
   commands: {
-    /* Custom transform example
-      In README.md the below comment block adds the list to the readme
+    /* In README.md the below comment block adds the list to the readme
+      // note: MATCHWORD default is 'AUTO-GENERATED-CONTENT'
       <!-- MATCHWORD:START (customTransform:lolz=what&wow=dude)-->
         This content will get replaced
       <!-- MATCHWORD:END -->
     */
     customTransform: function(content, options) {
-      console.log('original innerContent', content)
+      console.log('original innerContent', content) // "This content will get replaced"
       console.log(options) // { lolz: what, wow: dude}
       return `This will replace all the contents of inside the comment ${options.wow}`
     },
-    /**
-     * This is used in the README.md to generate the docs of `markdown-steroids`
-     */
+    /* <!-- MATCHWORD:START (RENDERDOCS:path=../file.js)-->
+        This content will get replaced with auto generated docs
+       <!-- MATCHWORD:END -->
+    */
     RENDERDOCS: function(content, options) {
       const commandsFile = path.join(__dirname, options.path)
       const code = fs.readFileSync(commandsFile, 'utf8', (err, contents) => {
@@ -111,7 +114,6 @@ const config = {
       }
       let md = ''
       const comments = dox.parseComments(code, doxOptions);
-      console.log('comments', comments[0])
       comments.forEach(function(data) {
          md += data.description.full + '\n\n'
       });
@@ -122,11 +124,10 @@ const config = {
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
-// const markdownPath = path.join(__dirname, '..', 'test/fixtures/test.md')
-markdownSteriods(markdownPath, config, (updatedContent) => {
-  // callback on completion
-  // console.log(updatedContent)
-})
+const callback = function(updatedContent) {
+  console.log('updated MD contents', updatedContent)
+}
+markdownSteriods(markdownPath, config, callback)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
