@@ -42,7 +42,7 @@ markdownSteriods(filename, config, callback)
 Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Custom Commands' below.
 
 <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../commands.js) - Do not remove or modify this section -->
-### `CODE`
+### - `CODE`
 
 Get code from file or URL and put in markdown
 
@@ -58,7 +58,7 @@ This content will be dynamically replaced with code from the file
 ```
 ---
 
-### `REMOTE`
+### - `REMOTE`
 
 Get any remote Data and put in markdown
 

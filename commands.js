@@ -5,7 +5,7 @@ var isLocalPath = require('is-local-path')
 
 const commands = {
   /**
-   * ### `CODE`
+   * ### - `CODE`
    *
    * Get code from file or URL and put in markdown
    *
@@ -64,7 +64,7 @@ ${code}
 \`\`\``
   },
   /**
-   * ### `REMOTE`
+   * ### - `REMOTE`
    *
    * Get any remote Data and put in markdown
    *
