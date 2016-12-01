@@ -78,7 +78,7 @@ This content will be dynamically replace from the remote url
 
 Markdown steriods is completely extendable and allows you to plugin in any rendering engine or logic you want in `config.commands`.
 
-Below is an example that is used to generate this very markdown file from the projects source code.
+This code is used to generate **this markdown file**:
 
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
@@ -104,9 +104,8 @@ const config = {
     RENDERDOCS: function(content, options) {
       const filePath = path.join(__dirname, options.path)
       const contents = fs.readFileSync(filePath, 'utf8')
-      const doxOptions = { raw: true, skipSingleStar: true}
+      const docBlocs = dox.parseComments(contents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
-      const docBlocs = dox.parseComments(contents, doxOptions);
       docBlocs.forEach(function(data) {
          updatedContent += data.description.full + '\n\n'
       });

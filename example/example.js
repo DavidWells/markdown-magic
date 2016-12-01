@@ -20,9 +20,8 @@ const config = {
     RENDERDOCS: function(content, options) {
       const filePath = path.join(__dirname, options.path)
       const contents = fs.readFileSync(filePath, 'utf8')
-      const doxOptions = { raw: true, skipSingleStar: true}
+      const docBlocs = dox.parseComments(contents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
-      const docBlocs = dox.parseComments(contents, doxOptions);
       docBlocs.forEach(function(data) {
          updatedContent += data.description.full + '\n\n'
       });
