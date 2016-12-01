@@ -76,7 +76,9 @@ This content will be dynamically replace from the remote url
 
 ## Custom Commands (aka transforms)
 
-Markdown steriods is completely extendable and allows you to plugin in any rendering engine or logic you want in `config.commands`. Below is an example that is used to generate these docs.
+Markdown steriods is completely extendable and allows you to plugin in any rendering engine or logic you want in `config.commands`.
+
+Below is an example that is used to generate this very markdown file from the projects source code.
 
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
 ```js
