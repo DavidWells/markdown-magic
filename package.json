@@ -25,7 +25,7 @@
   },
   "config": {
     "ghooks": {
-      "pre-push": "npm run docs"
+      "pre-commit": "npm run docs"
     }
   }
 }
