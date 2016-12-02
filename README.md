@@ -10,14 +10,13 @@ This readme is generated with `markdown-steriods` [view the raw file](https://ra
 npm install markdown-steriods --save-dev
 ```
 ## Usage
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/exampleTwo.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/basic-usage.js) - Do not remove or modify this section -->
 ```js
 import markdownSteriods from 'markdown-steriods'
 import path from 'path'
 
-const config = {} // optional
 const markdownPath = path.join(__dirname, 'README.md')
-markdownSteriods(markdownPath, config)
+markdownSteriods(markdownPath)
 ```
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
@@ -80,7 +79,7 @@ Markdown steriods is completely extendable and allows you to plugin in any rende
 
 This code is used to generate **this markdown file**:
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/example.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/custom-transforms.js) - Do not remove or modify this section -->
 ```js
 const fs = require('fs')
 const path = require('path')
@@ -90,7 +89,7 @@ const markdownSteriods = require('../index')
 
 const config = {
   commands: {
-    /* Update the content in comment matching
+    /* Update the content in comment in .md matching
        AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     */
     customTransform: function(content, options) {
@@ -98,7 +97,7 @@ const config = {
       console.log(options) // { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
-    /* Update the content in comment matching
+    /* Update the content in comment in .md matching
       AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js)
     */
     RENDERDOCS: function(content, options) {
@@ -111,9 +110,7 @@ const config = {
       });
       return updatedContent.replace(/^\s+|\s+$/g, '')
     }
-  },
-  /* Optionally Specify different outputPath than overiding existing file */
-  // outputPath: path.join(__dirname, 'different-path.md')
+  }
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
@@ -130,7 +127,7 @@ markdownSteriods(markdownPath, config, callback)
 
 ## Demo
 
-View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/example.js` works
+View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/custom-transforms.js` works
 
 <!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
 This will replace all the contents of inside the comment DUDE
