@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
+const exec = require('child_process').exec
 // require('markdown-steriods') lib
 const markdownSteriods = require('../index')
 
@@ -31,8 +32,15 @@ const config = {
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
-const callback = function(updatedContent) {
+const callback = function(updatedContent, outputConfig) {
   // console.log('updated MD contents', updatedContent)
   console.log('Docs have been updated. Commit them!')
+  const command = `git add ${outputConfig.originalPath}`
+  const child = exec(command, {}, (error, stdout, stderr) => {
+    if (error) {
+      console.warn(error)
+    }
+    console.log(stdout)
+  })
 }
 markdownSteriods(markdownPath, config, callback)
