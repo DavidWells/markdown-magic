@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
-const exec = require('child_process').exec
+const execSync = require('child_process').execSync
 // require('markdown-steriods') lib
 const markdownSteriods = require('../index')
 
@@ -31,16 +31,22 @@ const config = {
   }
 }
 
-const markdownPath = path.join(__dirname, '..', 'README.md')
+
 const callback = function(updatedContent, outputConfig) {
-  // console.log('updated MD contents', updatedContent)
   console.log('Docs have been updated. Commit them!')
-  const command = `git add ${outputConfig.originalPath}`
-  const child = exec(command, {}, (error, stdout, stderr) => {
-    if (error) {
-      console.warn(error)
-    }
-    console.log(stdout)
+  const gitAdd = `git add ${outputConfig.originalPath}`
+  const runGitAdd = execSync(gitAdd, {}, (error) => {
+    if (error) console.warn(error)
+    console.log(`git add ${outputConfig.originalPath} ran`)
+  })
+  const msg = `${path.basename(outputConfig.originalPath)} automatically updated by markdown-steriods`
+  const gitCommit = `git commit -m '${msg}' --no-verify`
+  console.log('gitCommit', gitCommit)
+  const runGitCommit = execSync(gitCommit, {}, (error) => {
+    if (error) console.warn(error)
+    console.log(`git commit automatically ran. Push up your changes!`)
   })
 }
+
+const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownSteriods(markdownPath, config, callback)
