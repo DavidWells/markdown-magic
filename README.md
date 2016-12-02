@@ -27,7 +27,7 @@ markdownSteriods(filename, config, callback)
 // Configuration and callback are optional params
 ```
 
-### Configuration Options
+### Configuration Options!
 
 `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
