@@ -23,7 +23,7 @@ module.exports = function markdownSteriods(filePath, config, callback) {
     throw e
   }
   /**
-   * ### Configuration Options!!!!
+   * ### Configuration Options
    */
   const defaultConfig = {
     /**

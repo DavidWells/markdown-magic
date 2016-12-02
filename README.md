@@ -27,7 +27,7 @@ markdownSteriods(filename, config, callback)
 // Configuration and callback are optional params
 ```
 
-### Configuration Options!!!!
+### Configuration Options
 
 `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
@@ -117,14 +117,13 @@ const config = {
 
 const callback = function(updatedContent, outputConfig) {
   console.log('Docs have been updated. Commit them!')
-  const gitAdd = `git add ${outputConfig.originalPath}`
-  const runGitAdd = execSync(gitAdd, {}, (error) => {
+  const markdowPath = outputConfig.originalPath
+  const gitAdd = execSync(`git add ${markdowPath}`, {}, (error) => {
     if (error) console.warn(error)
-    console.log(`git add ${outputConfig.originalPath} ran`)
-    const msg = `${path.basename(outputConfig.originalPath)} automatically updated by markdown-steriods`
-    const gitCommit = `git commit -m '${msg}' --no-verify`
-    console.log('gitCommit', gitCommit)
-    const runGitCommit = execSync(gitCommit, {}, (error) => {
+    console.log(`git add complete`)
+    const msg = `${markdowPath} automatically updated by markdown-steriods`
+    const gitCommitCommand = `git commit -m '${msg}' --no-verify`
+    execSync(gitCommitCommand, {}, (error) => {
       if (error) console.warn(error)
       console.log(`git commit automatically ran. Push up your changes!`)
     })
