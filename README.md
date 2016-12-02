@@ -15,7 +15,7 @@ npm install markdown-steriods --save-dev
 import markdownSteriods from 'markdown-steriods'
 import path from 'path'
 
-const markdownPath = path.join(__dirname, 'README.md');
+const markdownPath = path.join(__dirname, 'README.md')
 markdownSteriods(markdownPath)
 ```
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
@@ -114,18 +114,24 @@ const config = {
   }
 }
 
-const markdownPath = path.join(__dirname, '..', 'README.md')
+
 const callback = function(updatedContent, outputConfig) {
-  // console.log('updated MD contents', updatedContent)
   console.log('Docs have been updated. Commit them!')
-  const command = `git add ${outputConfig.originalPath}`
-  const child = exec(command, {}, (error, stdout, stderr) => {
-    if (error) {
-      console.warn(error)
-    }
-    console.log(`Updated ${outputConfig.originalPath}`)
+  const gitAdd = `git add ${outputConfig.originalPath}`
+  const runGitAdd = exec(gitAdd, {}, (error) => {
+    if (error) console.warn(error)
+    console.log(`git add ${outputConfig.originalPath} ran`)
+  })
+  const msg = `${path.basename(outputConfig.originalPath)} automatically updated by markdown-steriods`
+  const gitCommit = `git commit -m '${msg}'`
+  console.log('gitCommit', gitCommit)
+  const runGitCommit = exec(gitCommit, {}, (error) => {
+    if (error) console.warn(error)
+    console.log(`git commit automatically ran. Push up your changes!`)
   })
 }
+
+const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownSteriods(markdownPath, config, callback)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
