@@ -15,7 +15,7 @@ npm install markdown-steriods --save-dev
 import markdownSteriods from 'markdown-steriods'
 import path from 'path'
 
-const markdownPath = path.join(__dirname, 'README.md')
+const markdownPath = path.join(__dirname, 'README.md');
 markdownSteriods(markdownPath)
 ```
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
@@ -123,7 +123,7 @@ const callback = function(updatedContent, outputConfig) {
     if (error) {
       console.warn(error)
     }
-    console.log(stdout)
+    console.log(`Updated ${outputConfig.originalPath}`)
   })
 }
 markdownSteriods(markdownPath, config, callback)
