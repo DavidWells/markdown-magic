@@ -79,7 +79,7 @@ Markdown steriods is completely extendable and allows you to plugin in any rende
 
 This code is used to generate **this markdown file**:
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/custom-transforms.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/generate-docs.js) - Do not remove or modify this section -->
 ```js
 const fs = require('fs')
 const path = require('path')
@@ -127,7 +127,7 @@ markdownSteriods(markdownPath, config, callback)
 
 ## Demo
 
-View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/custom-transforms.js` works
+View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/generate-docs.js` works
 
 <!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
 This will replace all the contents of inside the comment DUDE

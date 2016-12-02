@@ -4,7 +4,7 @@
   "description": "Automatically update markdown files with content from external sources",
   "main": "index.js",
   "scripts": {
-    "docs": "node example/example.js",
+    "docs": "node example/generate-docs.js",
     "test": "ava --verbose",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm version patch && npm publish",
