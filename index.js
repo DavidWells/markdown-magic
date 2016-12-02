@@ -65,7 +65,7 @@ module.exports = function markdownSteriods(filePath, config, callback) {
     });
     // then write to file
     fs.writeFileSync(mergedConfig.outputPath, content)
-    console.log(`${filePath} updated`)
+    console.log(`${mergedConfig.outputPath} updated`)
     callback && callback(content)
   } else {
     console.log(`no ${word} comment block found in markdown file`)
