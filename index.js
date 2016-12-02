@@ -8,7 +8,7 @@ const updateContents = require('./update-contents')
  * ### Function signature
  * ```js
  * markdownSteriods(filename, config, callback)
- * // config and callback are optional params
+ * // Configuration and callback are optional params
  * ```
  * @param  {string} filePath - Path to markdown file
  * @param  {object} [config] - configuration object
