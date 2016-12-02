@@ -31,14 +31,13 @@ const config = {
   }
 }
 
-
+/* This example callback automatically updates Readme.md and commits the changes */
 const callback = function(updatedContent, outputConfig) {
-  console.log('Docs have been updated. Commit them!')
-  const markdowPath = outputConfig.originalPath
-  const gitAdd = execSync(`git add ${markdowPath}`, {}, (error) => {
+  const mdPath = outputConfig.outputPath
+  const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
     if (error) console.warn(error)
     console.log(`git add complete`)
-    const msg = `${markdowPath} automatically updated by markdown-steriods`
+    const msg = `${mdPath} automatically updated by markdown-steriods`
     const gitCommitCommand = `git commit -m '${msg}' --no-verify`
     execSync(gitCommitCommand, {}, (error) => {
       if (error) console.warn(error)
