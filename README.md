@@ -24,7 +24,7 @@ markdownSteriods(markdownPath)
 ### Function signature
 ```js
 markdownSteriods(filename, config, callback)
-// config and callback are optional params
+// Configuration and callback are optional params
 ```
 
 ### Configuration Options
