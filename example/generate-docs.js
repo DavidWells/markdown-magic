@@ -32,6 +32,7 @@ const config = {
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 const callback = function(updatedContent) {
-  console.log('updated MD contents', updatedContent)
+  // console.log('updated MD contents', updatedContent)
+  console.log('Docs have been updated. Commit them!')
 }
 markdownSteriods(markdownPath, config, callback)
