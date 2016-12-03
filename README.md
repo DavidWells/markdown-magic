@@ -39,11 +39,13 @@ markdownMagic(filename, config, callback)
 
 ### Configuration Options
 
-`transforms` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
+`transforms` - *Object* - (optional) Custom commands to transform block contents, see configuration options below.
 
-`matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
+`matchWord` - *String* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
-`outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
+`outputPath` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
+
+`DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ### Transforms
@@ -144,6 +146,9 @@ const callback = function autoGitCommit(updatedContent, outputConfig) {
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownMagic(markdownPath, config, callback)
+// markdownMagic(markdownPath, function() {
+//   console.log('ppppp')
+// })
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 

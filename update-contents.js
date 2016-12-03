@@ -31,7 +31,9 @@ module.exports = function updateContents(block, config) {
       }
     }
     if (!config.transforms[cmd]) {
-      throw new Error(`error ${cmd} command not found`)
+      console.warn(`Error '${cmd}' transform function not found in \`config.transforms\``)
+      console.warn(`Comment block skipped: <!-- ${config.matchWord}:START (${cmd}) -->`)
+      // throw new Error(errMsg)
     }
   }
 
@@ -65,7 +67,7 @@ function processTransforms(hasCommand) {
   // no options found, run command with no options
   const cmdOptions = (hasOptions) ? hasOptions[2] : null
   return {
-    cmd,
+    cmd: cmd,
     cmdOptions: parseOptions(cmdOptions)
   }
 }
