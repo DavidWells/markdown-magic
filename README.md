@@ -41,9 +41,9 @@ markdownMagic(filename, config, callback)
 
 `transforms` - *Object* - (optional) Custom commands to transform block contents, see configuration options below.
 
-`matchWord` - *String* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
-
 `outputPath` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
+
+`matchWord` - *String* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
 `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->

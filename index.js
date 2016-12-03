@@ -32,16 +32,16 @@ module.exports = function markdownMagic(filePath, config, callback) {
      */
     transforms: transforms,
     /**
+     * `outputPath` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
+     * @type {string}
+     */
+    outputPath: filePath,
+    /**
      * `matchWord` - *String* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
      * @type {String}
      * @default [AUTO-GENERATED-CONTENT]
      */
     matchWord: 'AUTO-GENERATED-CONTENT',
-    /**
-     * `outputPath` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
-     * @type {string}
-     */
-    outputPath: filePath,
     /**
      * `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
      * @type {string}
