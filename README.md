@@ -41,7 +41,7 @@ markdownMagic(filename, config, callback)
 
 `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
-`commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
+`transforms` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
 
 `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
@@ -101,7 +101,7 @@ const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
-  commands: {
+  transforms: {
     /* Update the content in comment in .md matching
        AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     */

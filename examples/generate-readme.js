@@ -5,7 +5,7 @@ const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
-  commands: {
+  transforms: {
     /* Update the content in comment in .md matching
        AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     */

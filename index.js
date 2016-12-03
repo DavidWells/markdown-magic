@@ -32,10 +32,10 @@ module.exports = function markdownMagic(filePath, config, callback) {
      */
     matchWord: 'AUTO-GENERATED-CONTENT',
     /**
-     * `commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
+     * `transforms` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
      * @type {Object}
      */
-    commands: defaultCommands,
+    transforms: defaultCommands,
     /**
      * `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
      * @type {string}

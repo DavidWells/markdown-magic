@@ -22,14 +22,14 @@ module.exports = function updateContents(block, config) {
     const cmdOptions = openingTag.transform.cmdOptions
 
     // check if command exists
-    if (cmd && config.commands && config.commands[cmd]) {
-      const filteredContent = config.commands[cmd](originalContent, cmdOptions, config)
+    if (cmd && config.transforms && config.transforms[cmd]) {
+      const filteredContent = config.transforms[cmd](originalContent, cmdOptions, config)
       newContent = filteredContent
       if (!newContent) {
         console.log(`COMMAND '${cmd}' is returning undefined value. using original content instead. Make sure you return a value from your transform`)
       }
     }
-    if (!config.commands[cmd]) {
+    if (!config.transforms[cmd]) {
       throw new Error(`error ${cmd} command not found`)
     }
   }
