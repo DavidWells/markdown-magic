@@ -21,7 +21,7 @@ markdownMagic(markdownPath)
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
 
-<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js)
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js)
 - Do not remove or modify this section -->
 ### Function signature
 ```js
@@ -36,13 +36,13 @@ markdownMagic(filename, config, callback)
 `commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
 
 `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
-<!--  AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ### Transforms
 
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../transforms/index.js) - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../transforms/index.js) - Do not remove or modify this section -->
 ### - `CODE`
 
 Get code from file or URL and put in markdown
@@ -73,7 +73,7 @@ This content will be dynamically replace from the remote url
 <-- MATCHWORD:END -->
 ```
 ---
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ## Custom Transforms
 
@@ -83,7 +83,7 @@ Plugins allow developers to add new transforms, use different rendering engines 
 
 This code is used to generate **this markdown file**:
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-readme.js) -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-readme.js) -->
 <!-- The below code snippet is automatically added from ./examples/generate-readme.js -->
 ```js
 const fs = require('fs')
@@ -137,11 +137,11 @@ const callback = function autoGitCommit(updatedContent, outputConfig) {
 const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownMagic(markdownPath, config, callback)
 ```
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
 ## Plugin Example:
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/plugin-example.js) -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/plugin-example.js) -->
 <!-- The below code snippet is automatically added from ./examples/plugin-example.js -->
 ```js
 /**
@@ -164,7 +164,7 @@ module.exports = function customPlugin(pluginOptions) {
   }
 }
 ```
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
 [View the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) file and run `npm run docs` to see this plugin run
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (pluginExample) DO not edit ⛔️ -->
@@ -174,19 +174,15 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 
 ## Other usage examples:
 
-- [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js)
+- [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js) this example takes a `json` file and converts it into a github flavored markdown table
 
 ## Demo
 
 View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `examples/generate-readme.js` works
 
-<!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
 This will replace all the contents of inside the comment DUDE
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
-
-<!-- AUTO-GENERATED-CONTENT:START -->
-what
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ## Prior Art
 
