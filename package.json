@@ -4,7 +4,7 @@
   "description": "Automatically update markdown files with content from external sources",
   "main": "index.js",
   "scripts": {
-    "docs": "node examples/generate-docs.js",
+    "docs": "node examples/generate-readme.js",
     "test": "ava --verbose",
     "lint": "eslint .",
     "publish": "git push origin && git push origin --tags",

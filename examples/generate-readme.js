@@ -2,8 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
 const execSync = require('child_process').execSync
-// require('markdown-steriods') lib
-const markdownMagic = require('../index')
+const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
   commands: {

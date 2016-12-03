@@ -88,15 +88,14 @@ Plugins allow developers to add new transforms, use different rendering engines 
 
 This code is used to generate **this markdown file**:
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-docs.js) -->
-<!-- The below code snippet is automatically added from ./examples/generate-docs.js -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-readme.js) -->
+<!-- The below code snippet is automatically added from ./examples/generate-readme.js -->
 ```js
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
 const execSync = require('child_process').execSync
-// require('markdown-steriods') lib
-const markdownMagic = require('../index')
+const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
   commands: {
@@ -147,11 +146,11 @@ markdownMagic(markdownPath, config, callback)
 
 ## Other usage examples:
 
-- [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-docs.js)
+- [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js)
 
 ## Demo
 
-View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `examples/generate-docs.js` works
+View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `examples/generate-readme.js` works
 
 <!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
 This will replace all the contents of inside the comment DUDE

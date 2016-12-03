@@ -12,8 +12,8 @@ module.exports.run = () => {
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/example/generate-docs.js) -->
-<!-- The below code snippet is automatically added from https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/example/generate-docs.js -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/example/generate-readme.js) -->
+<!-- The below code snippet is automatically added from https://raw.githubusercontent.com/DavidWells/markdown-magic/master/example/generate-readme.js -->
 ```js
 const fs = require('fs')
 const path = require('path')
