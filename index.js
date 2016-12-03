@@ -30,7 +30,7 @@ module.exports = function markdownMagic(filePath, config, callback) {
    */
   const defaultConfig = {
     /**
-     * `transforms` - *Object* - (optional) Custom commands to transform block contents, see configuration options below.
+     * `transforms` - *Object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
      * @type {Object}
      */
     transforms: transforms,

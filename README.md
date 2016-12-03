@@ -41,7 +41,7 @@ markdownMagic(filePath, config, callback)
 
 ### Configuration Options
 
-`transforms` - *Object* - (optional) Custom commands to transform block contents, see configuration options below.
+`transforms` - *Object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
 
 `outputPath` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
 
