@@ -6,7 +6,7 @@ This is normal text in markdown. Keep it.
 THIS CONTENT GETS AUTO GENERATED. Don't directly edit it
 <!-- AUTO-GENERATED-CONTENT:END -->
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/example/example.js) -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/example/generate-docs.js) -->
 Remote code block will go here
 <!-- AUTO-GENERATED-CONTENT:END -->
 

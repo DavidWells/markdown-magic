@@ -1,11 +1,12 @@
 {
-  "name": "markdown-steroids",
-  "version": "0.0.3",
+  "name": "markdown-magic",
+  "version": "0.0.1",
   "description": "Automatically update markdown files with content from external sources",
   "main": "index.js",
   "scripts": {
-    "docs": "node example/generate-docs.js",
+    "docs": "node examples/generate-docs.js",
     "test": "ava --verbose",
+    "lint": "eslint .",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm version patch && npm publish",
     "release:minor": "npm version minor && npm publish",
@@ -20,6 +21,9 @@
   },
   "devDependencies": {
     "ava": "^0.17.0",
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
     "ghooks": "^1.3.2",
     "sinon": "^1.17.6"
   },

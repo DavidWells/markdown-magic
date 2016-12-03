@@ -391,6 +391,12 @@ After adding your plugin to the `plugins.json` file, run `npm run docs` to regen
 
 After adding your plugin to the `plugins.json` file, run `npm run docs` to regenerate the plugin list table in the `readme.md` file.
 
+<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
+
+### [Add your plugin to the list](https://github.com/serverless/community-plugins/edit/master/plugins.json)
+
+After adding your plugin to the `plugins.json` file, run `npm run docs` to regenerate the plugin list table in the `readme.md` file.
+
 <!-- AUTO-GENERATED-CONTENT:END
 - Do not remove or modify this section. Make all updates to plugins.json -->
 

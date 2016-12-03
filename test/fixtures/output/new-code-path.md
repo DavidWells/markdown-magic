@@ -1,3 +1,20 @@
+# Test Fixture
+
+This is normal text in markdown. Keep it.
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./local-code-file.js&syntax=js) -->
+<!-- The below code snippet is automatically added from ./local-code-file.js -->
+```js
+module.exports.run = () => {
+  const time = new Date()
+  console.log(`Your cron ran ${time}`)
+}
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/example/generate-docs.js) -->
+<!-- The below code snippet is automatically added from https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/example/generate-docs.js -->
+```js
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
@@ -48,3 +65,7 @@ const callback = function(updatedContent, outputConfig) {
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownSteriods(markdownPath, config, callback)
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+This is normal text in markdown. Keep it.

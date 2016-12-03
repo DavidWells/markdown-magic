@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import markdownSteriods from '../index'
 
 const markdownPath = path.join(__dirname, 'fixtures', 'test.md')
-
+const DEBUG = false
 /**
  * Test markdownSteriods Function
  */
@@ -40,7 +40,23 @@ test('if config.outputPath supplied, make new file', t => {
   t.true(fileWasCreated)
 
   // remove test file after assertion
-  if(fileWasCreated) {
+  if (fileWasCreated && !DEBUG) {
+    fs.unlinkSync(config.outputPath)
+  }
+})
+
+test('if config.matchWord supplied, use it for comment matching', t => {
+  const filePath = path.join(__dirname, 'fixtures', 'custom-match-word-test.md')
+  const config = {
+    matchWord: 'YOLO',
+    outputPath: path.join(__dirname, 'fixtures', 'output', 'test-match-word.md')
+  }
+  markdownSteriods(filePath, config)
+  const newContent = fs.readFileSync(config.outputPath, 'utf8')
+  t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
+
+  // remove test file after assertion
+  if (filePathExists(config.outputPath) && !DEBUG) {
     fs.unlinkSync(config.outputPath)
   }
 })
@@ -57,12 +73,12 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
 
   const newContent = fs.readFileSync(config.outputPath, 'utf8')
   // check local code
-  t.regex(newContent, /'use strict'/, 'local code snippet inserted')
+  t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
   // check remotely fetched code
   t.regex(newContent, /const dox/, 'remote code snippet inserted')
 
   // remove test file after assertion
-  if(filePathExists(config.outputPath)) {
+  if (filePathExists(config.outputPath) && !DEBUG) {
     fs.unlinkSync(config.outputPath)
   }
 })
@@ -79,7 +95,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   t.regex(newContent, /Install/, 'word Install not found in remote block')
 
   // remove test file after assertion
-  if(filePathExists(config.outputPath)) {
+  if (filePathExists(config.outputPath) && !DEBUG) {
     fs.unlinkSync(config.outputPath)
   }
 })

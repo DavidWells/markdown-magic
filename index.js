@@ -1,20 +1,19 @@
-const path = require('path')
 const fs = require('fs')
 const merge = require('deepmerge')
-const defaultCommands = require('./commands')
+const defaultCommands = require('./transforms')
 const updateContents = require('./update-contents')
 
 /**
  * ### Function signature
  * ```js
- * markdownSteriods(filename, config, callback)
+ * markdownMagic(filename, config, callback)
  * // Configuration and callback are optional params
  * ```
  * @param  {string} filePath - Path to markdown file
  * @param  {object} [config] - configuration object
  * @param  {Function} [callback] - callback function with updated contents
  */
-module.exports = function markdownSteriods(filePath, config, callback) {
+module.exports = function markdownMagic(filePath, config, callback) {
   let content
   try {
     content = fs.readFileSync(filePath, 'utf8')
@@ -51,18 +50,24 @@ module.exports = function markdownSteriods(filePath, config, callback) {
   // contents of original MD file
   mergedConfig.originalContents = content
 
-  /* default regex pattern
-    /\<\!--.*AUTO-GENERATED-CONTENT:START((.|\n|)*?AUTO-GENERATED-CONTENT:END.*--\>)/g
-  */
   const word = mergedConfig.matchWord
-  const regex = new RegExp('\\<\\!--.*'+word+':START((.|\\n|)*?'+word+':END.*--\\>)', 'g')
+  const regex = new RegExp(`(?:\\<\\!--(?:.|\\n)*?${word}:START(?:.|\\n)*?\\()(.*)\\)(?:.|\\n)*?<!--(?:.|\\n)*?${word}:END(?:.|\\n)*?--\\>`, 'g')
+
+  let commentMatches
+  while ((commentMatches = regex.exec(content)) !== null) { // eslint-disable-line
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (commentMatches.index === regex.lastIndex) { regex.lastIndex++ }
+    // const command = `Command ${commentMatches[1]}`
+    // console.log(command)
+  }
+
   const match = content.match(regex)
 
   if (match) {
-    match.forEach(function(element) {
-       var newContent = updateContents(element, mergedConfig)
-       content = content.replace(element, newContent)
-    });
+    match.forEach((element) => {
+      const newContent = updateContents(element, mergedConfig)
+      content = content.replace(element, newContent)
+    })
     // then write to file
     fs.writeFileSync(mergedConfig.outputPath, content)
     console.log(`${mergedConfig.outputPath} updated`)
