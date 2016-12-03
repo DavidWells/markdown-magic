@@ -6,6 +6,7 @@
   "scripts": {
     "docs": "node examples/generate-readme.js",
     "test": "ava --verbose",
+    "test:watch": "ava --verbose --watch",
     "lint": "eslint .",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm version patch && npm publish",
