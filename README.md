@@ -39,9 +39,9 @@ markdownMagic(filename, config, callback)
 
 ### Configuration Options
 
-`matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
-
 `transforms` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
+
+`matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
 `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
@@ -50,7 +50,7 @@ markdownMagic(filename, config, callback)
 
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../transforms/index.js) - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../lib/transforms/index.js) - Do not remove or modify this section -->
 ### - `CODE`
 
 Get code from file or URL and put in markdown

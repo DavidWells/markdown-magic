@@ -53,8 +53,7 @@ If you have ideas for features or plugins, add a new [thread](https://github.com
 
 ### [Add it to the plugin list](https://github.com/serverless/community-plugins/edit/master/plugins.json)
 
-<!-- AUTO-GENERATED-CONTENT:START (GENERATE_PLUGIN_LIST)
-- Do not remove or modify this section. Make all updates to plugins.json -->
+
 | Plugin name | description  |
 |:--------------------------- |:-----|
 | [Serverless Alexa Plugin](https://github.com/rajington/serverless-alexa-plugin) | Serverless plugin to support Alexa Lambda events |
@@ -85,19 +84,7 @@ If you have ideas for features or plugins, add a new [thread](https://github.com
 | [Serverless Subscription Filter](https://github.com/blackevil245/serverless-subscription-filter) | Serverless plugin to register subscription filter for Lambda logs. Register and pipe the logs of one lambda to another to process. |
 | [Serverless Webpack](https://github.com/elastic-coders/serverless-webpack) | Serverless plugin to bundle your lambdas with Webpack |
 | [Serverless Wsgi](https://github.com/logandk/serverless-wsgi) | Serverless plugin to deploy WSGI applications (Flask/Django/Pyramid etc.) and bundle Python packages |
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
 
-### [Add your plugin to the list](https://github.com/serverless/community-plugins/edit/master/plugins.json)
-
-After adding your plugin to the `plugins.json` file, run `npm run docs` to regenerate the plugin list table in the `readme.md` file.
-
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-### [Add your plugin to the list](https://github.com/serverless/community-plugins/edit/master/plugins.json)
-
-After adding your plugin to the `plugins.json` file, run `npm run docs` to regenerate the plugin list table in the `readme.md` file.
-
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
 
 ### [Add your plugin to the list](https://github.com/serverless/community-plugins/edit/master/plugins.json)
 

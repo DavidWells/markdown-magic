@@ -1,6 +1,7 @@
 /*
  Update contents between Comment tags
 */
+const regexUtils = require('./lib/utils/regex')
 
 module.exports = function updateContents(block, config) {
   let newContent
@@ -70,7 +71,7 @@ function processTransforms(hasCommand) {
 }
 
 function getOpeningTags(block, config) {
-  const openTagRegex = new RegExp(`(\\<\\!--(?:.|\\n)*?${config.matchWord}:START)((?:.|\\n)*?--\\>)`, 'g')
+  const openTagRegex = regexUtils.matchOpeningCommentTag(config.matchWord)
   let matches
   while ((matches = openTagRegex.exec(block)) !== null) { // eslint-disable-line
     // This is necessary to avoid infinite loops with zero-width matches
@@ -94,9 +95,7 @@ function getOpeningTags(block, config) {
 }
 
 function getClosingTags(block, config) {
-  // pattern
-  // ((?:<!--(?:.*|\n)(?:.*|\n))*?AUTO-GENERATED-CONTENT:END)((?:.|\n)*?--\>)
-  const closeTagRegex = new RegExp(`((?:\\<\\!--(?:.*|\\n)(?:.*|\\n))*?${config.matchWord}:END)((?:.|\\n)*?--\\>)`, 'g')
+  const closeTagRegex = regexUtils.matchClosingCommentTag(config.matchWord)
   let matches
   while ((matches = closeTagRegex.exec(block)) !== null) { // eslint-disable-line
     // This is necessary to avoid infinite loops with zero-width matches

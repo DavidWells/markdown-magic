@@ -1,6 +1,6 @@
 const fs = require('fs')
 const merge = require('deepmerge')
-const defaultCommands = require('./transforms')
+const defaultCommands = require('./lib/transforms')
 const updateContents = require('./update-contents')
 
 /**
@@ -26,16 +26,16 @@ module.exports = function markdownMagic(filePath, config, callback) {
    */
   const defaultConfig = {
     /**
+     * `transforms` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
+     * @type {Object}
+     */
+    transforms: defaultCommands,
+    /**
      * `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
      * @type {String}
      * @default [AUTO-GENERATED-CONTENT]
      */
     matchWord: 'AUTO-GENERATED-CONTENT',
-    /**
-     * `transforms` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
-     * @type {Object}
-     */
-    transforms: defaultCommands,
     /**
      * `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
      * @type {string}
