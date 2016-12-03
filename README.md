@@ -1,29 +1,36 @@
-# Markdown Steriods
+# Markdown Magic
 
 Automatically keep markdown files up to date from source code or via external sources.
 
-This readme is generated with `markdown-steriods` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-steroids/master/README.md) to see how.
+This readme is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
 
 ## Install
 
 ```bash
-npm install markdown-steriods --save-dev
+npm install markdown-magic --save-dev
 ```
 ## Usage
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/basic-usage.js) - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js) -->
+<!-- The below code snippet is automatically added from ./examples/basic-usage.js -->
 ```js
-import markdownSteriods from 'markdown-steriods'
+import markdownMagic from 'markdown-magic'
 import path from 'path'
 
 const markdownPath = path.join(__dirname, 'README.md')
-markdownSteriods(markdownPath)
+markdownMagic(markdownPath)
 ```
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
 
-<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js) - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (pluginExample) DO not edit ⛔️ -->
+lolloll
+
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js)
+- Do not remove or modify this section -->
 ### Function signature
 ```js
-markdownSteriods(filename, config, callback)
+markdownMagic(filename, config, callback)
 // Configuration and callback are optional params
 ```
 
@@ -34,13 +41,13 @@ markdownSteriods(filename, config, callback)
 `commands` - *object* - (optional) Custom commands to transform block contents, see configuration options below.
 
 `outputPath` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!--  AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-### Commands (aka transforms)
+### Transforms
 
-Markdown Steriods comes with a couple of built in transforms for you to use or you can extend it with your own tranforms. See 'Custom Commands' below.
+Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../commands.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../transforms/index.js) - Do not remove or modify this section -->
 ### - `CODE`
 
 Get code from file or URL and put in markdown
@@ -73,27 +80,30 @@ This content will be dynamically replace from the remote url
 ---
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-## Custom Commands (aka transforms)
+## Custom Transforms
 
-Markdown steriods is completely extendable and allows you to plugin in any rendering engine or logic you want in `config.commands`.
+Markdown Magic is extendable via plugins.
+
+Plugins allow developers to add new transforms, use different rendering engines or any other logic you might want in `config.commands`.
 
 This code is used to generate **this markdown file**:
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./example/generate-docs.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-docs.js) -->
+<!-- The below code snippet is automatically added from ./examples/generate-docs.js -->
 ```js
 const fs = require('fs')
 const path = require('path')
 const dox = require('dox')
 const execSync = require('child_process').execSync
 // require('markdown-steriods') lib
-const markdownSteriods = require('../index')
+const markdownMagic = require('../index')
 
 const config = {
   commands: {
     /* Update the content in comment in .md matching
        AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     */
-    customTransform: function(content, options) {
+    customTransform(content, options) {
       console.log('original innerContent', content)
       console.log(options) // { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
@@ -101,36 +111,37 @@ const config = {
     /* Update the content in comment in .md matching
       AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js)
     */
-    RENDERDOCS: function(content, options) {
+    RENDERDOCS(content, options) {
       const filePath = path.join(__dirname, options.path)
       const contents = fs.readFileSync(filePath, 'utf8')
       const docBlocs = dox.parseComments(contents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
-      docBlocs.forEach(function(data) {
-         updatedContent += data.description.full + '\n\n'
-      });
+      docBlocs.forEach((data) => {
+        updatedContent += `${data.description.full}\n\n`
+      })
       return updatedContent.replace(/^\s+|\s+$/g, '')
-    }
+    },
+    pluginExample: require('./plugin-example')({ addNewLine: true })
   }
 }
 
 /* This example callback automatically updates Readme.md and commits the changes */
-const callback = function(updatedContent, outputConfig) {
+const callback = function autoGitCommit(updatedContent, outputConfig) {
   const mdPath = outputConfig.outputPath
   const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
     if (error) console.warn(error)
-    console.log(`git add complete`)
-    const msg = `${mdPath} automatically updated by markdown-steriods`
+    console.log('git add complete')
+    const msg = `${mdPath} automatically updated by markdown-magic`
     const gitCommitCommand = `git commit -m '${msg}' --no-verify`
-    execSync(gitCommitCommand, {}, (error) => {
-      if (error) console.warn(error)
-      console.log(`git commit automatically ran. Push up your changes!`)
+    execSync(gitCommitCommand, {}, (err) => {
+      if (err) console.warn(err)
+      console.log('git commit automatically ran. Push up your changes!')
     })
   })
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
-markdownSteriods(markdownPath, config, callback)
+markdownMagic(markdownPath, config, callback)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
 
@@ -140,11 +151,15 @@ markdownSteriods(markdownPath, config, callback)
 
 ## Demo
 
-View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `example/generate-docs.js` works
+View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `examples/generate-docs.js` works
 
 <!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
 This will replace all the contents of inside the comment DUDE
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+
+<!-- AUTO-GENERATED-CONTENT:START -->
+what
+<!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Prior Art
 
