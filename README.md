@@ -21,11 +21,6 @@ markdownMagic(markdownPath)
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (pluginExample) DO not edit ⛔️ -->
-lolloll
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
-
 <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js)
 - Do not remove or modify this section -->
 ### Function signature
@@ -143,6 +138,39 @@ const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownMagic(markdownPath, config, callback)
 ```
 <!-- AUTO-GENERATED-CONTENT:END -->
+
+## Plugin Example:
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./examples/plugin-example.js) -->
+<!-- The below code snippet is automatically added from ./examples/plugin-example.js -->
+```js
+/**
+ * Custom Transform Plugin example
+ */
+const merge = require('deepmerge')
+
+module.exports = function customPlugin(pluginOptions) {
+  // set plugin defaults
+  const defaultOptions = {
+    addNewLine: false
+  }
+  const userOptions = pluginOptions || {}
+  const pluginConfig = merge(defaultOptions, userOptions)
+  // return the transform function
+  return function (content, options) {
+    const newLine = (pluginConfig.addNewLine) ? '\n' : ''
+    const updatedContent = content + newLine
+    return updatedContent
+  }
+}
+```
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+[View the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) file and run `npm run docs` to see this plugin run
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (pluginExample) DO not edit ⛔️ -->
+This i
+
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
 ## Other usage examples:
 
