@@ -168,7 +168,7 @@ module.exports = function customPlugin(pluginOptions) {
 
 [View the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) file and run `npm run docs` to see this plugin run
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (pluginExample) DO not edit ⛔️ -->
-This i
+This content is altered by the `pluginExample` plugin registered in `examples/generate-readme.js`
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
