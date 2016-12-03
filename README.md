@@ -1,14 +1,22 @@
 # Markdown Magic
 
-Automatically keep markdown files up to date from source code or via external sources.
+✨ Add a little magic to your markdown ✨
 
-This readme is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
+- Automatically keep markdown files up to date from source code or via external sources.
+- Transform markdown content from dynamic data sources
+- Render markdown with your template engine of choice.
+
+This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
+
+### [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8)
+### [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Install
 
 ```bash
 npm install markdown-magic --save-dev
 ```
+
 ## Usage
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js) -->
 <!-- The below code snippet is automatically added from ./examples/basic-usage.js -->
