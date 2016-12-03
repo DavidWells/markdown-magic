@@ -5,11 +5,14 @@ const regexUtils = require('./lib/utils/regex')
 const updateContents = require('./update-contents')
 
 /**
- * ### Function signature
+ * ### API
  * ```js
- * markdownMagic(filename, config, callback)
- * // Configuration and callback are optional params
+ * markdownMagic(filePath, config, callback)
  * ```
+ * - `filePath` Path to markdown file
+ * - `config` See configuration options below
+ * - `callback` callback to run after markdown updates
+ *
  * @param  {string} filePath - Path to markdown file
  * @param  {object} [config] - configuration object
  * @param  {Function} [callback] - callback function with updated contents

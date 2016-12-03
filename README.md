@@ -31,11 +31,13 @@ markdownMagic(markdownPath)
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js)
 - Do not remove or modify this section -->
-### Function signature
+### API
 ```js
-markdownMagic(filename, config, callback)
-// Configuration and callback are optional params
+markdownMagic(filePath, config, callback)
 ```
+- `filePath` Path to markdown file
+- `config` See configuration options below
+- `callback` callback to run after markdown updates
 
 ### Configuration Options
 
