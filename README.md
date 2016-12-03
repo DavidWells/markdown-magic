@@ -146,9 +146,6 @@ const callback = function autoGitCommit(updatedContent, outputConfig) {
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownMagic(markdownPath, config, callback)
-// markdownMagic(markdownPath, function() {
-//   console.log('ppppp')
-// })
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
