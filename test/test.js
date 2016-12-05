@@ -94,7 +94,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
     // check local code
     t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
     // check remotely fetched code
-    t.regex(newContent, /const dox/, 'remote code snippet inserted')
+    t.regex(newContent, /require\('dox'\)/, 'remote code snippet inserted')
   })
 
   if (filePathExists(newfile)) {
@@ -107,18 +107,14 @@ test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'REMOTE-test.md')
 
   const config = { outputDir: outputDir }
-  markdownMagic(filePath, config)
-  const newfile = path.join(config.outputDir, 'REMOTE-test.md')
-  const newContent = fs.readFileSync(newfile, 'utf8')
-  // check local code
-  t.regex(newContent, /Install/, 'word Install not found in remote block')
-
-  // remove test file after assertion
-  fs.emptyDirSync(outputDir)
-})
-
-test.after.always('guaranteed cleanup', t => {
-  
+  markdownMagic(filePath, config, function() {
+    const newfile = path.join(config.outputDir, 'REMOTE-test.md')
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    // check local code
+    t.regex(newContent, /Install/, 'word Install not found in remote block')
+    // remove test file after assertion
+    fs.emptyDirSync(outputDir)
+  })
 })
 
 /*
