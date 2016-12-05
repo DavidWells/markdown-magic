@@ -135,7 +135,7 @@ const config = {
 
 /* This example callback automatically updates Readme.md and commits the changes */
 const callback = function autoGitCommit(err, output) {
-  //console.log(output)
+  // output is array of file information
   output.forEach(function(data) {
     const mdPath = data.outputFilePath
     const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {

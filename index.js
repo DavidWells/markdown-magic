@@ -23,8 +23,8 @@ module.exports = function markdownMagic(filePaths, config, callback) {
   }
   configuration.originalFilePaths = files
   files.forEach((file) => {
-    const md = processFile(file, configuration)
-    data.push(md)
+    const output = processFile(file, configuration)
+    data.push(output)
   })
   callback && callback(null, data)
 }
