@@ -29,32 +29,36 @@ markdownMagic(markdownPath)
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../index.js)
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./index.js)
 - Do not remove or modify this section -->
 ### API
 ```js
 markdownMagic(filePath, config, callback)
 ```
-- `filePath` Path to markdown file
-- `config` See configuration options below
-- `callback` callback to run after markdown updates
+- `filePaths` - *String or Array* - Path or glob pattern. Uses [globby patterns](https://github.com/sindresorhus/multimatch/blob/master/test.js)
+- `config` - See configuration options below
+- `callback` - callback to run after markdown updates
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./lib/processFile.js)
+- Do not remove or modify this section -->
 ### Configuration Options
 
 `transforms` - *Object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
 
-`outputPath` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
+`outputDir` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
 
 `matchWord` - *String* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
 `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
+
 ### Transforms
 
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../lib/transforms/index.js) - Do not remove or modify this section -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
 ### - `CODE`
 
 Get code from file or URL and put in markdown
@@ -100,13 +104,12 @@ This code is used to generate **this markdown file**:
 ```js
 const fs = require('fs')
 const path = require('path')
-const dox = require('dox')
 const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
   transforms: {
-    /* Update the content in comment in .md matching
+    /* Update the content in comment matching:
        AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     */
     customTransform(content, options) {
@@ -114,13 +117,12 @@ const config = {
       console.log(options) // { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
-    /* Update the content in comment in .md matching
+    /* Update the content in comment matching:
       AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js)
     */
     RENDERDOCS(content, options) {
-      const filePath = path.join(__dirname, options.path)
-      const contents = fs.readFileSync(filePath, 'utf8')
-      const docBlocs = dox.parseComments(contents, { raw: true, skipSingleStar: true })
+      const contents = fs.readFileSync(options.path, 'utf8')
+      const docBlocs = require('dox').parseComments(contents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
       docBlocs.forEach((data) => {
         updatedContent += `${data.description.full}\n\n`
@@ -132,16 +134,19 @@ const config = {
 }
 
 /* This example callback automatically updates Readme.md and commits the changes */
-const callback = function autoGitCommit(updatedContent, outputConfig) {
-  const mdPath = outputConfig.outputPath
-  const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
-    if (error) console.warn(error)
-    console.log('git add complete')
-    const msg = `${mdPath} automatically updated by markdown-magic`
-    const gitCommitCommand = `git commit -m '${msg}' --no-verify`
-    execSync(gitCommitCommand, {}, (err) => {
-      if (err) console.warn(err)
-      console.log('git commit automatically ran. Push up your changes!')
+const callback = function autoGitCommit(err, output) {
+  //console.log(output)
+  output.forEach(function(data) {
+    const mdPath = data.outputFilePath
+    const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
+      if (error) console.warn(error)
+      console.log('git add complete')
+      const msg = `${mdPath} automatically updated by markdown-magic`
+      const gitCommitCommand = `git commit -m '${msg}' --no-verify`
+      execSync(gitCommitCommand, {}, (err) => {
+        if (err) console.warn(err)
+        console.log('git commit automatically ran. Push up your changes!')
+      })
     })
   })
 }

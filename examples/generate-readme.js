@@ -1,12 +1,11 @@
 const fs = require('fs')
 const path = require('path')
-const dox = require('dox')
 const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
   transforms: {
-    /* Update the content in comment in .md matching
+    /* Update the content in comment matching:
        AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
     */
     customTransform(content, options) {
@@ -14,13 +13,12 @@ const config = {
       console.log(options) // { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
-    /* Update the content in comment in .md matching
+    /* Update the content in comment matching:
       AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js)
     */
     RENDERDOCS(content, options) {
-      const filePath = path.join(__dirname, options.path)
-      const contents = fs.readFileSync(filePath, 'utf8')
-      const docBlocs = dox.parseComments(contents, { raw: true, skipSingleStar: true })
+      const contents = fs.readFileSync(options.path, 'utf8')
+      const docBlocs = require('dox').parseComments(contents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
       docBlocs.forEach((data) => {
         updatedContent += `${data.description.full}\n\n`
@@ -33,7 +31,7 @@ const config = {
 
 /* This example callback automatically updates Readme.md and commits the changes */
 const callback = function autoGitCommit(updatedContent, outputConfig) {
-  const mdPath = outputConfig.outputPath
+  const mdPath = outputConfig.outputDir
   const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
     if (error) console.warn(error)
     console.log('git add complete')

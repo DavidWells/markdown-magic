@@ -1,64 +1,83 @@
+import fs from 'fs-extra'
 import path from 'path'
-import fs from 'fs'
 import test from 'ava'
 import sinon from 'sinon'
-import markdownSteriods from '../index'
+import markdownMagic from '../index'
 
 const markdownPath = path.join(__dirname, 'fixtures', 'test.md')
+const outputDir = path.join(__dirname, 'fixtures', 'output')
 const DEBUG = false
+
 /**
- * Test markdownSteriods Function
+ * Test markdownMagic Function
  */
-test('if valid path supplied', t => {
-  markdownSteriods(markdownPath)
+test('if valid string path supplied', t => {
+  markdownMagic(markdownPath)
   t.pass()
+  // emptyDirectory(outputDir)
+})
+
+test('if valid glob pattern supplied', t => {
+  const config = {
+    outputDir: outputDir
+  }
+  markdownMagic(['test/fixtures/**/*md', '!test/fixtures/output/*.md'], config)
+  t.pass()
+  // empty dir
+  //fs.emptyDirSync(outputDir)
 })
 
 test('if valid config supplied', t => {
   const config = {}
-  markdownSteriods(markdownPath, config)
+  markdownMagic(markdownPath, config)
   t.pass()
+  // emptyDirectory(outputDir)
 })
 
 test('if callback function supplied, call it once', t => {
   const callback = sinon.spy()
   const config = {}
-  markdownSteriods(markdownPath, config, callback)
-
+  markdownMagic(markdownPath, config, callback)
   t.true(callback.calledOnce)
+  // emptyDirectory(outputDir)
+})
+
+test('if callback function supplied, as second arg, call it once', t => {
+  const callback = sinon.spy()
+  markdownMagic(markdownPath, callback)
+  t.true(callback.calledOnce)
+  // emptyDirectory(outputDir)
 })
 
 /**
  * Test Config settings
  */
-test('if config.outputPath supplied, make new file', t => {
+test('if config.outputDir supplied, make new file', t => {
   const config = {
-    outputPath: path.join(__dirname, 'fixtures', 'output', 'different-path.md')
+    outputDir: outputDir
   }
-  markdownSteriods(markdownPath, config)
-  const fileWasCreated = filePathExists(config.outputPath)
-  t.true(fileWasCreated)
-
-  // remove test file after assertion
-  if (fileWasCreated && !DEBUG) {
-    fs.unlinkSync(config.outputPath)
-  }
+  markdownMagic(markdownPath, config, function() {
+    const newfile = path.join(outputDir, 'test.md')
+    const fileWasCreated = filePathExists(newfile)
+    t.true(fileWasCreated)
+    // remove test file after assertion
+    // emptyDirectory(outputDir)
+  })
 })
 
 test('if config.matchWord supplied, use it for comment matching', t => {
   const filePath = path.join(__dirname, 'fixtures', 'custom-match-word-test.md')
   const config = {
     matchWord: 'YOLO',
-    outputPath: path.join(__dirname, 'fixtures', 'output', 'test-match-word.md')
+    outputDir: outputDir
   }
-  markdownSteriods(filePath, config)
-  const newContent = fs.readFileSync(config.outputPath, 'utf8')
+  markdownMagic(filePath, config)
+  const newfile = path.join(config.outputDir, 'custom-match-word-test.md')
+  const newContent = fs.readFileSync(newfile, 'utf8')
   t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
 
   // remove test file after assertion
-  if (filePathExists(config.outputPath) && !DEBUG) {
-    fs.unlinkSync(config.outputPath)
-  }
+  fs.emptyDirSync(outputDir)
 })
 
 /**
@@ -66,38 +85,40 @@ test('if config.matchWord supplied, use it for comment matching', t => {
  */
 test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'CODE-test.md')
-  const updatedPath = path.join(__dirname, 'fixtures', 'output', 'new-code-path.md')
+  const config = { outputDir: outputDir }
+  const newfile = path.join(config.outputDir, 'CODE-test.md')
 
-  const config = { outputPath: updatedPath }
-  markdownSteriods(filePath, config)
+  markdownMagic(filePath, config, function(err, data) {
+    // console.log('data', data)
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    // check local code
+    t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
+    // check remotely fetched code
+    t.regex(newContent, /const dox/, 'remote code snippet inserted')
+  })
 
-  const newContent = fs.readFileSync(config.outputPath, 'utf8')
-  // check local code
-  t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
-  // check remotely fetched code
-  t.regex(newContent, /const dox/, 'remote code snippet inserted')
-
-  // remove test file after assertion
-  if (filePathExists(config.outputPath) && !DEBUG) {
-    fs.unlinkSync(config.outputPath)
+  if (filePathExists(newfile)) {
+    // fs.emptyDirSync(outputDir)
   }
+  // remove test file after assertion
 })
 
 test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'REMOTE-test.md')
-  const updatedPath = path.join(__dirname, 'fixtures', 'output', 'new-remote-path.md')
 
-  const config = { outputPath: updatedPath }
-  markdownSteriods(filePath, config)
-
-  const newContent = fs.readFileSync(config.outputPath, 'utf8')
+  const config = { outputDir: outputDir }
+  markdownMagic(filePath, config)
+  const newfile = path.join(config.outputDir, 'REMOTE-test.md')
+  const newContent = fs.readFileSync(newfile, 'utf8')
   // check local code
   t.regex(newContent, /Install/, 'word Install not found in remote block')
 
   // remove test file after assertion
-  if (filePathExists(config.outputPath) && !DEBUG) {
-    fs.unlinkSync(config.outputPath)
-  }
+  fs.emptyDirSync(outputDir)
+})
+
+test.after.always('guaranteed cleanup', t => {
+  
 })
 
 /*
@@ -110,4 +131,9 @@ function filePathExists(fp) {
   } catch (err) {
     return false
   }
+}
+
+function emptyDirectory(filePath, callBack) {
+  fs.emptyDirSync(filePath)
+  callBack && callBack(null)
 }
