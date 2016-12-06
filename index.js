@@ -16,15 +16,21 @@ const processFile = require('./lib/processFile')
  */
 module.exports = function markdownMagic(filePaths, config, callback) {
   const files = globby.sync(filePaths)
-  const data = []
   const configuration = config || {}
   if (!callback && typeof configuration === 'function') {
     callback = configuration // eslint-disable-line
   }
+  if (!files.length) {
+    callback && callback('No files matched')
+  }
   configuration.originalFilePaths = files
+  const data = []
   files.forEach((file) => {
     const output = processFile(file, configuration)
     data.push(output)
   })
   callback && callback(null, data)
 }
+
+// expose globby for use in plugins
+module.exports.globby = globby
