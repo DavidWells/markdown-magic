@@ -32,19 +32,19 @@ const config = {
 /* This example callback automatically updates Readme.md and commits the changes */
 const callback = function autoGitCommit(err, output) {
   // output is array of file information
-  output.forEach(function(data) {
-    const mdPath = data.outputFilePath
-    const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
-      if (error) console.warn(error)
-      console.log('git add complete')
-      const msg = `${mdPath} automatically updated by markdown-magic`
-      const gitCommitCommand = `git commit -m '${msg}' --no-verify`
-      execSync(gitCommitCommand, {}, (err) => {
-        if (err) console.warn(err)
-        console.log('git commit automatically ran. Push up your changes!')
-      })
-    })
-  })
+  // output.forEach(function(data) {
+  //   const mdPath = data.outputFilePath
+  //   const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
+  //     if (error) console.warn(error)
+  //     console.log('git add complete')
+  //     const msg = `${mdPath} automatically updated by markdown-magic`
+  //     const gitCommitCommand = `git commit -m '${msg}' --no-verify`
+  //     execSync(gitCommitCommand, {}, (err) => {
+  //       if (err) console.warn(err)
+  //       console.log('git commit automatically ran. Push up your changes!')
+  //     })
+  //   })
+  // })
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')

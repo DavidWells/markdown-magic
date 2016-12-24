@@ -20,6 +20,7 @@
     "fs-extra": "^1.0.0",
     "globby": "^6.1.0",
     "is-local-path": "^0.1.6",
+    "markdown-toc": "^1.0.2",
     "sync-request": "^3.0.1"
   },
   "devDependencies": {

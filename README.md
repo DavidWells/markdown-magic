@@ -6,6 +6,26 @@
 - Transform markdown content from dynamic data sources
 - Render markdown with your template engine of choice.
 
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC) -->
+- [Markdown Magic](#markdown-magic)
+    + [Video demo](#video-demo)
+    + [Example Repo](#example-repo)
+  * [Install](#install)
+  * [Usage](#usage)
+    + [API](#api)
+    + [Configuration Options](#configuration-options)
+    + [Transforms](#transforms)
+    + [- `CODE`](#--code)
+    + [- `REMOTE`](#--remote)
+    + [- `TOC`](#--toc)
+  * [Custom Transforms](#custom-transforms)
+  * [Plugin Example:](#plugin-example)
+  * [Other usage examples:](#other-usage-examples)
+  * [Demo](#demo)
+  * [Prior Art](#prior-art)
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+
+
 This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
 
 ### [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8)
@@ -18,7 +38,7 @@ npm install markdown-magic --save-dev
 ```
 
 ## Usage
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js) -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js&order=last) -->
 <!-- The below code snippet is automatically added from ./examples/basic-usage.js -->
 ```js
 import markdownMagic from 'markdown-magic'
@@ -89,6 +109,18 @@ This content will be dynamically replace from the remote url
 <-- MATCHWORD:END -->
 ```
 ---
+
+### - `TOC`
+
+Generate table of contents from markdown file
+
+**Example:**
+```md
+<-- MATCHWORD:START (TOC) -->
+toc will be generated here
+<-- MATCHWORD:END -->
+```
+---
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 ## Custom Transforms
@@ -136,19 +168,19 @@ const config = {
 /* This example callback automatically updates Readme.md and commits the changes */
 const callback = function autoGitCommit(err, output) {
   // output is array of file information
-  output.forEach(function(data) {
-    const mdPath = data.outputFilePath
-    const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
-      if (error) console.warn(error)
-      console.log('git add complete')
-      const msg = `${mdPath} automatically updated by markdown-magic`
-      const gitCommitCommand = `git commit -m '${msg}' --no-verify`
-      execSync(gitCommitCommand, {}, (err) => {
-        if (err) console.warn(err)
-        console.log('git commit automatically ran. Push up your changes!')
-      })
-    })
-  })
+  // output.forEach(function(data) {
+  //   const mdPath = data.outputFilePath
+  //   const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
+  //     if (error) console.warn(error)
+  //     console.log('git add complete')
+  //     const msg = `${mdPath} automatically updated by markdown-magic`
+  //     const gitCommitCommand = `git commit -m '${msg}' --no-verify`
+  //     execSync(gitCommitCommand, {}, (err) => {
+  //       if (err) console.warn(err)
+  //       console.log('git commit automatically ran. Push up your changes!')
+  //     })
+  //   })
+  // })
 }
 
 const markdownPath = path.join(__dirname, '..', 'README.md')
