@@ -2,15 +2,22 @@
 
 ✨ Add a little magic to your markdown ✨
 
+## About
+
+Markdown magic uses comment blocks in markdown files to automatically sync or transform it's contents. These code comments are hidden in markdown and when viewed as HTML.
+
 - Automatically keep markdown files up to date from local or remote code sources
 - Transform markdown content with custom transform functions
 - Render markdown with any template engine
 - Automatically generate a table of contents
 
+This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
+
+[Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8) • [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
+
 ## Table of Contents
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC) -->
-- [Video demo](#video-demo)
-- [Example Repo](#example-repo)
+- [About](#about)
 - [Install](#install)
 - [Usage](#usage)
   * [API](#api)
@@ -25,14 +32,6 @@
 - [Custom Transform Demo](#custom-transform-demo)
 - [Prior Art](#prior-art)
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
-
-
-This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
-
-In a nutshell, code comment blocks are used to dynamically replace content. This strategy works well since code comments in markdown are hidden when viewed as HTML, like when viewing a README on GitHub README for example.
-
-## [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8)
-## [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Install
 
