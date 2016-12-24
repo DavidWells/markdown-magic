@@ -8,7 +8,7 @@ module.exports = function customPlugin(pluginOptions) {
   const userOptions = pluginOptions || {}
   const pluginConfig = merge(defaultOptions, userOptions)
   // return the transform function
-  return function (content, options) {
+  return function myCustomTransform (content, options) {
     const newLine = (pluginConfig.addNewLine) ? '\n' : ''
     const updatedContent = content + newLine
     return updatedContent
