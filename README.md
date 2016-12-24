@@ -143,17 +143,13 @@ const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
   transforms: {
-    /* Update the content in comment matching:
-       AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE)
-    */
+    /* Match AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE) */
     customTransform(content, options) {
       console.log('original innerContent', content)
       console.log(options) // { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
-    /* Update the content in comment matching:
-      AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js)
-    */
+    /* Match AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js) */
     RENDERDOCS(content, options) {
       const contents = fs.readFileSync(options.path, 'utf8')
       const docBlocs = require('dox').parseComments(contents, { raw: true, skipSingleStar: true })
@@ -163,6 +159,7 @@ const config = {
       })
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
+    /* Match AUTO-GENERATED-CONTENT (pluginExample) */
     pluginExample: require('./plugin-example')({ addNewLine: true })
   }
 }
