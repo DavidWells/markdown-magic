@@ -9,23 +9,21 @@
 
 ## Table of Contents
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC) -->
-- [Markdown Magic](#markdown-magic)
-  * [Table of Contents](#table-of-contents)
-  * [Video demo](#video-demo)
-  * [Example Repo](#example-repo)
-  * [Install](#install)
-  * [Usage](#usage)
-    + [API](#api)
-    + [Configuration Options](#configuration-options)
-  * [Transforms](#transforms)
-    + [- `CODE`](#--code)
-    + [- `REMOTE`](#--remote)
-    + [- `TOC`](#--toc)
-  * [Custom Transforms](#custom-transforms)
-  * [Plugin Example:](#plugin-example)
-  * [Other usage examples:](#other-usage-examples)
-  * [Demo](#demo)
-  * [Prior Art](#prior-art)
+- [Video demo](#video-demo)
+- [Example Repo](#example-repo)
+- [Install](#install)
+- [Usage](#usage)
+  * [API](#api)
+  * [Configuration Options](#configuration-options)
+- [Transforms](#transforms)
+  * [`CODE`](#code)
+  * [`REMOTE`](#remote)
+  * [`TOC`](#toc)
+- [Custom Transforms](#custom-transforms)
+- [Plugin Example:](#plugin-example)
+- [Other usage examples](#other-usage-examples)
+- [Custom Transform Demo](#custom-transform-demo)
+- [Prior Art](#prior-art)
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
 
@@ -82,7 +80,7 @@ markdownMagic(filePath, config, callback)
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
-### - `CODE`
+### `CODE`
 
 Get code from file or URL and put in markdown
 
@@ -98,7 +96,7 @@ This content will be dynamically replaced with code from the file
 ```
 ---
 
-### - `REMOTE`
+### `REMOTE`
 
 Get any remote Data and put in markdown
 
@@ -113,7 +111,7 @@ This content will be dynamically replace from the remote url
 ```
 ---
 
-### - `TOC`
+### `TOC`
 
 Generate table of contents from markdown file
 
@@ -224,11 +222,11 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
-## Other usage examples:
+## Other usage examples
 
 - [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js) this example takes a `json` file and converts it into a github flavored markdown table
 
-## Demo
+## Custom Transform Demo
 
 View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `examples/generate-readme.js` works
 
