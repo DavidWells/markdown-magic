@@ -117,7 +117,7 @@ This content will be dynamically replace from the remote url
 Generate table of contents from markdown file
 
 **Options:**
-- `firsth1` (optional): Show first h1 of doc in table of contents. Default false
+- `firsth1` - *Boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
 
 **Example:**
 ```md
