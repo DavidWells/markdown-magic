@@ -24,7 +24,7 @@ test('if valid glob pattern supplied', t => {
   markdownMagic(['test/fixtures/**/*md', '!test/fixtures/output/*.md'], config)
   t.pass()
   // empty dir
-  //fs.emptyDirSync(outputDir)
+  // fs.emptyDirSync(outputDir)
 })
 
 test('if valid config supplied', t => {
