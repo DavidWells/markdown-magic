@@ -29,6 +29,8 @@
 
 This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
 
+In a nutshell, code comment blocks are used to dynamically replace content. This strategy works well since code comments in markdown are hidden when viewed as HTML, like when viewing a README on GitHub README for example.
+
 ## [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8)
 ## [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
