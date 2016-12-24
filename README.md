@@ -2,19 +2,22 @@
 
 ✨ Add a little magic to your markdown ✨
 
-- Automatically keep markdown files up to date from source code or via external sources.
-- Transform markdown content from dynamic data sources
-- Render markdown with your template engine of choice.
+- Automatically keep markdown files up to date from local or remote code sources
+- Transform markdown content with custom transform functions
+- Render markdown with any template engine
+- Automatically generate a table of contents
 
+## Table of Contents
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC) -->
 - [Markdown Magic](#markdown-magic)
-    + [Video demo](#video-demo)
-    + [Example Repo](#example-repo)
+  * [Table of Contents](#table-of-contents)
+  * [Video demo](#video-demo)
+  * [Example Repo](#example-repo)
   * [Install](#install)
   * [Usage](#usage)
     + [API](#api)
     + [Configuration Options](#configuration-options)
-    + [Transforms](#transforms)
+  * [Transforms](#transforms)
     + [- `CODE`](#--code)
     + [- `REMOTE`](#--remote)
     + [- `TOC`](#--toc)
@@ -28,8 +31,8 @@
 
 This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
 
-### [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8)
-### [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
+## [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8)
+## [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Install
 
@@ -74,7 +77,7 @@ markdownMagic(filePath, config, callback)
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 
-### Transforms
+## Transforms
 
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
