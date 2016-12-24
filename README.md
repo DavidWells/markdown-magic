@@ -27,7 +27,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   * [`REMOTE`](#remote)
   * [`TOC`](#toc)
 - [Custom Transforms](#custom-transforms)
-- [Plugin Example:](#plugin-example)
+- [Plugin Example](#plugin-example)
 - [Other usage examples](#other-usage-examples)
 - [Custom Transform Demo](#custom-transform-demo)
 - [Prior Art](#prior-art)
@@ -131,7 +131,9 @@ Markdown Magic is extendable via plugins.
 
 Plugins allow developers to add new transforms, use different rendering engines or any other logic you might want in `config.commands`.
 
-This code is used to generate **this markdown file**:
+Plugins run in order of registration.
+
+The below code is used to generate **this markdown file** via the plugin system.
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-readme.js) -->
 <!-- The below code snippet is automatically added from ./examples/generate-readme.js -->
@@ -187,9 +189,13 @@ markdownMagic(markdownPath, config, callback)
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
-## Plugin Example:
+## Plugin Example
 
-Plugins should return a transform function. `return function (content, options)`
+Plugins must return a transform function with the following signature.
+
+```js
+return function myCustomTransform (content, options)
+```
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/plugin-example.js) -->
 <!-- The below code snippet is automatically added from ./examples/plugin-example.js -->
@@ -204,7 +210,7 @@ module.exports = function customPlugin(pluginOptions) {
   const userOptions = pluginOptions || {}
   const pluginConfig = merge(defaultOptions, userOptions)
   // return the transform function
-  return function (content, options) {
+  return function myCustomTransform (content, options) {
     const newLine = (pluginConfig.addNewLine) ? '\n' : ''
     const updatedContent = content + newLine
     return updatedContent
@@ -221,7 +227,7 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 
 ## Other usage examples
 
-- [Serverless Community Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js) this example takes a `json` file and converts it into a github flavored markdown table
+- [Serverless Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js) this example takes a `json` file and converts it into a github flavored markdown table
 
 ## Custom Transform Demo
 
