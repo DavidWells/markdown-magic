@@ -1,8 +1,5 @@
-/**
- * Custom Transform Plugin example
- */
+/* Custom Transform Plugin example */
 const merge = require('deepmerge')
-
 module.exports = function customPlugin(pluginOptions) {
   // set plugin defaults
   const defaultOptions = {

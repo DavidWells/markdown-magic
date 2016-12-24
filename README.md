@@ -189,14 +189,13 @@ markdownMagic(markdownPath, config, callback)
 
 ## Plugin Example:
 
+Plugins should return a transform function. `return function (content, options)`
+
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/plugin-example.js) -->
 <!-- The below code snippet is automatically added from ./examples/plugin-example.js -->
 ```js
-/**
- * Custom Transform Plugin example
- */
+/* Custom Transform Plugin example */
 const merge = require('deepmerge')
-
 module.exports = function customPlugin(pluginOptions) {
   // set plugin defaults
   const defaultOptions = {
