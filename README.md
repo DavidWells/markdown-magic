@@ -131,7 +131,7 @@ toc will be generated here
 
 ## Plugins
 
-* [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/)
+* [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
 
 ## Custom Transforms
 
