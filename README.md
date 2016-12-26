@@ -132,6 +132,7 @@ toc will be generated here
 ## Plugins
 
 * [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
+* [github-contributors](https://github.com/DavidWells/markdown-magic-github-contributors) - List out the contributors of a given repository
 
 ## Custom Transforms
 
@@ -170,7 +171,9 @@ const config = {
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
     /* Match AUTO-GENERATED-CONTENT (pluginExample) */
-    pluginExample: require('./plugin-example')({ addNewLine: true })
+    pluginExample: require('./plugin-example')({ addNewLine: true }),
+    // count: require('markdown-magic-wordcount'),
+    // github: require('markdown-magic-github-contributors')
   }
 }
 
