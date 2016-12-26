@@ -26,6 +26,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   * [`CODE`](#code)
   * [`REMOTE`](#remote)
   * [`TOC`](#toc)
+- [Plugins](#plugins)
 - [Custom Transforms](#custom-transforms)
 - [Plugin Example](#plugin-example)
 - [Other usage examples](#other-usage-examples)
@@ -127,6 +128,10 @@ toc will be generated here
 ```
 ---
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+
+## Plugins
+
+* [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/)
 
 ## Custom Transforms
 
