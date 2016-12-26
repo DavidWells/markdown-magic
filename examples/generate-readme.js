@@ -22,7 +22,9 @@ const config = {
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
     /* Match AUTO-GENERATED-CONTENT (pluginExample) */
-    pluginExample: require('./plugin-example')({ addNewLine: true })
+    pluginExample: require('./plugin-example')({ addNewLine: true }),
+    // count: require('markdown-magic-wordcount'),
+    // github: require('markdown-magic-github-contributors')
   }
 }
 
