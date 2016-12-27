@@ -238,7 +238,7 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 
 ## Other usage examples
 
-- [Serverless Plugin Repo](https://github.com/serverless/community-plugins/blob/master/generate-readme.js) this example takes a `json` file and converts it into a github flavored markdown table
+- [Serverless Plugin Repo](https://github.com/serverless/plugins/blob/master/generate-docs.js) this example takes a `json` file and converts it into a github flavored markdown table
 
 ## Custom Transform Demo
 
