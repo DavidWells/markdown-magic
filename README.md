@@ -16,7 +16,9 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8) • [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Table of Contents
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC) -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click to expand) -->
+<details>
+<summary>Click to expand</summary>
 - [About](#about)
 - [Install](#install)
 - [Usage](#usage)
@@ -32,6 +34,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Other usage examples](#other-usage-examples)
 - [Custom Transform Demo](#custom-transform-demo)
 - [Prior Art](#prior-art)
+</details>
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
 ## Install
@@ -119,6 +122,8 @@ Generate table of contents from markdown file
 
 **Options:**
 - `firsth1` - *Boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
+- `collapse` - *Boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
+- `collapseText` - *string* - (optional): Text the toc accordian summary
 
 **Example:**
 ```md
