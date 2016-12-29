@@ -124,6 +124,7 @@ Generate table of contents from markdown file
 - `firsth1` - *Boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
 - `collapse` - *Boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
 - `collapseText` - *string* - (optional): Text the toc accordian summary
+- `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`
 
 **Example:**
 ```md
