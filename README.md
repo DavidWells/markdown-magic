@@ -62,7 +62,20 @@ markdownMagic(markdownPath)
 
 ## CLI Usage
 
-`markdown` or `md-magic`
+You can use markdown-magic as a CLI command. This is useful for adding the package quickly to your `package.json` npm scripts
+
+```
+markdown --help
+# or
+md-magic
+```
+
+Run `markdown --help` to see all available CLI options
+
+CLI usage example with options
+```
+markdown --path *.md --config ./config.file.js
+```
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./markdown.config.js) -->
 <!-- The below code snippet is automatically added from ./markdown.config.js -->
