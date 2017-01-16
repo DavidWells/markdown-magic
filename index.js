@@ -19,9 +19,14 @@ module.exports = function markdownMagic(filePaths, config, callback) {
   const configuration = config || {}
   if (!callback && typeof configuration === 'function') {
     callback = configuration // eslint-disable-line
+  } else if (typeof config === 'object' && config.callback) {
+    // set callback in config for CLI usage
+    callback = config.callback // eslint-disable-line
   }
   if (!files.length) {
     callback && callback('No files matched')
+    console.log('no files matched pattern', filePaths)
+    return false
   }
   configuration.originalFilePaths = files
   const data = []
@@ -29,7 +34,9 @@ module.exports = function markdownMagic(filePaths, config, callback) {
     const output = processFile(file, configuration)
     data.push(output)
   })
-  callback && callback(null, data)
+  if (callback) {
+    callback(null, data)
+  }
 }
 
 // expose globby for use in plugins
