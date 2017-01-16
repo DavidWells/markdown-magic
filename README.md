@@ -2,6 +2,10 @@
 
 ✨ Add a little magic to your markdown ✨
 
+<!-- AUTO-GENERATED-CONTENT:START (LOLZ)-->
+new stuff
+<!-- AUTO-GENERATED-CONTENT:END (LOLZ)-->
+
 ## About
 
 <img align="right" width="200" height="183" src="https://cloud.githubusercontent.com/assets/532272/21507867/3376e9fe-cc4a-11e6-9350-7ec4f680da36.gif">Markdown magic uses comment blocks in markdown files to automatically sync or transform it's contents. These code comments are hidden in markdown and when viewed as HTML.
@@ -22,6 +26,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [About](#about)
 - [Install](#install)
 - [Usage](#usage)
+- [CLI Usage](#cli-usage)
   * [API](#api)
   * [Configuration Options](#configuration-options)
 - [Transforms](#transforms)
@@ -52,6 +57,31 @@ import path from 'path'
 
 const markdownPath = path.join(__dirname, 'README.md')
 markdownMagic(markdownPath)
+```
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
+
+## CLI Usage
+
+`markdown` or `md-magic`
+
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./markdown.config.js) -->
+<!-- The below code snippet is automatically added from ./markdown.config.js -->
+```js
+/**
+ * CLI config example
+ * markdown.config.js as default name
+ */
+module.exports = {
+  transforms: {
+    /* Match AUTO-GENERATED-CONTENT (LOLZ) */
+    LOLZ(content, options) {
+      return `new stuff`
+    }
+  },
+  callback: function () {
+    console.log('done')
+  }
+}
 ```
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
 
