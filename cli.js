@@ -42,9 +42,9 @@ if (program.path) {
   filePaths = program.path
 }
 
-console.log('filePaths', filePaths)
-console.log('configuration', configuration)
-console.log('callbackFunction', callbackFunction)
+// console.log('filePaths', filePaths)
+// console.log('configuration', configuration)
+// console.log('callbackFunction', callbackFunction)
 markdownMagic(filePaths, configuration, callbackFunction)
 
 function defaultCallback(err, msg) {
