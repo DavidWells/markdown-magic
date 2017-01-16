@@ -4,7 +4,7 @@
 
 ## About
 
-Markdown magic uses comment blocks in markdown files to automatically sync or transform it's contents. These code comments are hidden in markdown and when viewed as HTML.
+<img align="right" width="200" height="183" src="https://cloud.githubusercontent.com/assets/532272/21507867/3376e9fe-cc4a-11e6-9350-7ec4f680da36.gif">Markdown magic uses comment blocks in markdown files to automatically sync or transform it's contents. These code comments are hidden in markdown and when viewed as HTML.
 
 - Automatically keep markdown files up to date from local or remote code sources
 - Transform markdown content with custom transform functions
@@ -124,6 +124,7 @@ Generate table of contents from markdown file
 - `firsth1` - *Boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
 - `collapse` - *Boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
 - `collapseText` - *string* - (optional): Text the toc accordian summary
+- `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`
 
 **Example:**
 ```md
@@ -138,6 +139,8 @@ toc will be generated here
 
 * [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
 * [github-contributors](https://github.com/DavidWells/markdown-magic-github-contributors) - List out the contributors of a given repository
+* [directory-tree](https://github.com/camacho/markdown-magic-directory-tree) - Add directory tree to markdown files
+* [install-command](https://github.com/camacho/markdown-magic-install-command) - Add install command to markdown files with `peerDependencies` included
 
 ## Custom Transforms
 
