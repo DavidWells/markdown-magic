@@ -25,7 +25,7 @@ module.exports = function markdownMagic(filePaths, config, callback) {
   }
   if (!files.length) {
     callback && callback('No files matched')
-    console.log('no files matched pattern', filePaths)
+    console.log('No files matched pattern', filePaths)
     return false
   }
   configuration.originalFilePaths = files

@@ -10,7 +10,8 @@ const loadConfig = require('./cli-utils').loadConfig
 
 var filePaths = defaultFileName
 var callbackFunction = defaultCallback // eslint-disable-line
-var ignorePath
+var ignorePath // eslint-disable-line
+
 // start commander.js
 program
   .version(pkg.version)
@@ -27,13 +28,12 @@ if (foundConfig && foundConfig.callback) {
   callbackFunction = foundConfig.callback
 }
 if (!foundConfig) {
-  console.log('no config set using empty object')
+  // console.log('No markdown magic config set using {empty object}')
 }
 const configuration = foundConfig || {}
 
 function parsePaths(path, defaultValue) {
   if (path) {
-    console.log('path', path)
     filePaths = path
   }
 }
@@ -44,7 +44,7 @@ function parseIgnorePaths(path, defaultValue) {
       const fp = p.trim()
       if (fp.match(/\bnode_modules\b/)) {
         // exact node_module match. Ignore entire DIR
-        return `!node_modules/**`
+        return '!node_modules/**'
       }
       if (!fp.match(/^!/)) {
         return `!${fp}`
@@ -67,6 +67,7 @@ if (ignorePath) {
 // console.log('filePaths', filePaths)
 // console.log('configuration', configuration)
 // console.log('callbackFunction', callbackFunction)
+console.log('Starting markdown-magic', filePaths)
 markdownMagic(filePaths, configuration, callbackFunction)
 
 function defaultCallback(err, msg) {
@@ -74,7 +75,7 @@ function defaultCallback(err, msg) {
     console.log('Error:', err)
   }
   if (msg) {
-    console.log('files processed')
+    console.log('Files processed. markdown-magic Finished! ⊂◉‿◉つ')
   }
 }
 
