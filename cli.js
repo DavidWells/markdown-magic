@@ -10,11 +10,12 @@ const loadConfig = require('./cli-utils').loadConfig
 
 var filePaths = defaultFileName
 var callbackFunction = defaultCallback // eslint-disable-line
-
+var ignorePath
 // start commander.js
 program
   .version(pkg.version)
   .option('-p, --path [path]', `Define path to markdown (single path or glob). Default ${defaultFileName}`, parsePaths, defaultFileName)
+  .option('-i, --ignore [path]', '(Optional) Define path to ignore', parseIgnorePaths, defaultConfigPath)
   .option('-c, --config [path]', '(Optional) Define config file path. If you have custom transforms or a callback you will want to specify this option', null, defaultConfigPath)
   // .option('-cb, --callback [path]', 'Define path', parsePaths, defaultFileName)
   .parse(process.argv)
@@ -37,9 +38,30 @@ function parsePaths(path, defaultValue) {
   }
 }
 
+function parseIgnorePaths(path, defaultValue) {
+  if (path) {
+    ignorePath = path.split(',').map((p) => {
+      const fp = p.trim()
+      if (fp.match(/\bnode_modules\b/)) {
+        // exact node_module match. Ignore entire DIR
+        return `!node_modules/**`
+      }
+      if (!fp.match(/^!/)) {
+        return `!${fp}`
+      }
+      return fp
+    })
+  }
+}
+
 // process default
 if (program.path) {
   filePaths = program.path
+}
+
+if (ignorePath) {
+  // console.log('ignore path', ignorePath)
+  filePaths = [filePaths].concat(ignorePath)
 }
 
 // console.log('filePaths', filePaths)
