@@ -180,6 +180,7 @@ toc will be generated here
 * [github-contributors](https://github.com/DavidWells/markdown-magic-github-contributors) - List out the contributors of a given repository
 * [directory-tree](https://github.com/camacho/markdown-magic-directory-tree) - Add directory tree to markdown files
 * [install-command](https://github.com/camacho/markdown-magic-install-command) - Add install command to markdown files with `peerDependencies` included
+* [subpackage-list](https://github.com/camacho/markdown-magic-subpackage-list) - Add list of all subpackages (great for projects that use [Lerna](https://github.com/lerna/lerna))
 
 ## Custom Transforms
 
