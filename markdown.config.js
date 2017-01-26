@@ -1,3 +1,5 @@
+'use strict'; // eslint-disable-line
+
 /**
  * CLI config example
  * markdown.config.js as default name
