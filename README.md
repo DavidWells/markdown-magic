@@ -181,6 +181,7 @@ toc will be generated here
 * [directory-tree](https://github.com/camacho/markdown-magic-directory-tree) - Add directory tree to markdown files
 * [install-command](https://github.com/camacho/markdown-magic-install-command) - Add install command to markdown files with `peerDependencies` included
 * [subpackage-list](https://github.com/camacho/markdown-magic-subpackage-list) - Add list of all subpackages (great for projects that use [Lerna](https://github.com/lerna/lerna))
+* [version-badge](https://github.com/camacho/markdown-magic-version-badge) - Add a badge with the latest version of the project
 
 ## Custom Transforms
 
