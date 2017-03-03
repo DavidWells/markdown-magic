@@ -182,6 +182,7 @@ toc will be generated here
 * [install-command](https://github.com/camacho/markdown-magic-install-command) - Add install command to markdown files with `peerDependencies` included
 * [subpackage-list](https://github.com/camacho/markdown-magic-subpackage-list) - Add list of all subpackages (great for projects that use [Lerna](https://github.com/lerna/lerna))
 * [version-badge](https://github.com/camacho/markdown-magic-version-badge) - Add a badge with the latest version of the project
+* [template] (https://github.com/camacho/markdown-magic-template) - Add Lodash template support
 
 ## Custom Transforms
 
