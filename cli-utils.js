@@ -1,3 +1,5 @@
+'use strict'; // eslint-disable-line
+
 const resolve = require('path').resolve
 
 const loadJSConfig = getAttemptModuleRequireFn(function onFail(configPath, requirePath) {

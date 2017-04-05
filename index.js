@@ -1,3 +1,5 @@
+'use strict'; // eslint-disable-line
+
 const fs = require('fs-extra')
 const globby = require('globby')
 const processFile = require('./lib/processFile')
