@@ -19,6 +19,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click to expand) -->
 <details>
 <summary>Click to expand</summary>
+
 - [About](#about)
 - [Install](#install)
 - [Usage](#usage)
@@ -35,6 +36,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Other usage examples](#other-usage-examples)
 - [Custom Transform Demo](#custom-transform-demo)
 - [Prior Art](#prior-art)
+
 </details>
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
 
