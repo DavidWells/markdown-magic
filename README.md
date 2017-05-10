@@ -140,6 +140,9 @@ Get code from file or URL and put in markdown
 This content will be dynamically replaced with code from the file
 <!-- MATCHWORD:END -->
 ```
+
+Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+
 ---
 
 ### `REMOTE`
@@ -155,6 +158,9 @@ Get any remote Data and put in markdown
 This content will be dynamically replace from the remote url
 <!-- MATCHWORD:END -->
 ```
+
+Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+
 ---
 
 ### `TOC`
@@ -173,6 +179,9 @@ Generate table of contents from markdown file
 toc will be generated here
 <!-- MATCHWORD:END -->
 ```
+
+Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+
 ---
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
