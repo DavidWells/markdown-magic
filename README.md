@@ -136,9 +136,9 @@ Get code from file or URL and put in markdown
 
 **Example:**
 ```md
-<-- MATCHWORD:START (CODE:src=./relative/path/to/code.js) -->
+<!-- MATCHWORD:START (CODE:src=./relative/path/to/code.js) -->
 This content will be dynamically replaced with code from the file
-<-- MATCHWORD:END -->
+<!-- MATCHWORD:END -->
 ```
 ---
 
@@ -151,9 +151,9 @@ Get any remote Data and put in markdown
 
 **Example:**
 ```md
-<-- MATCHWORD:START (REMOTE:url=http://url-to-raw-md.md) -->
+<!-- MATCHWORD:START (REMOTE:url=http://url-to-raw-md.md) -->
 This content will be dynamically replace from the remote url
-<-- MATCHWORD:END -->
+<!-- MATCHWORD:END -->
 ```
 ---
 
@@ -169,9 +169,9 @@ Generate table of contents from markdown file
 
 **Example:**
 ```md
-<-- MATCHWORD:START (TOC) -->
+<!-- MATCHWORD:START (TOC) -->
 toc will be generated here
-<-- MATCHWORD:END -->
+<!-- MATCHWORD:END -->
 ```
 ---
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
