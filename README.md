@@ -48,7 +48,7 @@ npm install markdown-magic --save-dev
 ```
 
 ## Usage
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js&order=last) -->
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js) -->
 <!-- The below code snippet is automatically added from ./examples/basic-usage.js -->
 ```js
 import markdownMagic from 'markdown-magic'
@@ -112,11 +112,11 @@ markdownMagic(filePath, config, callback)
 - Do not remove or modify this section -->
 ### Configuration Options
 
-`transforms` - *Object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
+`transforms` - *object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
 
-`outputDir` - *String* - (optional) Change output path of new content. Default behavior is replacing the original file
+`outputDir` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
 
-`matchWord` - *String* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
+`matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
 `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
@@ -169,8 +169,8 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 Generate table of contents from markdown file
 
 **Options:**
-- `firsth1` - *Boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
-- `collapse` - *Boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
+- `firsth1` - *boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
+- `collapse` - *boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
 - `collapseText` - *string* - (optional): Text the toc accordian summary
 - `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`
 
@@ -200,7 +200,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 Markdown Magic is extendable via plugins.
 
-Plugins allow developers to add new transforms, use different rendering engines or any other logic you might want in `config.commands`.
+Plugins allow developers to add new transforms to the `config.transforms` object. This allows for things like using different rendering engines, custom formatting, or any other logic you might want.
 
 Plugins run in order of registration.
 
