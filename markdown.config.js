@@ -1,7 +1,4 @@
-/**
- * CLI config example
- * markdown.config.js as default name
- */
+/* CLI config file example */
 module.exports = {
   transforms: {
     /* Match AUTO-GENERATED-CONTENT (LOLZ) */
