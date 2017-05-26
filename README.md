@@ -28,9 +28,9 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   * [API](#api)
   * [Configuration Options](#configuration-options)
 - [Transforms](#transforms)
-  * [🔃`CODE`](#%F0%9F%94%83code)
-  * [🔃`REMOTE`](#%F0%9F%94%83remote)
-  * [🔃`TOC`](#%F0%9F%94%83toc)
+  * [🔀 CODE](#%F0%9F%94%80-code)
+  * [🔀 REMOTE](#%F0%9F%94%80-remote)
+  * [🔀 `TOC`](#%F0%9F%94%80-toc)
 - [Plugins](#plugins)
 - [Custom Transforms](#custom-transforms)
 - [Plugin Example](#plugin-example)
@@ -120,13 +120,13 @@ markdownMagic(filePath, config, callback)
 - Do not remove or modify this section -->
 ### Configuration Options
 
-`transforms` - *object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
+- `transforms` - *object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
 
-`outputDir` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
+- `outputDir` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
 
-`matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
+- `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
-`DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
+- `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
 
@@ -135,7 +135,7 @@ markdownMagic(filePath, config, callback)
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
-### 🔃`CODE`
+### 🔀 CODE
 
 Get code from file or URL and put in markdown
 
@@ -154,7 +154,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 
-### 🔃`REMOTE`
+### 🔀 REMOTE
 
 Get any remote Data and put in markdown
 
@@ -172,7 +172,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 
-### 🔃`TOC`
+### 🔀 `TOC`
 
 Generate table of contents from markdown file
 
