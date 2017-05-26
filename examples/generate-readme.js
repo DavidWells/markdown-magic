@@ -7,14 +7,15 @@ const config = {
   transforms: {
     /* Match AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE) */
     customTransform(content, options) {
-      console.log('original innerContent', content)
-      console.log(options) // { optionOne: hi, optionOne: DUDE}
+      console.log('original content in comment block', content)
+      console.log('options defined on transform', options)
+      // options = { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
     /* Match AUTO-GENERATED-CONTENT (RENDERDOCS:path=../file.js) */
     RENDERDOCS(content, options) {
-      const contents = fs.readFileSync(options.path, 'utf8')
-      const docBlocs = require('dox').parseComments(contents, { raw: true, skipSingleStar: true })
+      const fileContents = fs.readFileSync(options.path, 'utf8')
+      const docBlocs = require('dox').parseComments(fileContents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
       docBlocs.forEach((data) => {
         updatedContent += `${data.description.full}\n\n`
@@ -23,6 +24,7 @@ const config = {
     },
     /* Match AUTO-GENERATED-CONTENT (pluginExample) */
     pluginExample: require('./plugin-example')({ addNewLine: true }),
+    /* Plugins from npm */
     // count: require('markdown-magic-wordcount'),
     // github: require('markdown-magic-github-contributors')
   }
@@ -35,7 +37,6 @@ const callback = function autoGitCommit(err, output) {
     const mdPath = data.outputFilePath
     const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
       if (error) console.warn(error)
-      console.log('git add complete')
       const msg = `${mdPath} automatically updated by markdown-magic`
       const gitCommitCommand = `git commit -m '${msg}' --no-verify`
       execSync(gitCommitCommand, {}, (err) => {
