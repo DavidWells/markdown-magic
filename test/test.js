@@ -111,7 +111,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
     const newfile = path.join(config.outputDir, 'REMOTE-test.md')
     const newContent = fs.readFileSync(newfile, 'utf8')
     // check local code
-    t.regex(newContent, /Install/, 'word Install not found in remote block')
+    t.regex(newContent, /Markdown Magic/, 'word "Markdown Magic" not found in remote block')
     // remove test file after assertion
     fs.emptyDirSync(outputDir)
   })
