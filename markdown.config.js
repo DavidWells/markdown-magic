@@ -1,4 +1,4 @@
-/* CLI config file example */
+/* CLI markdown.config.js file example */
 module.exports = {
   transforms: {
     /* Match <!-- AUTO-GENERATED-CONTENT:START (LOLZ) --> */

@@ -90,7 +90,7 @@ If you have a `markdown.config.js` file where `markdown-magic` is invoked, it wi
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./markdown.config.js) -->
 <!-- The below code snippet is automatically added from ./markdown.config.js -->
 ```js
-/* CLI config file example */
+/* CLI markdown.config.js file example */
 module.exports = {
   transforms: {
     /* Match <!-- AUTO-GENERATED-CONTENT:START (LOLZ) --> */
