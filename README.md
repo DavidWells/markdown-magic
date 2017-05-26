@@ -30,9 +30,9 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Transforms](#transforms)
   * [🔀 CODE](#%F0%9F%94%80-code)
   * [🔀 REMOTE](#%F0%9F%94%80-remote)
-  * [🔀 `TOC`](#%F0%9F%94%80-toc)
-- [Plugins](#plugins)
-- [Custom Transforms](#custom-transforms)
+  * [🔀 TOC](#%F0%9F%94%80-toc)
+- [Third Party Transforms (🔌 Plugins)](#third-party-transforms-%F0%9F%94%8C-plugins)
+- [Adding Custom Transforms](#adding-custom-transforms)
 - [Plugin Example](#plugin-example)
 - [Other usage examples](#other-usage-examples)
 - [Custom Transform Demo](#custom-transform-demo)
@@ -172,7 +172,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 
-### 🔀 `TOC`
+### 🔀 TOC
 
 Generate table of contents from markdown file
 
@@ -194,7 +194,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 ---
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
 
-## Plugins
+## Third Party Transforms (🔌 Plugins)
 
 * [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
 * [github-contributors](https://github.com/DavidWells/markdown-magic-github-contributors) - List out the contributors of a given repository
@@ -204,7 +204,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 * [version-badge](https://github.com/camacho/markdown-magic-version-badge) - Add a badge with the latest version of the project
 * [template](https://github.com/camacho/markdown-magic-template) - Add Lodash template support
 
-## Custom Transforms
+## Adding Custom Transforms
 
 Markdown Magic is extendable via plugins.
 
