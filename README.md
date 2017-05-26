@@ -10,7 +10,7 @@
 - Transform markdown content with custom transform functions
 - Render markdown with any template engine
 - Automatically generate a table of contents
-- ... etc. Sky is the limit!
+- ... etc
 
 This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
 
