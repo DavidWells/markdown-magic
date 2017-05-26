@@ -4,6 +4,7 @@ const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
+  matchWord: 'MD-MAGIC-EXAMPLE',
   transforms: {
     /* Match AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE) */
     customTransform(content, options) {
@@ -35,6 +36,7 @@ const callback = function autoGitCommit(err, output) {
   // output is array of file information
   output.forEach(function(data) {
     const mdPath = data.outputFilePath
+    if(!mdPath) return false
     const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
       if (error) console.warn(error)
       const msg = `${mdPath} automatically updated by markdown-magic`

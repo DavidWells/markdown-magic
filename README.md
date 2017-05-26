@@ -17,7 +17,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8) • [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Table of Contents
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click to expand) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (TOC:collapse=true&collapseText=Click to expand) -->
 <details>
 <summary>Click to expand</summary>
 
@@ -39,7 +39,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Prior Art](#prior-art)
 
 </details>
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 ## Install
 
@@ -48,7 +48,7 @@ npm install markdown-magic --save-dev
 ```
 
 ## Usage
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/basic-usage.js) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/basic-usage.js) -->
 <!-- The below code snippet is automatically added from ./examples/basic-usage.js -->
 ```js
 import path from 'path'
@@ -57,7 +57,7 @@ import markdownMagic from 'markdown-magic'
 const markdownPath = path.join(__dirname, 'README.md')
 markdownMagic(markdownPath)
 ```
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
 ## CLI Usage
 
@@ -87,7 +87,7 @@ In NPM scripts, `npm run docs` would run the markdown magic and parse all the `.
 
 If you have a `markdown.config.js` file where `markdown-magic` is invoked, it will automatically use that as the configuration unless otherwise specified by `--config` flag.
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./markdown.config.js) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./markdown.config.js) -->
 <!-- The below code snippet is automatically added from ./markdown.config.js -->
 ```js
 /* CLI config file example */
@@ -103,9 +103,9 @@ module.exports = {
   }
 }
 ```
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END *-->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./index.js)
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./index.js)
 - Do not remove or modify this section -->
 ### API
 ```js
@@ -114,9 +114,9 @@ markdownMagic(filePath, config, callback)
 - `filePaths` - *String or Array* - Path or glob pattern. Uses [globby patterns](https://github.com/sindresorhus/multimatch/blob/master/test.js)
 - `config` - See configuration options below
 - `callback` - callback to run after markdown updates
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./lib/processFile.js)
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/processFile.js)
 - Do not remove or modify this section -->
 ### Configuration Options
 
@@ -127,14 +127,14 @@ markdownMagic(filePath, config, callback)
 - `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
 - `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
 
 ## Transforms
 
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
 ### 🔀 CODE
 
 Get code from file or URL and put in markdown
@@ -192,7 +192,7 @@ toc will be generated here
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
 ## 🔌 Third Party Transforms a.k.a. Plugins
 
@@ -214,7 +214,7 @@ Plugins run in order of registration.
 
 The below code is used to generate **this markdown file** via the plugin system.
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/generate-readme.js) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/generate-readme.js) -->
 <!-- The below code snippet is automatically added from ./examples/generate-readme.js -->
 ```js
 const fs = require('fs')
@@ -223,6 +223,7 @@ const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
+  matchWord: 'MD-MAGIC-EXAMPLE',
   transforms: {
     /* Match AUTO-GENERATED-CONTENT (customTransform:optionOne=hi&optionOne=DUDE) */
     customTransform(content, options) {
@@ -254,6 +255,7 @@ const callback = function autoGitCommit(err, output) {
   // output is array of file information
   output.forEach(function(data) {
     const mdPath = data.outputFilePath
+    if(!mdPath) return false
     const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
       if (error) console.warn(error)
       const msg = `${mdPath} automatically updated by markdown-magic`
@@ -269,7 +271,7 @@ const callback = function autoGitCommit(err, output) {
 const markdownPath = path.join(__dirname, '..', 'README.md')
 markdownMagic(markdownPath, config, callback)
 ```
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 ## Plugin Example
 
@@ -279,7 +281,7 @@ Plugins must return a transform function with the following signature.
 return function myCustomTransform (content, options)
 ```
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (CODE:src=./examples/plugin-example.js) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/plugin-example.js) -->
 <!-- The below code snippet is automatically added from ./examples/plugin-example.js -->
 ```js
 /* Custom Transform Plugin example */
@@ -299,13 +301,13 @@ module.exports = function customPlugin(pluginOptions) {
   }
 }
 ```
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 [View the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) file and run `npm run docs` to see this plugin run
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (pluginExample) DO not edit ⛔️ -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (pluginExample) DO not edit ⛔️ -->
 This content is altered by the `pluginExample` plugin registered in `examples/generate-readme.js`
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 ## Other usage examples
 
@@ -315,14 +317,14 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 
 View the raw source of this `README.md` file to see the comment block and see how the `customTransform` function in `examples/generate-readme.js` works
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (customTransform:optionOne=hi&optionOne=DUDE) - Do not remove or modify this section -->
 This will replace all the contents of inside the comment DUDE
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
 ## Prior Art
 
 This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmengels](https://github.com/jfmengels)'s [all contributors cli](https://github.com/jfmengels/all-contributors-cli) project.
 
-<!-- AUTO-GENERATED-CONTENT:START (LOLZ)-->
+<!-- MD-MAGIC-EXAMPLE:START (LOLZ)-->
 This section was generated by the cli config markdown.config.js file
-<!-- AUTO-GENERATED-CONTENT:END (LOLZ)-->
+<!-- MD-MAGIC-EXAMPLE:END (LOLZ)-->
