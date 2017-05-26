@@ -10,6 +10,7 @@
 - Transform markdown content with custom transform functions
 - Render markdown with any template engine
 - Automatically generate a table of contents
+- ... etc. Sky is the limit!
 
 This `README.md` is generated with `markdown-magic` [view the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) to see how.
 
@@ -193,7 +194,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 * [install-command](https://github.com/camacho/markdown-magic-install-command) - Add install command to markdown files with `peerDependencies` included
 * [subpackage-list](https://github.com/camacho/markdown-magic-subpackage-list) - Add list of all subpackages (great for projects that use [Lerna](https://github.com/lerna/lerna))
 * [version-badge](https://github.com/camacho/markdown-magic-version-badge) - Add a badge with the latest version of the project
-* [template] (https://github.com/camacho/markdown-magic-template) - Add Lodash template support
+* [template](https://github.com/camacho/markdown-magic-template) - Add Lodash template support
 
 ## Custom Transforms
 
