@@ -26,9 +26,9 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [About](#about)
 - [Install](#install)
 - [Usage](#usage)
-- [CLI Usage](#cli-usage)
   * [API](#api)
   * [Configuration Options](#configuration-options)
+- [CLI Usage](#cli-usage)
 - [Transforms](#transforms)
   * [🔀 CODE](#%F0%9F%94%80-code)
   * [🔀 REMOTE](#%F0%9F%94%80-remote)
@@ -60,6 +60,31 @@ const markdownPath = path.join(__dirname, 'README.md')
 markdownMagic(markdownPath)
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
+
+
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./index.js)
+- Do not remove or modify this section -->
+### API
+```js
+markdownMagic(filePath, config, callback)
+```
+- `filePaths` - *String or Array* - Path or glob pattern. Uses [globby patterns](https://github.com/sindresorhus/multimatch/blob/master/test.js)
+- `config` - See configuration options below
+- `callback` - callback to run after markdown updates
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
+
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/processFile.js)
+- Do not remove or modify this section -->
+### Configuration Options
+
+- `transforms` - *object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
+
+- `outputDir` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
+
+- `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
+
+- `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
+<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
 ## CLI Usage
 
@@ -106,31 +131,6 @@ module.exports = {
 }
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
-
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./index.js)
-- Do not remove or modify this section -->
-### API
-```js
-markdownMagic(filePath, config, callback)
-```
-- `filePaths` - *String or Array* - Path or glob pattern. Uses [globby patterns](https://github.com/sindresorhus/multimatch/blob/master/test.js)
-- `config` - See configuration options below
-- `callback` - callback to run after markdown updates
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
-
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/processFile.js)
-- Do not remove or modify this section -->
-### Configuration Options
-
-- `transforms` - *object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
-
-- `outputDir` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
-
-- `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
-
-- `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
-
 
 ## Transforms
 
