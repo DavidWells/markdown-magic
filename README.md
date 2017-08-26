@@ -209,6 +209,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 * [package-scripts](https://github.com/camacho/markdown-magic-package-scripts) - Add a table of `package.json` scripts with descriptions
 * [prettier](https://github.com/camacho/markdown-magic-prettier) - Format code blocks with [`prettier`](https://github.com/prettier/prettier)
 * [engines](https://github.com/camacho/markdown-magic-engines) - Print engines list from `package.json`
+* [jsdoc](https://github.com/bradtaylorsf/markdown-magic-jsdoc) - Adds jsdoc comment support
 
 ## Adding Custom Transforms
 
