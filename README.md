@@ -33,7 +33,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   * [🔀 CODE](#%F0%9F%94%80-code)
   * [🔀 REMOTE](#%F0%9F%94%80-remote)
   * [🔀 TOC](#%F0%9F%94%80-toc)
-- [🔌 Third Party Transforms a.k.a. Plugins](#%F0%9F%94%8C-third-party-transforms-aka-plugins)
+- [🔌 Third Party Plugins](#%F0%9F%94%8C-third-party-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
 - [Plugin Example](#plugin-example)
 - [Other usage examples](#other-usage-examples)
@@ -196,7 +196,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 ---
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
-## 🔌 Third Party Transforms a.k.a. Plugins
+## 🔌 Third Party Plugins
 
 * [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
 * [github-contributors](https://github.com/DavidWells/markdown-magic-github-contributors) - List out the contributors of a given repository
