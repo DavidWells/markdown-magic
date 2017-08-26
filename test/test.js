@@ -80,6 +80,62 @@ test('if config.matchWord supplied, use it for comment matching', t => {
   fs.emptyDirSync(outputDir)
 })
 
+test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
+  const filePath = path.join(__dirname, 'fixtures', 'TOC-test.md')
+  const config = {
+    outputDir: outputDir
+  }
+  markdownMagic(filePath, config)
+  const newfile = path.join(config.outputDir, 'TOC-test.md')
+  const newContent = fs.readFileSync(newfile, 'utf8')
+
+  const expectedTest1 = `
+<!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #1: without option and the content with empty line  -->
+- [Title A](#title-a)
+  * [Subtitle z](#subtitle-z)
+  * [Subtitle x](#subtitle-x)
+- [Title B](#title-b)
+- [Title C](#title-c)
+<!-- AUTO-GENERATED-CONTENT:END -->`
+  const regexTest1 = new RegExp(`(?=${expectedTest1.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+  t.regex(newContent, regexTest1, 'Test #1 : without option and the content with empty line')
+
+  const expectedTest2 = `
+<!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click Me) - Test #2: with collapse options and the content with 'aaaaaaaaa'  -->
+<details>
+<summary>Click Me</summary>
+
+- [Title A](#title-a)
+  * [Subtitle z](#subtitle-z)
+  * [Subtitle x](#subtitle-x)
+- [Title B](#title-b)
+- [Title C](#title-c)
+
+</details>
+<!-- AUTO-GENERATED-CONTENT:END -->`
+  const regexTest2 = new RegExp(`(?=${expectedTest2.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+  t.regex(newContent, regexTest2, "Test #2: with collapse options and the content with 'aaaaaaaaa'")
+
+  const expectedTest3 = `
+<!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click Me=I have the power) - Test #3: with collapseText contains character '='  -->
+<details>
+<summary>Click Me=I have the power</summary>
+
+- [Title A](#title-a)
+  * [Subtitle z](#subtitle-z)
+  * [Subtitle x](#subtitle-x)
+- [Title B](#title-b)
+- [Title C](#title-c)
+
+</details>
+<!-- AUTO-GENERATED-CONTENT:END -->`
+  const regexTest3 = new RegExp(`(?=${expectedTest3.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+  t.regex(newContent, regexTest3, "Test #3: with collapseText contains character '='")
+
+  // remove test file after assertion
+  fs.emptyDirSync(outputDir)
+})
+
 /**
  * Test Built in transforms
  */
