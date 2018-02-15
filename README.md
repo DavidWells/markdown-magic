@@ -211,6 +211,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 * [prettier](https://github.com/camacho/markdown-magic-prettier) - Format code blocks with [`prettier`](https://github.com/prettier/prettier)
 * [engines](https://github.com/camacho/markdown-magic-engines) - Print engines list from `package.json`
 * [jsdoc](https://github.com/bradtaylorsf/markdown-magic-jsdoc) - Adds jsdoc comment support
+* [package-json](https://github.com/forresst/markdown-magic-package-json) - Add the package.json properties to markdown files
 
 ## Adding Custom Transforms
 
