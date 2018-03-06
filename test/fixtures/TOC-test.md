@@ -12,6 +12,11 @@ aaaaaaaaa
 
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+<!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #4: without option and the content is empty  -->
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #5: without option and tags with same line  --><!-- AUTO-GENERATED-CONTENT:END -->
+
 
 ## Title A
 

@@ -132,6 +132,28 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
   const regexTest3 = new RegExp(`(?=${expectedTest3.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
   t.regex(newContent, regexTest3, "Test #3: with collapseText contains character '='")
 
+  const expectedTest4 = `
+<!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #4: without option and the content is empty  -->
+- [Title A](#title-a)
+  * [Subtitle z](#subtitle-z)
+  * [Subtitle x](#subtitle-x)
+- [Title B](#title-b)
+- [Title C](#title-c)
+<!-- AUTO-GENERATED-CONTENT:END -->`
+  const regexTest4 = new RegExp(`(?=${expectedTest4.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+  t.regex(newContent, regexTest4, 'Test #4 : without option and the content is empty')
+
+  const expectedTest5 = `
+<!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #5: without option and tags with same line  -->
+- [Title A](#title-a)
+  * [Subtitle z](#subtitle-z)
+  * [Subtitle x](#subtitle-x)
+- [Title B](#title-b)
+- [Title C](#title-c)
+<!-- AUTO-GENERATED-CONTENT:END -->`
+  const regexTest5 = new RegExp(`(?=${expectedTest5.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+  t.regex(newContent, regexTest5, 'Test #5 : without option and tags with same line')
+
   // remove test file after assertion
   fs.emptyDirSync(outputDir)
 })
