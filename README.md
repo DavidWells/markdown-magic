@@ -145,6 +145,7 @@ Get code from file or URL and put in markdown
 **Options:**
 - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
 - `syntax` (optional): Syntax will be inferred by fileType if not specified
+- `header` (optional): Will add header comment to code snippet. Useful for pointing to relative source directory or adding live doc links
 
 **Example:**
 ```md
