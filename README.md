@@ -30,9 +30,10 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   * [Configuration Options](#configuration-options)
 - [CLI Usage](#cli-usage)
 - [Transforms](#transforms)
-  * [🔀 CODE](#%F0%9F%94%80-code)
-  * [🔀 REMOTE](#%F0%9F%94%80-remote)
-  * [🔀 TOC](#%F0%9F%94%80-toc)
+  * [CODE](#code)
+  * [REMOTE](#remote)
+  * [TOC](#toc)
+- [Running Async transforms](#running-async-transforms)
 - [🔌 Third Party Plugins](#%F0%9F%94%8C-third-party-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
 - [Plugin Example](#plugin-example)
@@ -138,7 +139,7 @@ module.exports = {
 Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
-### 🔀 CODE
+### CODE
 
 Get code from file or URL and put in markdown
 
@@ -158,7 +159,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 
-### 🔀 REMOTE
+### REMOTE
 
 Get any remote Data and put in markdown
 
@@ -176,7 +177,7 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 
-### 🔀 TOC
+### TOC
 
 Generate table of contents from markdown file
 
@@ -197,6 +198,17 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
+
+
+## Running Async transforms
+
+Markdown magic was designed to work synchronously. Mainly for simplicity & because it's not a serverside app and speed is not really an issue.
+
+You can use async transforms too though! To use async transforms, you will need to force them into a sync mode. [Example](https://github.com/DavidWells/middy-example/blob/7f72fc1afaa8699daf8df77f7d50c0576859b261/scripts/docs.js#L3-L4)
+
+[Forcing async functions to run sync in node.js](https://davidwells.io/snippets/forcing-async-functions-to-sync-in-node/)
+
+Version 2.0 of markdown magic will likely be async first [see issue](https://github.com/DavidWells/markdown-magic/issues/3)
 
 ## 🔌 Third Party Plugins
 
