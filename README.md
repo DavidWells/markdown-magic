@@ -85,6 +85,8 @@ markdownMagic(filePath, config, callback)
 
 - `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
 
+- `stripTags` - *Boolean* - (optional) set strip tags to `true` to remove tags from the output file. It's highly recommended to set a distinct `outputDir` in this case. Default behavior leaves the matched tags in place.
+
 - `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
