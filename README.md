@@ -226,6 +226,7 @@ Version 2.0 of markdown magic will likely be async first [see issue](https://git
 * [jsdoc](https://github.com/bradtaylorsf/markdown-magic-jsdoc) - Adds jsdoc comment support
 * [build-badge](https://github.com/rishichawda/markdown-magic-build-badge) - Update branch badges to auto-magically point to current branches.
 * [package-json](https://github.com/forresst/markdown-magic-package-json) - Add the package.json properties to markdown files
+* [figlet](https://github.com/lafourchette/markdown-magic-figlet) - Add FIGfont text to markdown files
 
 ## Adding Custom Transforms
 
