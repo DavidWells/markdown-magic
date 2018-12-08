@@ -41,10 +41,10 @@ const callback = function autoGitCommit(err, output) {
       if (error) console.warn(error)
       const msg = `${mdPath} automatically updated by markdown-magic`
       const gitCommitCommand = `git commit -m '${msg}' --no-verify`
-      execSync(gitCommitCommand, {}, (err) => {
-        if (err) console.warn(err)
-        console.log('git commit automatically ran. Push up your changes!')
-      })
+      // execSync(gitCommitCommand, {}, (err) => {
+      //   if (err) console.warn(err)
+      //   console.log('git commit automatically ran. Push up your changes!')
+      // })
     })
   })
 }

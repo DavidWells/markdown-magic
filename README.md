@@ -224,8 +224,11 @@ Version 2.0 of markdown magic will likely be async first [see issue](https://git
 * [prettier](https://github.com/camacho/markdown-magic-prettier) - Format code blocks with [`prettier`](https://github.com/prettier/prettier)
 * [engines](https://github.com/camacho/markdown-magic-engines) - Print engines list from `package.json`
 * [jsdoc](https://github.com/bradtaylorsf/markdown-magic-jsdoc) - Adds jsdoc comment support
+* [build-badge](https://github.com/rishichawda/markdown-magic-build-badge) - Update branch badges to auto-magically point to current branches.
 * [package-json](https://github.com/forresst/markdown-magic-package-json) - Add the package.json properties to markdown files
 * [local-image](https://github.com/stevenbenisek/markdown-magic-local-image)
+* [figlet](https://github.com/lafourchette/markdown-magic-figlet) - Add FIGfont text to markdown files
+* [local-image](https://github.com/stevenbenisek/markdown-magic-local-image) - plugin to add local images to markdown
 
 ## Adding Custom Transforms
 
