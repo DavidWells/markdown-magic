@@ -225,6 +225,7 @@ Version 2.0 of markdown magic will likely be async first [see issue](https://git
 * [engines](https://github.com/camacho/markdown-magic-engines) - Print engines list from `package.json`
 * [jsdoc](https://github.com/bradtaylorsf/markdown-magic-jsdoc) - Adds jsdoc comment support
 * [package-json](https://github.com/forresst/markdown-magic-package-json) - Add the package.json properties to markdown files
+* [local-image](https://github.com/stevenbenisek/markdown-magic-local-image)
 
 ## Adding Custom Transforms
 
@@ -334,6 +335,14 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 ## Other usage examples
 
 - [Serverless Plugin Repo](https://github.com/serverless/plugins/blob/master/generate-docs.js) this example takes a `json` file and converts it into a github flavored markdown table
+- [MochaJS](https://github.com/mochajs/mocha/blob/4cc711fa00f7166a2303b77bf2487d1c2cc94621/scripts/markdown-magic.config.js)
+- [tc39/agendas](https://github.com/tc39/agendas#agendas) - [code](https://github.com/tc39/agendas/blob/65945b1b6658e9829ef95a51bf2632ff44f951e6/scripts/generate.js)
+- [moleculerjs/moleculer-addons](https://github.com/moleculerjs/moleculer-addons/blob/7cf0f72140717c52621b724cd54a710517106df0/readme-generator.js)
+- [good-first-issue](https://github.com/bnb/good-first-issue/blob/e65513a1f26167dea3c137008b8796640d8d5303/markdown.config.js)
+- [navikt/nav-frontend-moduler](https://github.com/navikt/nav-frontend-moduler/blob/20ad521c27a43d3203eab4bc32121e5b8270c077/_scripts/generateReadmes.js)
+- [country-flags-svg](https://github.com/ronatskiy/country-flags-svg/blob/cfb2368c7e634ebc1679855e13cc3e26ca11187f/markdown.config.js)
+- [react-typesetting](https://github.com/exogen/react-typesetting/blob/7114cdc8c4cb1b0d59ebc8b5364e808687419889/markdown.config.js)
+- [and many more!](https://github.com/search?o=desc&p=1&q=markdown-magic+filename%3Apackage.json+-user%3Ah13i32maru+-user%3Aesdoc+-user%3Aes-doc&s=indexed&type=Code)
 
 ## Custom Transform Demo
 
