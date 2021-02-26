@@ -6,7 +6,15 @@ This is normal text in markdown. Keep it.
 THIS CONTENT GETS AUTO GENERATED. Don't directly edit it
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./local-code-file-lines.js&syntax=js&lines=4-5) -->
+THIS CONTENT GETS AUTO GENERATED. Don't directly edit it
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/examples/generate-readme.js) -->
+Remote code block will go here
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/examples/package.json&lines=9-10) -->
 Remote code block will go here
 <!-- AUTO-GENERATED-CONTENT:END -->
 

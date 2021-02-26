@@ -147,11 +147,18 @@ Get code from file or URL and put in markdown
 - `src`: The relative path to the code to pull in, or the `URL` where the raw code lives
 - `syntax` (optional): Syntax will be inferred by fileType if not specified
 - `header` (optional): Will add header comment to code snippet. Useful for pointing to relative source directory or adding live doc links
+- `lines` (optional): a range with lines of code which will then be replaced with code from the file. The line range should be defined as: "lines=*startLine*-*EndLine*" (for example: "lines=22-44"). Please see the example below
 
 **Example:**
 ```md
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./relative/path/to/code.js) -->
 This content will be dynamically replaced with code from the file
+<!-- AUTO-GENERATED-CONTENT:END -->
+```
+
+```md
+<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->
+This content will be dynamically replaced with code from the file lines 22 through 44
 <!-- AUTO-GENERATED-CONTENT:END -->
 ```
 
