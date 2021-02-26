@@ -1,4 +1,3 @@
-const fs = require('fs-extra')
 const globby = require('globby')
 const processFile = require('./lib/processFile')
 /**
@@ -41,6 +40,3 @@ module.exports = function markdownMagic(filePaths, config, callback) {
 
 // expose globby for use in plugins
 module.exports.globby = globby
-
-// expose fs-extra for use in plugins
-module.exports.fsExtra = fs

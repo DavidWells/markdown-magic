@@ -1,6 +1,7 @@
-import fs from 'fs-extra'
+import fs from 'fs'
 import path from 'path'
 import test from 'ava'
+import rimraf from 'rimraf'
 import sinon from 'sinon'
 import markdownMagic from '../index'
 
@@ -24,7 +25,7 @@ test('if valid glob pattern supplied', t => {
   markdownMagic(['test/fixtures/**/*md', '!test/fixtures/output/*.md'], config)
   t.pass()
   // empty dir
-  // fs.emptyDirSync(outputDir)
+  // rimraf.sync(outputDir)
 })
 
 test('if valid config supplied', t => {
@@ -77,7 +78,7 @@ test('if config.matchWord supplied, use it for comment matching', t => {
   t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
 
   // remove test file after assertion
-  fs.emptyDirSync(outputDir)
+  rimraf.sync(outputDir)
 })
 
 test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
@@ -155,7 +156,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
   t.regex(newContent, regexTest5, 'Test #5 : without option and tags with same line')
 
   // remove test file after assertion
-  fs.emptyDirSync(outputDir)
+  rimraf.sync(outputDir)
 })
 
 /**
@@ -180,7 +181,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
   })
 
   if (filePathExists(newfile)) {
-    // fs.emptyDirSync(outputDir)
+    // rimraf.sync(outputDir)
   }
   // remove test file after assertion
 })
@@ -195,7 +196,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
     // check local code
     t.regex(newContent, /Markdown Magic/, 'word "Markdown Magic" not found in remote block')
     // remove test file after assertion
-    fs.emptyDirSync(outputDir)
+    rimraf.sync(outputDir)
   })
 })
 
@@ -212,6 +213,6 @@ function filePathExists(fp) {
 }
 
 function emptyDirectory(filePath, callBack) {
-  fs.emptyDirSync(filePath)
+  rimraf.sync(filePath)
   callBack && callBack(null)
 }
