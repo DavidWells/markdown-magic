@@ -44,7 +44,7 @@ function parseIgnorePaths(path, defaultValue) {
       const fp = p.trim()
       if (fp.match(/\bnode_modules\b/)) {
         // exact node_module match. Ignore entire DIR
-        return '!node_modules/**'
+        return '!**/node_modules/**'
       }
       if (!fp.match(/^!/)) {
         return `!${fp}`
