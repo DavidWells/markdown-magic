@@ -1,9 +1,9 @@
-import fs from 'fs'
-import path from 'path'
-import test from 'ava'
-import rimraf from 'rimraf'
-import sinon from 'sinon'
-import markdownMagic from '../index'
+const fs = require('fs')
+const path = require('path')
+const test = require('ava')
+const rimraf = require('rimraf')
+const sinon = require('sinon')
+const markdownMagic= require('../index')
 
 const DEBUG = false
 const markdownPath = path.join(__dirname, 'fixtures', 'test.md')

@@ -1,5 +1,6 @@
 /* CLI markdown.config.js file example */
 module.exports = {
+  matchWord: 'MD-MAGIC-EXAMPLE',
   transforms: {
     /* Match <!-- AUTO-GENERATED-CONTENT:START (LOLZ) --> */
     LOLZ(content, options) {
@@ -7,6 +8,6 @@ module.exports = {
     }
   },
   callback: function () {
-    console.log('done')
+    console.log('markdown processing done')
   }
 }
