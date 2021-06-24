@@ -13,7 +13,7 @@ const processFile = require('./lib/processFile')
  * @param  {object} [config] - configuration object
  * @param  {Function} [callback] - callback function with updated contents
  */
-module.exports = function markdownMagic(filePaths, config, callback) {
+module.exports = async function markdownMagic(filePaths, config, callback) {
   const files = globby.sync(filePaths)
   const configuration = config || {}
   if (!callback && typeof configuration === 'function') {
@@ -28,14 +28,18 @@ module.exports = function markdownMagic(filePaths, config, callback) {
     return false
   }
   configuration.originalFilePaths = files
-  const data = []
-  files.forEach((file) => {
-    const output = processFile(file, configuration)
-    data.push(output)
+
+  const data = files.map(async (file) => {
+    const x = await processFile(file, configuration)
+    return x
   })
+
+  const values = await Promise.all(data)
+
   if (callback) {
-    callback(null, data)
+    callback(null, values)
   }
+  return values
 }
 
 // expose globby for use in plugins

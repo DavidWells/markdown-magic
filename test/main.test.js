@@ -5,10 +5,10 @@ import rimraf from 'rimraf'
 import sinon from 'sinon'
 import markdownMagic from '../index'
 
+const DEBUG = false
 const markdownPath = path.join(__dirname, 'fixtures', 'test.md')
 const outputDir = path.join(__dirname, 'fixtures', 'output')
-const DEBUG = false
-
+const delay = (ms) => new Promise(res => setTimeout(res, ms))
 /**
  * Test markdownMagic Function
  */
@@ -35,25 +35,33 @@ test('if valid config supplied', t => {
   // emptyDirectory(outputDir)
 })
 
-test('if callback function supplied, call it once', t => {
+test.cb('if callback function supplied, call it once', t => {
   const callback = sinon.spy()
   const config = {}
-  markdownMagic(markdownPath, config, callback)
-  t.true(callback.calledOnce)
+  markdownMagic(markdownPath, config, () => {
+    callback()
+    t.true(callback.calledOnce)
+    t.end()
+  })
   // emptyDirectory(outputDir)
 })
 
-test('if callback function supplied, as second arg, call it once', t => {
+test.cb('if callback function supplied, as second arg, call it once', t => {
   const callback = sinon.spy()
-  markdownMagic(markdownPath, callback)
-  t.true(callback.calledOnce)
+  markdownMagic(markdownPath, () => {
+    callback()
+    t.true(callback.calledOnce)
+    t.end()
+  })
+ 
   // emptyDirectory(outputDir)
 })
 
 /**
  * Test Config settings
  */
-test('if config.outputDir supplied, make new file', t => {
+
+test.cb('if config.outputDir supplied, make new file', t => {
   const config = {
     outputDir: outputDir
   }
@@ -61,36 +69,38 @@ test('if config.outputDir supplied, make new file', t => {
     const newfile = path.join(outputDir, 'test.md')
     const fileWasCreated = filePathExists(newfile)
     t.true(fileWasCreated)
+    t.end()
     // remove test file after assertion
     // emptyDirectory(outputDir)
   })
 })
 
-test('if config.matchWord supplied, use it for comment matching', t => {
+test.cb('if config.matchWord supplied, use it for comment matching', t => {
   const filePath = path.join(__dirname, 'fixtures', 'custom-match-word-test.md')
   const config = {
     matchWord: 'YOLO',
     outputDir: outputDir
   }
-  markdownMagic(filePath, config)
-  const newfile = path.join(config.outputDir, 'custom-match-word-test.md')
-  const newContent = fs.readFileSync(newfile, 'utf8')
-  t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
-
+  markdownMagic(filePath, config, () => {
+    const newfile = path.join(config.outputDir, 'custom-match-word-test.md')
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
+    t.end()
+  })
   // remove test file after assertion
-  rimraf.sync(outputDir)
+  // rimraf.sync(outputDir)
 })
 
-test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
+test.cb('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'TOC-test.md')
   const config = {
     outputDir: outputDir
   }
-  markdownMagic(filePath, config)
-  const newfile = path.join(config.outputDir, 'TOC-test.md')
-  const newContent = fs.readFileSync(newfile, 'utf8')
+  markdownMagic(filePath, config, () => {
+    const newfile = path.join(config.outputDir, 'TOC-test.md')
+    const newContent = fs.readFileSync(newfile, 'utf8')
 
-  const expectedTest1 = `
+    const expectedTest1 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #1: without option and the content with empty line  -->
 - [Title A](#title-a)
   * [Subtitle z](#subtitle-z)
@@ -98,10 +108,10 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 - [Title B](#title-b)
 - [Title C](#title-c)
 <!-- AUTO-GENERATED-CONTENT:END -->`
-  const regexTest1 = new RegExp(`(?=${expectedTest1.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
-  t.regex(newContent, regexTest1, 'Test #1 : without option and the content with empty line')
+    const regexTest1 = new RegExp(`(?=${expectedTest1.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+    t.regex(newContent, regexTest1, 'Test #1 : without option and the content with empty line')
 
-  const expectedTest2 = `
+    const expectedTest2 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click Me) - Test #2: with collapse options and the content with 'aaaaaaaaa'  -->
 <details>
 <summary>Click Me</summary>
@@ -114,10 +124,10 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->`
-  const regexTest2 = new RegExp(`(?=${expectedTest2.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
-  t.regex(newContent, regexTest2, "Test #2: with collapse options and the content with 'aaaaaaaaa'")
+    const regexTest2 = new RegExp(`(?=${expectedTest2.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+    t.regex(newContent, regexTest2, "Test #2: with collapse options and the content with 'aaaaaaaaa'")
 
-  const expectedTest3 = `
+    const expectedTest3 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click Me=I have the power) - Test #3: with collapseText contains character '='  -->
 <details>
 <summary>Click Me=I have the power</summary>
@@ -130,10 +140,10 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 
 </details>
 <!-- AUTO-GENERATED-CONTENT:END -->`
-  const regexTest3 = new RegExp(`(?=${expectedTest3.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
-  t.regex(newContent, regexTest3, "Test #3: with collapseText contains character '='")
+    const regexTest3 = new RegExp(`(?=${expectedTest3.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+    t.regex(newContent, regexTest3, "Test #3: with collapseText contains character '='")
 
-  const expectedTest4 = `
+    const expectedTest4 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #4: without option and the content is empty  -->
 - [Title A](#title-a)
   * [Subtitle z](#subtitle-z)
@@ -141,10 +151,10 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 - [Title B](#title-b)
 - [Title C](#title-c)
 <!-- AUTO-GENERATED-CONTENT:END -->`
-  const regexTest4 = new RegExp(`(?=${expectedTest4.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
-  t.regex(newContent, regexTest4, 'Test #4 : without option and the content is empty')
+    const regexTest4 = new RegExp(`(?=${expectedTest4.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+    t.regex(newContent, regexTest4, 'Test #4 : without option and the content is empty')
 
-  const expectedTest5 = `
+    const expectedTest5 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #5: without option and tags with same line  -->
 - [Title A](#title-a)
   * [Subtitle z](#subtitle-z)
@@ -152,17 +162,18 @@ test('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 - [Title B](#title-b)
 - [Title C](#title-c)
 <!-- AUTO-GENERATED-CONTENT:END -->`
-  const regexTest5 = new RegExp(`(?=${expectedTest5.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
-  t.regex(newContent, regexTest5, 'Test #5 : without option and tags with same line')
+    const regexTest5 = new RegExp(`(?=${expectedTest5.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
+    t.regex(newContent, regexTest5, 'Test #5 : without option and tags with same line')
 
-  // remove test file after assertion
-  rimraf.sync(outputDir)
+    t.end()
+  })
+
 })
 
 /**
  * Test Built in transforms
  */
-test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
+test.cb('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'CODE-test.md')
   const config = { outputDir: outputDir }
   const newfile = path.join(config.outputDir, 'CODE-test.md')
@@ -178,6 +189,8 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
     t.regex(newContent, /require\('dox'\)/, 'remote code snippet inserted')
     // check remotely fetched code with range lines
     t.regex(newContent, /```json\n  "author": "David Wells",\n  "license": "MIT",\n```/, 'remote code snippet with range lines inserted')
+
+    t.end()
   })
 
   if (filePathExists(newfile)) {
@@ -186,7 +199,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
   // remove test file after assertion
 })
 
-test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
+test.cb('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'REMOTE-test.md')
 
   const config = { outputDir: outputDir }
@@ -195,9 +208,66 @@ test('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
     const newContent = fs.readFileSync(newfile, 'utf8')
     // check local code
     t.regex(newContent, /Markdown Magic/, 'word "Markdown Magic" not found in remote block')
+    t.end()
     // remove test file after assertion
-    rimraf.sync(outputDir)
+    // rimraf.sync(outputDir)
   })
+})
+
+test.cb('<!-- AUTO-GENERATED-CONTENT:START (customTransform)-->', t => {
+  const filePath = path.join(__dirname, 'fixtures', 'CUSTOM-test.md')
+
+  const config = { 
+    outputDir: outputDir,
+    transforms: {
+      /* Match <!-- AUTO-GENERATED-CONTENT:START (customTransform:optionOne=hi&optionOne=DUDE) --> */
+      customTransform(content, options) {
+        // options = { optionOne: hi, optionOne: DUDE}
+        return `This will replace all the contents of inside the comment ${options.optionOne}`
+      }
+    }
+  }
+  markdownMagic(filePath, config, function() {
+    console.log('Callback')
+    const newfile = path.join(config.outputDir, 'CUSTOM-test.md')
+    console.log('newfile', newfile)
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    console.log('newContent', newContent)
+    // check local code
+    t.regex(newContent, /will replace all the contents/, 'has custom transform data')
+    t.end()
+    // remove test file after assertion
+    // rimraf.sync(outputDir)
+  })
+})
+
+test.cb('Async <!-- AUTO-GENERATED-CONTENT:START (customAsync)-->', t => {
+  const filePath = path.join(__dirname, 'fixtures', 'CUSTOM-async.md')
+
+  const config = { 
+    outputDir: outputDir,
+    transforms: {
+      /* Match <!-- AUTO-GENERATED-CONTENT:START (customAsync:optionOne=hi) --> */
+      async customAsync(content, options) {
+        await delay(500)
+        // options = { optionOne: hi, optionOne: DUDE}
+        return `async data here ${options.optionOne}`
+      }
+    }
+  }
+  markdownMagic(filePath, config, function() {
+    const newfile = path.join(config.outputDir, 'CUSTOM-async.md')
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    // check local code
+    t.regex(newContent, /async data here hi/, 'has custom transform data')
+    t.end()
+    // remove test file after assertion
+    // rimraf.sync(outputDir)
+  })
+})
+
+test.after.always('cleanup', async t => {
+  rimraf.sync(outputDir)
 })
 
 /*
