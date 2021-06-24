@@ -268,7 +268,7 @@ const config = {
     /* Match <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../file.js) --> */
     RENDERDOCS(content, options) {
       const fileContents = fs.readFileSync(options.path, 'utf8')
-      const docBlocs = require('dox').parseComments(fileContents, { raw: true, skipSingleStar: true })
+      const docBlocs = require('doxxx').parseComments(fileContents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
       docBlocs.forEach((data) => {
         updatedContent += `${data.description.full}\n\n`
