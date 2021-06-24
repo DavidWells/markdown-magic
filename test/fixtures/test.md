@@ -492,4 +492,6 @@ Add your plugin to [the `plugins.json` file](https://github.com/serverless/commu
 
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
 
+<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
+
 <!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->

@@ -41,6 +41,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Custom Transform Demo](#custom-transform-demo)
 - [Prior Art](#prior-art)
 - [License](#license)
+- [Usage examples](#usage-examples)
 
 </details>
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
@@ -157,10 +158,10 @@ This content will be dynamically replaced with code from the file
 ```
 
 ```md
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->
-This content will be dynamically replaced with code from the file lines 22 through 44
-<!-- AUTO-GENERATED-CONTENT:END -->
-```
+ <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->
+ This content will be dynamically replaced with code from the file lines 22 through 44
+ <!-- AUTO-GENERATED-CONTENT:END -->
+ ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
@@ -252,7 +253,6 @@ The below code is used to generate **this markdown file** via the plugin system.
 ```js
 const fs = require('fs')
 const path = require('path')
-const execSync = require('child_process').execSync
 const markdownMagic = require('../index') // 'markdown-magic'
 
 const config = {
@@ -283,26 +283,10 @@ const config = {
   }
 }
 
-/* This example callback automatically updates Readme.md and commits the changes */
-const callback = function autoGitCommit(err, output) {
-  // output is array of file information
-  output.forEach(function(data) {
-    const mdPath = data.outputFilePath
-    if(!mdPath) return false
-    const gitAdd = execSync(`git add ${mdPath}`, {}, (error) => {
-      if (error) console.warn(error)
-      const msg = `${mdPath} automatically updated by markdown-magic`
-      const gitCommitCommand = `git commit -m '${msg}' --no-verify`
-      execSync(gitCommitCommand, {}, (err) => {
-        if (err) console.warn(err)
-        console.log('git commit automatically ran. Push up your changes!')
-      })
-    })
-  })
-}
-
 const markdownPath = path.join(__dirname, '..', 'README.md')
-markdownMagic(markdownPath, config, callback)
+markdownMagic(markdownPath, config, () => {
+  console.log('Docs ready')
+})
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
