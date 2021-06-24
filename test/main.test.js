@@ -6,14 +6,18 @@ const sinon = require('sinon')
 const markdownMagic= require('../index')
 
 const DEBUG = false
-const markdownPath = path.join(__dirname, 'fixtures', 'test.md')
+const testMarkdownPath = path.join(__dirname, 'fixtures', 'test.md')
 const outputDir = path.join(__dirname, 'fixtures', 'output')
 const delay = (ms) => new Promise(res => setTimeout(res, ms))
+const matchWord = 'AUTO-GENERATED-CONTENTX'
+const defaultConfig = {
+  matchWord: matchWord
+}
 /**
  * Test markdownMagic Function
  */
 test('if valid string path supplied', t => {
-  markdownMagic(markdownPath)
+  markdownMagic(testMarkdownPath, defaultConfig)
   t.pass()
   // emptyDirectory(outputDir)
 })
@@ -29,16 +33,14 @@ test('if valid glob pattern supplied', t => {
 })
 
 test('if valid config supplied', t => {
-  const config = {}
-  markdownMagic(markdownPath, config)
+  markdownMagic(testMarkdownPath, defaultConfig)
   t.pass()
   // emptyDirectory(outputDir)
 })
 
 test.cb('if callback function supplied, call it once', t => {
   const callback = sinon.spy()
-  const config = {}
-  markdownMagic(markdownPath, config, () => {
+  markdownMagic(testMarkdownPath, defaultConfig, () => {
     callback()
     t.true(callback.calledOnce)
     t.end()
@@ -48,7 +50,7 @@ test.cb('if callback function supplied, call it once', t => {
 
 test.cb('if callback function supplied, as second arg, call it once', t => {
   const callback = sinon.spy()
-  markdownMagic(markdownPath, () => {
+  markdownMagic(testMarkdownPath, defaultConfig, () => {
     callback()
     t.true(callback.calledOnce)
     t.end()
@@ -63,9 +65,10 @@ test.cb('if callback function supplied, as second arg, call it once', t => {
 
 test.cb('if config.outputDir supplied, make new file', t => {
   const config = {
-    outputDir: outputDir
+    outputDir: outputDir,
+    ...defaultConfig
   }
-  markdownMagic(markdownPath, config, function() {
+  markdownMagic(testMarkdownPath, config, function() {
     const newfile = path.join(outputDir, 'test.md')
     const fileWasCreated = filePathExists(newfile)
     t.true(fileWasCreated)

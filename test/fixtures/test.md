@@ -1,6 +1,6 @@
 # Test Fixture
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./local-code-file.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENTX:START (CODE:src=./local-code-file.js) - Do not remove or modify this section -->
 <!-- The below code snippet is automatically added from ./local-code-file.js -->
 ```js
 module.exports.run = () => {
@@ -8,9 +8,9 @@ module.exports.run = () => {
   console.log(`Your cron ran ${time}`)
 }
 ```
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- AUTO-GENERATED-CONTENTX:END -->
 
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=https://raw.githubusercontent.com/segmentio/is-url/master/index.js) - Do not remove or modify this section -->
+<!-- AUTO-GENERATED-CONTENTX:START (CODE:src=https://raw.githubusercontent.com/segmentio/is-url/master/index.js) - Do not remove or modify this section -->
 <!-- The below code snippet is automatically added from https://raw.githubusercontent.com/segmentio/is-url/master/index.js -->
 ```js
 /**
@@ -60,9 +60,9 @@ function isUrl(string){
   return false;
 }
 ```
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- AUTO-GENERATED-CONTENTX:END -->
 
-<!-- AUTO-GENERATED-CONTENT:START (REMOTE:url=https://raw.githubusercontent.com/serverless/community-plugins/master/README.md) - Do not remove or modify this section  -->
+<!-- AUTO-GENERATED-CONTENTX:START (REMOTE:url=https://raw.githubusercontent.com/serverless/community-plugins/master/README.md) - Do not remove or modify this section  -->
 [Website](http://www.serverless.com) • [Email Updates](http://eepurl.com/b8dv4P) • [Gitter](https://gitter.im/serverless/serverless) • [Forum](http://forum.serverless.com) • [Meetups](https://github.com/serverless/meetups) • [Twitter](https://twitter.com/goserverless) • [Facebook](https://www.facebook.com/serverless) • [Contact Us](mailto:hello@serverless.com)
 
 ## Community Plugins
@@ -79,7 +79,8 @@ Add your plugin to [the `plugins.json` file](https://github.com/serverless/commu
 
 **Note:** Please don't add your plugin at the end of the array in the `plugins.json` file to avoid conflicts. It'd be better if you choose a random place in the array.
 
-
+<!-- ⛔️ AUTO-GENERATED-CONTENT:START (GENERATE_SERVERLESS_PLUGIN_TABLE)
+- Do not remove or modify this section. Make all updates to plugins.json -->
 | Plugin | Stats |
 |:---------------------------|:-----------:|
 | **[@Digitalmaas/serverless Plugin Sqs Alarms - `@digitalmaas/serverless-plugin-sqs-alarms`](https://github.com/digitalmaas/serverless-plugin-sqs-alarms)** <br/> by [digitalmaas](http://github.com/digitalmaas) <br/> Simplifies the setup of CloudWatch Alarms to monitor the visible messages in an SQS queue. | ![Github Stars](https://img.shields.io/github/stars/digitalmaas/serverless-plugin-sqs-alarms.svg?label=Stars&style=for-the-badge) <br/> ![NPM Downloads](https://img.shields.io/npm/dt/@digitalmaas/serverless-plugin-sqs-alarms.svg?label=Downloads&style=for-the-badge)|
@@ -426,72 +427,4 @@ Add your plugin to [the `plugins.json` file](https://github.com/serverless/commu
 | **[Wsgi - `serverless-wsgi`](https://github.com/logandk/serverless-wsgi)** <br/> by [logandk](http://github.com/logandk) <br/> Serverless plugin to deploy WSGI applications (Flask/Django/Pyramid etc.) and bundle Python packages | ![Github Stars](https://img.shields.io/github/stars/logandk/serverless-wsgi.svg?label=Stars&style=for-the-badge) <br/> ![NPM Downloads](https://img.shields.io/npm/dt/serverless-wsgi.svg?label=Downloads&style=for-the-badge)|
 <!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
 
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- ⛔️ AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
-
-<!-- AUTO-GENERATED-CONTENT:END - Do not remove or modify this section. Make all updates to plugins.json -->
+<!-- AUTO-GENERATED-CONTENTX:END -->
