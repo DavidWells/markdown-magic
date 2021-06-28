@@ -189,7 +189,7 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
     // check local code with range lines
     t.regex(newContent, /```js\n  const baz = 'foobar'\n  console\.log\(`Hello \${baz}`\)\n```/, 'local code snippet with range lines inserted')
     // check remotely fetched code
-    t.regex(newContent, /require\('dox'\)/, 'remote code snippet inserted')
+    t.regex(newContent, /require\('doxxx'\)/, 'remote code snippet inserted')
     // check remotely fetched code with range lines
     t.regex(newContent, /```json\n  "author": "David Wells",\n  "license": "MIT",\n```/, 'remote code snippet with range lines inserted')
 
