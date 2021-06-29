@@ -26,15 +26,14 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [About](#about)
 - [Install](#install)
 - [Usage](#usage)
-  * [API](#api)
-  * [Configuration Options](#configuration-options)
+  - [API](#api)
+  - [Configuration Options](#configuration-options)
 - [CLI Usage](#cli-usage)
 - [Transforms](#transforms)
-  * [CODE](#code)
-  * [REMOTE](#remote)
-  * [TOC](#toc)
+  - [CODE](#code)
+  - [REMOTE](#remote)
 - [Running Async transforms](#running-async-transforms)
-- [🔌 Third Party Plugins](#%F0%9F%94%8C-third-party-plugins)
+- [🔌 Third Party Plugins](#-third-party-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
 - [Plugin Example](#plugin-example)
 - [Other usage examples](#other-usage-examples)
@@ -195,6 +194,7 @@ Generate table of contents from markdown file
 - `collapse` - *boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
 - `collapseText` - *string* - (optional): Text the toc accordian summary
 - `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`
+- `maxDepth` - *number* - (optional): Max depth of headings. Default 4
 
 **Example:**
 ```md

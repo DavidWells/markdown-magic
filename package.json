@@ -1,6 +1,6 @@
 {
   "name": "markdown-magic",
-  "version": "2.2.2",
+  "version": "2.2.0",
   "description": "Automatically update markdown files with content from external sources",
   "main": "index.js",
   "bin": {
@@ -26,12 +26,12 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
+    "@technote-space/doctoc": "^2.4.7",
     "commander": "^7.2.0",
     "deepmerge": "^4.2.2",
     "find-up": "^5.0.0",
     "globby": "^10.0.2",
     "is-local-path": "^0.1.6",
-    "markdown-toc": "^1.2.0",
     "mkdirp": "^1.0.4",
     "sync-request": "^6.1.0"
   },
