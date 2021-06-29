@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
-const markdownMagic = require('../index') // 'markdown-magic'
+const markdownMagic = require('../index')
+// const markdownMagic = require('markdown-magic')
 
 const config = {
   matchWord: 'MD-MAGIC-EXAMPLE', // default matchWord is AUTO-GENERATED-CONTENT
@@ -24,7 +25,7 @@ const config = {
     },
     /* Match <!-- AUTO-GENERATED-CONTENT:START (pluginExample) --> */
     pluginExample: require('./plugin-example')({ addNewLine: true }),
-    /* Plugins from npm */
+    /* Include plugins from NPM */
     // count: require('markdown-magic-wordcount'),
     // github: require('markdown-magic-github-contributors')
   }
