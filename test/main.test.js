@@ -234,11 +234,10 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (customTransform)-->', t => {
     }
   }
   markdownMagic(filePath, config, function() {
-    console.log('Callback')
     const newfile = path.join(config.outputDir, 'CUSTOM-test.md')
-    console.log('newfile', newfile)
+    // console.log('newfile', newfile)
     const newContent = fs.readFileSync(newfile, 'utf8')
-    console.log('newContent', newContent)
+    // console.log('newContent', newContent)
     // check local code
     t.regex(newContent, /will replace all the contents/, 'has custom transform data')
     t.end()
