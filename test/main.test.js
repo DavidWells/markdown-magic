@@ -106,11 +106,14 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
     const expectedTest1 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #1: without option and the content with empty line  -->
 - [Title A](#title-a)
-  * [Subtitle z](#subtitle-z)
-  * [Subtitle x](#subtitle-x)
+  - [Subtitle z](#subtitle-z)
+  - [Subtitle x](#subtitle-x)
 - [Title B](#title-b)
 - [Title C](#title-c)
 <!-- AUTO-GENERATED-CONTENT:END -->`
+
+    // console.log('expectedTest1', expectedTest1)
+    // console.log('newContent', newContent)
     const regexTest1 = new RegExp(`(?=${expectedTest1.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, "i")
     t.regex(newContent, regexTest1, 'Test #1 : without option and the content with empty line')
 
@@ -120,8 +123,8 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 <summary>Click Me</summary>
 
 - [Title A](#title-a)
-  * [Subtitle z](#subtitle-z)
-  * [Subtitle x](#subtitle-x)
+  - [Subtitle z](#subtitle-z)
+  - [Subtitle x](#subtitle-x)
 - [Title B](#title-b)
 - [Title C](#title-c)
 
@@ -136,8 +139,8 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
 <summary>Click Me=I have the power</summary>
 
 - [Title A](#title-a)
-  * [Subtitle z](#subtitle-z)
-  * [Subtitle x](#subtitle-x)
+  - [Subtitle z](#subtitle-z)
+  - [Subtitle x](#subtitle-x)
 - [Title B](#title-b)
 - [Title C](#title-c)
 
@@ -149,8 +152,8 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
     const expectedTest4 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #4: without option and the content is empty  -->
 - [Title A](#title-a)
-  * [Subtitle z](#subtitle-z)
-  * [Subtitle x](#subtitle-x)
+  - [Subtitle z](#subtitle-z)
+  - [Subtitle x](#subtitle-x)
 - [Title B](#title-b)
 - [Title C](#title-c)
 <!-- AUTO-GENERATED-CONTENT:END -->`
@@ -160,8 +163,8 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (TOC)-->', t => {
     const expectedTest5 = `
 <!-- AUTO-GENERATED-CONTENT:START (TOC) - Test #5: without option and tags with same line  -->
 - [Title A](#title-a)
-  * [Subtitle z](#subtitle-z)
-  * [Subtitle x](#subtitle-x)
+  - [Subtitle z](#subtitle-z)
+  - [Subtitle x](#subtitle-x)
 - [Title B](#title-b)
 - [Title C](#title-c)
 <!-- AUTO-GENERATED-CONTENT:END -->`
