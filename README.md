@@ -319,6 +319,7 @@ This content is altered by the `pluginExample` plugin registered in `examples/ge
 
 ## Other usage examples
 
+- [With Github Actions](https://github.com/dineshsonachalam/repo-using-markdown-autodocs)
 - [Serverless Plugin Repo](https://github.com/serverless/plugins/blob/master/generate-docs.js) this example takes a `json` file and converts it into a github flavored markdown table
 - [MochaJS](https://github.com/mochajs/mocha/blob/4cc711fa00f7166a2303b77bf2487d1c2cc94621/scripts/markdown-magic.config.js)
 - [tc39/agendas](https://github.com/tc39/agendas#agendas) - [code](https://github.com/tc39/agendas/blob/65945b1b6658e9829ef95a51bf2632ff44f951e6/scripts/generate.js)
