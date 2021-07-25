@@ -244,6 +244,30 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   })
 })
 
+test.cb.only('Verify single line comments remain inline', t => {
+  const filePath = path.join(__dirname, 'fixtures', 'INLINE-test.md')
+  const config = { 
+    outputDir: outputDir,
+    transforms: {
+      INLINE(content, options) {
+        return `inline`
+      },
+      OTHER(content, options) {
+        return `other`
+      }
+    }
+  }
+  markdownMagic(filePath, config, function() {
+    const newfile = path.join(config.outputDir, 'INLINE-test.md')
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    // Check inline remains inline
+    t.is(newContent.indexOf('<!-- AUTO-GENERATED-CONTENT:START (INLINE) -->inline<!-- AUTO-GENERATED-CONTENT:END -->') > -1, true)
+    // Preserve line spacing
+    t.regex(newContent, /\nother\n/, 'preserves line spacing')
+    t.end()
+  })
+})
+
 test.cb('<!-- AUTO-GENERATED-CONTENT:START (customTransform)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'CUSTOM-test.md')
 

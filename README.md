@@ -34,6 +34,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   - [> CODE](#-code)
   - [> FILE](#-file)
   - [> REMOTE](#-remote)
+- [Inline transforms](#inline-transforms)
 - [🔌 Markdown magic plugins](#-markdown-magic-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
 - [Plugin Example](#plugin-example)
@@ -227,6 +228,17 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 ---
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
+## Inline transforms
+
+Any transform, including custom transforms can be used inline as well to insert content into paragraphs and other places.
+
+The face symbol 👉 <!-- MD-MAGIC-EXAMPLE:START (INLINE_EXAMPLE) -->**⊂◉‿◉つ**<!-- MD-MAGIC-EXAMPLE:END --> is auto generated inline.
+
+**Example:**
+```md
+<!-- AUTO-GENERATED-CONTENT:START (FILE:src=./path/to/file) -->xyz<!-- AUTO-GENERATED-CONTENT:END -->
+```
+
 ## 🔌 Markdown magic plugins
 
 * [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
@@ -284,6 +296,9 @@ const config = {
         updatedContent += `${data.description.full}\n\n`
       })
       return updatedContent.replace(/^\s+|\s+$/g, '')
+    },
+    INLINE_EXAMPLE: () => {
+      return '**⊂◉‿◉つ**'
     },
     /* Match <!-- AUTO-GENERATED-CONTENT:START (pluginExample) --> */
     pluginExample: require('./plugin-example')({ addNewLine: true }),

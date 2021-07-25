@@ -23,6 +23,9 @@ const config = {
       })
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
+    INLINE_EXAMPLE: () => {
+      return '**⊂◉‿◉つ**'
+    },
     /* Match <!-- AUTO-GENERATED-CONTENT:START (pluginExample) --> */
     pluginExample: require('./plugin-example')({ addNewLine: true }),
     /* Include plugins from NPM */
