@@ -32,6 +32,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Transforms](#transforms)
   - [> TOC](#-toc)
   - [> CODE](#-code)
+  - [> FILE](#-file)
   - [> REMOTE](#-remote)
 - [🔌 Markdown magic plugins](#-markdown-magic-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
@@ -189,6 +190,24 @@ Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
 
+### > FILE
+
+Get local file contents.
+
+**Options:**
+- `src`: The relative path to the file to pull in
+
+**Example:**
+```md
+<!-- AUTO-GENERATED-CONTENT:START (FILE:src=./path/to/file) -->
+This content will be dynamically replaced from the local file
+<!-- AUTO-GENERATED-CONTENT:END -->
+```
+
+Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+
+---
+
 ### > REMOTE
 
 Get any remote Data and put in markdown
@@ -199,7 +218,7 @@ Get any remote Data and put in markdown
 **Example:**
 ```md
 <!-- AUTO-GENERATED-CONTENT:START (REMOTE:url=http://url-to-raw-md-file.md) -->
-This content will be dynamically replace from the remote url
+This content will be dynamically replaced from the remote url
 <!-- AUTO-GENERATED-CONTENT:END -->
 ```
 

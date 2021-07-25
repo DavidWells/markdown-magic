@@ -5,7 +5,7 @@ const rimraf = require('rimraf')
 const sinon = require('sinon')
 const markdownMagic= require('../index')
 
-const DEBUG = false
+const CLEAN_UP = true
 const testMarkdownPath = path.join(__dirname, 'fixtures', 'test.md')
 const outputDir = path.join(__dirname, 'fixtures', 'output')
 const delay = (ms) => new Promise(res => setTimeout(res, ms))
@@ -205,6 +205,30 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', t => {
   // remove test file after assertion
 })
 
+/**
+ * Test Built in transforms
+ */
+test.cb('<!-- AUTO-GENERATED-CONTENT:START (FILE)-->', t => {
+  const filePath = path.join(__dirname, 'fixtures', 'FILE-test.md')
+  const config = { outputDir: outputDir }
+  const newfile = path.join(config.outputDir, 'FILE-test.md')
+
+  markdownMagic(filePath, config, function(err, data) {
+    // console.log('data', data)
+    const newContent = fs.readFileSync(newfile, 'utf8')
+    // check local code
+    t.regex(newContent, /module\.exports\.run/, 'local code snippet inserted')
+    // check local code with range lines
+    t.regex(newContent, /const baz = 'foobar'\n  console\.log\(`Hello \${baz}`\)/, 'local code snippet with range lines inserted')
+    t.end()
+  })
+
+  if (filePathExists(newfile)) {
+    // rimraf.sync(outputDir)
+  }
+  // remove test file after assertion
+})
+
 test.cb('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   const filePath = path.join(__dirname, 'fixtures', 'REMOTE-test.md')
 
@@ -272,7 +296,9 @@ test.cb('Async <!-- AUTO-GENERATED-CONTENT:START (customAsync)-->', t => {
 })
 
 test.after.always('cleanup', async t => {
-  rimraf.sync(outputDir)
+  if (CLEAN_UP) {
+    rimraf.sync(outputDir)
+  }
 })
 
 /*
