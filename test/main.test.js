@@ -244,7 +244,7 @@ test.cb('<!-- AUTO-GENERATED-CONTENT:START (REMOTE)-->', t => {
   })
 })
 
-test.cb.only('Verify single line comments remain inline', t => {
+test.cb('Verify single line comments remain inline', t => {
   const filePath = path.join(__dirname, 'fixtures', 'INLINE-test.md')
   const config = { 
     outputDir: outputDir,
