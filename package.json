@@ -7,6 +7,14 @@
     "markdown": "./cli.js",
     "md-magic": "./cli.js"
   },
+  "files": [
+    "README.md",
+    "package.json",
+    "index.js",
+    "cli.js",
+    "cli-utils.js",
+    "/lib"
+  ],
   "scripts": {
     "docs": "node examples/generate-readme.js",
     "uvu": "uvu lib '.test.([mc]js|[jt]sx?)$'",
