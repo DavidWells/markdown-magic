@@ -53,16 +53,22 @@ hdhdhdhd
 }
 
 const beforeMiddelwares = [
-  { 
-    name: 'before-middleware', 
-    transform: ({ block }, allContent) => {
-      return block.content + 'hi'
-    }
-  },
+  // { 
+  //   name: 'before-middleware', 
+  //   transform: ({ block }, allContent) => {
+  //     return block.content + 'hi'
+  //   }
+  // },
+  // {
+  //   name: 'yess',
+  //   transform: async ({ block }) => {
+  //     return '<!-- lol -->\n' + block.content
+  //   }
+  // }
   {
-    name: 'yess',
+    name: 'postFix',
     transform: async ({ block }) => {
-      return '<!-- lol -->\n' + block.content
+      return block.content + '\nENDING' 
     }
   }
 ]
@@ -74,12 +80,12 @@ const afterMiddelwares = [
   //     return '<!-- after -->' + block.content + '<!-- yooo -->'
   //   }
   // },
-  {
-    name: 'conflicter',
-    transform: async ({ block }) => {
-      return `<!-- x-gen -->` + block.content + '<!-- x-gen -->'
-    }
-  }
+  // {
+  //   name: 'conflicter',
+  //   transform: async ({ block }) => {
+  //     return `<!-- x-gen -->` + block.content + '<!-- x-gen -->'
+  //   }
+  // }
 ]
 
 processContents({
