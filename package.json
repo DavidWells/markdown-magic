@@ -35,7 +35,7 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
-    "@technote-space/doctoc": "^2.4.7",
+    "@technote-space/doctoc": "2.4.7",
     "commander": "^7.2.0",
     "deepmerge": "^4.2.2",
     "find-up": "^5.0.0",
