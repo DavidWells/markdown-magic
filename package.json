@@ -18,6 +18,7 @@
   "scripts": {
     "docs": "node examples/generate-readme.js",
     "uvu": "uvu lib '.test.([mc]js|[jt]sx?)$'",
+    "test:parser": "uvu lib 'weird-parse.test.([mc]js|[jt]sx?)$'",
     "test": "ava --verbose",
     "test:watch": "ava --verbose --watch",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
@@ -35,25 +36,29 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
-    "@technote-space/doctoc": "^2.4.7",
+    "@technote-space/doctoc": "2.4.7",
     "commander": "^7.2.0",
     "deepmerge": "^4.2.2",
     "find-up": "^5.0.0",
     "globby": "^10.0.2",
+    "is-glob": "^4.0.3",
     "is-local-path": "^0.1.6",
+    "is-valid-path": "^0.1.1",
     "json-alexander": "^0.1.8",
+    "markdown-wasm": "^1.2.0",
     "mkdirp": "^1.0.4",
+    "smart-glob": "^1.0.2",
     "sync-request": "^6.1.0"
   },
   "devDependencies": {
+    "ansi-styles": "^4.2.1",
     "ava": "^3.15.0",
+    "concordance": "^5.0.1",
     "doxxx": "^1.0.0",
     "rimraf": "^3.0.2",
+    "safe-chalk": "^1.0.0",
     "sinon": "^11.1.1",
-    "uvu": "^0.5.1",
-    "ansi-styles": "^4.2.1",
-    "concordance": "^5.0.1",
-    "safe-chalk": "^1.0.0"
+    "uvu": "^0.5.1"
   },
   "ava": {
     "files": [
