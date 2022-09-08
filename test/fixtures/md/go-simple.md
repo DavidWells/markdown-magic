@@ -1,5 +1,9 @@
 # Hi
 
+Word count: <!-- doc-gen wordCount -->what<!-- end-doc-gen -->
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+
 <!-- doc-gen -->
 x
 <!-- end-doc-gen -->
@@ -46,9 +50,17 @@ whatever   <!-- doc-gen {{hohoho}} foo={{ rad: 'yellow' }} -->
   <!-- end-doc-gen -->
 
 
-  <!-- ⛔️ doc-gen (CODE:src=./relative/path/to/code.js&lines=22-44) -->
-  This content will be dynamically replaced with code from the file lines 22 through 44
+  <!-- ⛔️ doc-gen (CODE:src=../local-code-file.js&lines=2-4) -->
+  This content will be dynamically replaced with code from the file lines
   <!-- ⛔️ end-doc-gen -->
+
+<!-- ⛔️ doc-gen CODE src="../local-code-file.js" lines={[3, 7]} -->
+This content will be dynamically replaced with code from the file lines
+<!-- ⛔️ end-doc-gen -->
+
+<!-- ⛔️ doc-gen CODE src="../local-code-id.js" id="3_5" -->
+This content will be dynamically replaced with code from the file lines
+<!-- ⛔️ end-doc-gen -->
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae mauris arcu, eu pretium nisi. Praesent fringilla ornare ullamcorper. Pellentesque diam orci, sodales in blandit ut, placerat quis felis. Vestibulum at sem massa, in tempus nisi. Vivamus ut fermentum odio. Etiam porttitor faucibus volutpat. Vivamus vitae mi ligula, non hendrerit urna. Suspendisse potenti. Quisque eget massa a massa semper mollis.
 
