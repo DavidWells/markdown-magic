@@ -17,10 +17,14 @@
   ],
   "scripts": {
     "docs": "node examples/generate-readme.js",
-    "uvu": "uvu lib '.test.([mc]js|[jt]sx?)$'",
-    "test:parser": "uvu lib 'weird-parse.test.([mc]js|[jt]sx?)$'",
-    "test": "ava --verbose",
-    "test:watch": "ava --verbose --watch",
+    "test": "npm run test:lib && npm run test:test",
+    "test:lib": "uvu lib '.test.([mc]js|[jt]sx?)$'",
+    "test:test": "uvu test '.test.([mc]js|[jt]sx?)$'",
+    "test:options": "uvu lib 'options-parser.test.([mc]js|[jt]sx?)$'",
+    "test:block": "uvu lib 'block-parser.test.([mc]js|[jt]sx?)$'",
+    "test:js": "uvu test 'js-block-parse.test.([mc]js|[jt]sx?)$'",
+    "old-test": "ava --verbose",
+    "old-test:watch": "ava --verbose --watch",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
     "lint": "eslint .",
     "publish": "git push origin && git push origin --tags",
@@ -62,7 +66,7 @@
   },
   "ava": {
     "files": [
-      "test/**/*.test.js"
+      "old-test/**/*.test.js"
     ],
     "verbose": true
   }
