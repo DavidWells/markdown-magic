@@ -8,6 +8,7 @@ yarn-error.log*
 test/fixtures/output
 old-test/fixtures/output
 _out.md
+misc
 
 # Runtime data
 pids
