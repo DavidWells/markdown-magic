@@ -1,0 +1,13 @@
+# INLINE Test Fixture
+
+This is normal text in markdown. Keep it.
+
+<!-- AUTO-GENERATED-CONTENT:START (INLINE) -->xyz<!-- AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (INLINE) -->
+dfg
+<!-- AUTO-GENERATED-CONTENT:END -->
+
+<!-- AUTO-GENERATED-CONTENT:START (OTHER) -->
+abc
+<!-- AUTO-GENERATED-CONTENT:END -->

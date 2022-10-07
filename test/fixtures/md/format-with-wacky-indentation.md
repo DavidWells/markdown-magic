@@ -1,5 +1,7 @@
 # Hi
 
+This is an example of a file with wacky indentation.
+
 Word count: <!-- doc-gen wordCount -->what<!-- end-doc-gen -->
 
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.

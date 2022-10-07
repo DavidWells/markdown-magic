@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs').promises
 const { test } = require('uvu') 
 const assert = require('uvu/assert')
-const { parseBlocks } = require('../lib/utils/block-parser')
+const { parseBlocks } = require('../lib/block-parser')
 const { deepLog } = require('../lib/utils/logs')
 
 test('JS file parse', async () => {
@@ -12,9 +12,9 @@ test('JS file parse', async () => {
     open: 'GENERATED',
     close: 'END-GENERATED',
   })
-  deepLog(blocks)
+  // deepLog(blocks)
   assert.equal(blocks, {
-    pattern: /([ \t]*)(?:\/\*{1,}[\n\*]*(?:.*|\r?|\n?|\s*)GENERATED\s*([(\[\{]*[A-Za-z0-9_$-]*[)\]\}]*)\s*)((?:.*|.*\r?\n?)*?)\/\*{1,}[\n\*]*(?:.*|\r?|\n?|\s*)END-GENERATED(?:.|\r?\n)*?\*+\//gim,
+    pattern: /([ \t]*)(?:\/\*{1,}[\n\*]*(?:.*|\r?|\n?|\s*)GENERATED\s*([(\[\{]*[A-Za-z0-9_$-]*[)\]\}]*)\s*)((?:.*?|.*?\r?\n?)*?)\/\*{1,}[\n\*]*(?:.*|\r?|\n?|\s*)END-GENERATED(?:.|\r?\n)*?\*+\//gim,
     commentOpen: /([ \t]*)(\/\*{1,}[\n\*]*(?:.|\r?|\n?|\s*)\bGENERATED\b)((?:.|\r?\n)*?\*+\/\n?)/gi,
     commentClose: /\*+\/(?:.|\r?\n)*?([ 	]*)((?:\/\*{1,}[\n\*]*(?:.*|\r?\n)(?:.*|\r?\n))*?\bEND-GENERATED\b)((?:.|\r?\n)*?\*+\/)/gi,
     blocks: [
