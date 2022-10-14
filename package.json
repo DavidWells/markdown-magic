@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@technote-space/doctoc": "2.4.7",
+    "globrex": "^0.1.2",
     "is-glob": "^4.0.3",
     "is-local-path": "^0.1.6",
     "is-valid-path": "^0.1.1",
