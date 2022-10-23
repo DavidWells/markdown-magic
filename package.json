@@ -27,6 +27,7 @@
     "test:js": "uvu test 'js-block-parse.test.([mc]js|[jt]sx?)$'",
     "test:errors": "uvu test 'errors.test.([mc]js|[jt]sx?)$'",
     "test:transforms": "uvu test 'transforms.test.([mc]js|[jt]sx?)$'",
+    "test:text": "uvu lib 'text.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm version patch && npm publish",

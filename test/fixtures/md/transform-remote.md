@@ -2,6 +2,12 @@
 
 This is normal text in markdown. Keep it.
 
+<!-- doc-gen remote url="https://raw.githubusercontent.com/DavidWells/analytics/master/CONTRIBUTING.md" -->
+All of this content will be replaced with remote content from https://raw.githubusercontent.com/DavidWells/analytics/master/CONTRIBUTING.md
+
+via the `REMOTE` transform
+<!-- end-doc-gen -->
+
 <!-- doc-gen remote url=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md -->
 All of this content will be replaced with remote content from https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md
 

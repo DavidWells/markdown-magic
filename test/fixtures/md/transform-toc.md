@@ -30,7 +30,7 @@ Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 
 <!--doc-gen (TOC?sub=true&collapse=true&maxDepth=2)-->
-ok
+old comment syntax
 <!--end-doc-gen-->
 
 ### Sub 1
