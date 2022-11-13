@@ -3,7 +3,8 @@
 Hi Cool Cool Cool Cool
 
 <!--doc-gen (TOC)-->
-ok
+- [Testing](#testing)
+- [Testing Two](#testing-two)
 <!--end-doc-gen-->
 
 ## Testing
@@ -11,7 +12,7 @@ ok
 1. text
 
 <!-- doc-gen {{functionName}} foo={{ rad: 'yellow' }} -->
-nice
+xyz
 <!-- end-doc-gen -->
 
 ## Testing Two

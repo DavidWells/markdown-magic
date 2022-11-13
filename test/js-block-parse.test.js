@@ -14,11 +14,12 @@ test('JS file parse', async () => {
   })
   // deepLog(blocks)
   assert.equal(blocks, {
-    pattern: /([ \t]*)(?:\/\*{1,}[\n\*]*(?:.*|\r?|\n?|\s*)GENERATED\s*([(\[\{]*[A-Za-z0-9_$-]*[)\]\}]*)\s*)((?:.*?|.*?\r?\n?)*?)\/\*{1,}[\n\*]*(?:.*|\r?|\n?|\s*)END-GENERATED(?:.|\r?\n)*?\*+\//gim,
-    commentOpen: /([ \t]*)(\/\*{1,}[\n\*]*(?:.|\r?|\n?|\s*)\bGENERATED\b)((?:.|\r?\n)*?\*+\/\n?)/gi,
-    commentClose: /\*+\/(?:.|\r?\n)*?([ 	]*)((?:\/\*{1,}[\n\*]*(?:.*|\r?\n)(?:.*|\r?\n))*?\bEND-GENERATED\b)((?:.|\r?\n)*?\*+\/)/gi,
+    pattern: /([ \t]*)(?:\/\*+(?:.*|\r?|\n?|\s*)GENERATED\s*([(\[\{]*[A-Za-z0-9_$-]*[)\]\}]*)\s*)((?:.*?|.*?\r?\n?)*?)\/\*+(?:.*|\r?|\n?|\s*)END-GENERATED(?:.|\r?\n)*?\*+\//gim,
+    commentOpen: /([ \t]*)(\/\*+(?:.|\r?|\n?|\s*)\bGENERATED\b)((?:.|\r?\n)*?\*+\/\n?)/gi,
+    commentClose: /\*+\/(?:.|\r?\n)*?([ 	]*)((?:\/\*+(?:.*|\r?\n)(?:.*|\r?\n))*?\bEND-GENERATED\b)((?:.|\r?\n)*?\*+\/)/gi,
     blocks: [
       {
+        index: 2,
         type: 'a',
         options: {},
         context: { isMultiline: true },
@@ -42,6 +43,7 @@ test('JS file parse', async () => {
         }
       },
       {
+        index: 3,
         type: 'b',
         options: {},
         context: { isMultiline: true },
@@ -64,6 +66,7 @@ test('JS file parse', async () => {
         }
       },
       {
+        index: 4,
         type: 'c',
         options: {},
         context: { isMultiline: true },
@@ -87,6 +90,7 @@ test('JS file parse', async () => {
         }
       },
       {
+        index: 5,
         type: 'd',
         options: {},
         context: { isMultiline: true },
@@ -110,6 +114,7 @@ test('JS file parse', async () => {
         }
       },
       {
+        index: 6,
         type: 'e',
         options: {},
         context: { isMultiline: true },
@@ -137,6 +142,7 @@ test('JS file parse', async () => {
         }
       },
       {
+        index: 7,
         type: 'MyCodeGen',
         options: { yay: 'nice' },
         context: { isMultiline: true },

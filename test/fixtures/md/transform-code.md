@@ -21,6 +21,10 @@ New comment syntax
 New comment syntax
 <!-- AUTO-GENERATED-CONTENT:END -->
 
+<!-- AUTO-GENERATED-CONTENT:START CODE src='../local-code-file-lines.js' syntax='js' lines='4-5' -->
+New comment syntax
+<!-- AUTO-GENERATED-CONTENT:END -->
+
 <!-- AUTO-GENERATED-CONTENT:START (CODE:src=../local-code-file.js&syntax=js) -->
 Old comment syntax
 <!-- AUTO-GENERATED-CONTENT:END -->

@@ -36,8 +36,11 @@
 
 - Dep svg https://github.com/dyatko/arkit
 - Content graph https://github.com/mattpocock/graph-docs-cli
+- Visualize content graph tree https://github.com/dundalek/markmap or https://github.com/markmap/markmap
 - For github action https://github.com/gautamkrishnar/blog-post-workflow/blob/c663c4bcbbcf114b98994d611903cdd3d781aec1/src/utils.js#L97-L119
 - Visualizations https://github.com/lowlighter/metrics
+- Code images https://satori-syntax-highlighter.vercel.app/
+- Repo visualizer https://github.com/githubocto/repo-visualizer
 
 ## Workflow?
 
