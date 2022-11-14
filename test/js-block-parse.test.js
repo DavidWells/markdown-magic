@@ -15,8 +15,8 @@ test('JS file parse', async () => {
   // deepLog(blocks)
   assert.equal(blocks, {
     pattern: /([ \t]*)(?:\/\*+(?:.*|\r?|\n?|\s*)GENERATED\s*([(\[\{]*[A-Za-z0-9_$-]*[)\]\}]*)\s*)((?:.*?|.*?\r?\n?)*?)\/\*+(?:.*|\r?|\n?|\s*)END-GENERATED(?:.|\r?\n)*?\*+\//gim,
-    commentOpen: /([ \t]*)(\/\*+(?:.|\r?|\n?|\s*)\bGENERATED\b)((?:.|\r?\n)*?\*+\/\n?)/gi,
-    commentClose: /\*+\/(?:.|\r?\n)*?([ 	]*)((?:\/\*+(?:.*|\r?\n)(?:.*|\r?\n))*?\bEND-GENERATED\b)((?:.|\r?\n)*?\*+\/)/gi,
+    COMMENT_OPEN_REGEX: /([ \t]*)(\/\*+(?:.|\r?|\n?|\s*)\bGENERATED\b)((?:.|\r?\n)*?\*+\/\n?)/gi,
+    COMMENT_CLOSE_REGEX: /\*+\/(?:.|\r?\n)*?([ 	]*)((?:\/\*+(?:.*|\r?\n)(?:.*|\r?\n))*?\bEND-GENERATED\b)((?:.|\r?\n)*?\*+\/)/gi,
     blocks: [
       {
         index: 2,
