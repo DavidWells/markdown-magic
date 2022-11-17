@@ -10,8 +10,8 @@ const {
   OUTPUT_DIR
 } = require('./config')
 
-function getNewFile(api) {
-  return api.data[0].outputPath
+function getNewFile(result) {
+  return result.data[0].outputPath
 }
 
 /**
@@ -22,15 +22,15 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const globs = ['**/**/md/transform-cod*.md']
-  const api = await markdownMagic(filePath, {
+  const result = await markdownMagic(filePath, {
     // debug: true,
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
     outputDir: OUTPUT_DIR 
   })
-  console.log('api', api)
+  // console.log('result', result)
 
-  const newContent = fs.readFileSync(getNewFile(api), 'utf8')
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
   // console.log('newContent', newContent)
 
   // check local code
@@ -60,14 +60,14 @@ test('<!-- AUTO-GENERATED-CONTENT:START (FILE)-->', async () => {
   const fileName = 'transform-file.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
-  const api = await markdownMagic(filePath, {
+  const result = await markdownMagic(filePath, {
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
     outputDir: OUTPUT_DIR 
   })
-  console.log('api', api)
+  console.log('result', result)
 
-  const newContent = fs.readFileSync(getNewFile(api), 'utf8')
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
   // check local code
   assert.ok(newContent.match(/module\.exports\.run/), 'local code snippet inserted')
   // check local code with range lines
@@ -82,13 +82,13 @@ test('<!-- AUTO-GENERATED-CONTENT:START wordCount -->', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
   const newFilePath = path.join(OUTPUT_DIR, fileName)
 
-  const api = await markdownMagic(filePath, {
+  const result = await markdownMagic(filePath, {
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
     outputDir: OUTPUT_DIR 
   })
 
-  const newContent = fs.readFileSync(getNewFile(api), 'utf8')
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
   assert.ok(newContent.match(/41/), 'Count added')
 })
 
@@ -96,16 +96,15 @@ test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {
   const fileName = 'transform-remote.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
-  const api = await markdownMagic(filePath, {
+  const result = await markdownMagic(filePath, {
     open: 'doc-gen',
     close: 'end-doc-gen',
     outputDir: OUTPUT_DIR 
   })
-  // console.log('api', api)
+  // console.log('transform API', api)
 
-  const newContent = fs.readFileSync(getNewFile(api), 'utf8')
-  assert.ok(newContent.match(/Markdown Magic/), 'word "Markdown Magic" not found in remote block')
-  assert.ok(newContent.match(/Because analytics has a large number of packages/), 'word "Markdown Magic" not found in remote block')
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
+  assert.ok(newContent.match(/Stop scammers from the manipulating DOM/), 'has remote block')
 })
 
 test('Verify single line comments remain inline', async () => {
@@ -124,8 +123,8 @@ test('Verify single line comments remain inline', async () => {
       }
     }
   }
-  const api = await markdownMagic(filePath, config)
-  const newFilePath = getNewFile(api)
+  const result = await markdownMagic(filePath, config)
+  const newFilePath = getNewFile(result)
   const newContent = fs.readFileSync(newFilePath, 'utf8')
   assert.equal(newContent.match(/inlinecontent/gim).length, 2)
   assert.equal(newContent.match(/other-content/gim).length, 1)
