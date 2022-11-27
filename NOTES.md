@@ -41,6 +41,7 @@
 - Visualizations https://github.com/lowlighter/metrics
 - Code images https://satori-syntax-highlighter.vercel.app/
 - Repo visualizer https://github.com/githubocto/repo-visualizer
+- Include md helpers https://www.npmjs.com/package/markdown-utils
 
 ## Workflow?
 
