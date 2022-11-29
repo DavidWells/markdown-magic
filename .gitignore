@@ -6,10 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 
 test/fixtures/output
-old-test/fixtures/output
 _out.md
 misc
-misc/old-test/lol.md
 misc/**/**.js
 
 /**/old-test/cool.md

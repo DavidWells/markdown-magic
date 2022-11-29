@@ -24,7 +24,7 @@
     "test:cli": "uvu lib 'cli.test.([mc]js|[jt]sx?)$'",
     "test:md": "uvu lib 'md.test.([mc]js|[jt]sx?)$'",
     "test:fs": "uvu lib 'fs.test.([mc]js|[jt]sx?)$'",
-    "test:js": "uvu test 'block-parser-js.test.([mc]js|[jt]sx?)$'",
+    "test:js": "uvu lib 'block-parser-js.test.([mc]js|[jt]sx?)$'",
     "test:errors": "uvu test 'errors.test.([mc]js|[jt]sx?)$'",
     "test:transforms": "uvu test 'transforms.test.([mc]js|[jt]sx?)$'",
     "test:text": "uvu lib 'text.test.([mc]js|[jt]sx?)$'",
