@@ -1,8 +1,8 @@
 {
   "name": "markdown-magic",
-  "version": "2.6.1",
+  "version": "3.0.0",
   "description": "Automatically update markdown files with content from external sources",
-  "main": "index.js",
+  "main": "lib/index.js",
   "bin": {
     "markdown": "./cli.js",
     "md-magic": "./cli.js"
@@ -10,9 +10,8 @@
   "files": [
     "README.md",
     "package.json",
-    "index.js",
+    "package-lock.json",
     "cli.js",
-    "cli-utils.js",
     "/lib"
   ],
   "scripts": {
@@ -50,7 +49,6 @@
     "is-local-path": "^0.1.6",
     "is-valid-path": "^0.1.1",
     "json-alexander": "^0.1.8",
-    "mkdirp": "^1.0.4",
     "mri": "^1.2.0",
     "smart-glob": "^1.0.2",
     "sync-request": "^6.1.0"
