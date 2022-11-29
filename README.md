@@ -21,7 +21,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 ## Table of Contents
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (TOC:collapse=true&collapseText=Click to expand) -->
 <details>
-<summary>Click to expand</summary>
+<summary>Click to expaxnd</summary>
 
 - [About](#about)
 - [Install](#install)
@@ -54,7 +54,7 @@ npm install markdown-magic --save-dev
 ```
 
 ## Usage
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/basic-usage.js) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/1-_basic-usage.js) -->
 <!-- The below code snippet is automatically added from ./examples/basic-usage.js -->
 ```js
 import path from 'path'
@@ -66,7 +66,7 @@ markdownMagic(markdownPath)
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./index.js)
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/index.js)
 - Do not remove or modify this section -->
 ### API
 ```js
@@ -346,7 +346,7 @@ module.exports = function customPlugin(pluginOptions) {
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 [View the raw file](https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md) file and run `npm run docs` to see this plugin run
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (pluginExample) DO not edit ⛔️ -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (pluginExample) ⛔️ -->
 This content is altered by the `pluginExample` plugin registered in `examples/generate-readme.js`
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END -->

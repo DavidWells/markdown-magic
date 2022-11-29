@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const { markdownMagic } = require('../lib')
-// const markdownMagic = require('markdown-magic')
+// const { markdownMagic } = require('markdown-magic')
 
 const config = {
   matchWord: 'MD-MAGIC-EXAMPLE', // default matchWord is AUTO-GENERATED-CONTENT
@@ -14,8 +14,9 @@ const config = {
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
     /* Match <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../file.js) --> */
-    RENDERDOCS(content, options) {
-      const fileContents = fs.readFileSync(options.path, 'utf8')
+    RENDERDOCS(api) {
+      console.log('api', api)
+      const fileContents = fs.readFileSync(api.options.path, 'utf8')
       const docBlocs = require('doxxx').parseComments(fileContents, { raw: true, skipSingleStar: true })
       let updatedContent = ''
       docBlocs.forEach((data) => {

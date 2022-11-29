@@ -23,6 +23,7 @@
     "test:options": "uvu lib 'options-parser.test.([mc]js|[jt]sx?)$'",
     "test:block": "uvu lib 'block-parser.test.([mc]js|[jt]sx?)$'",
     "test:cli": "uvu lib 'cli.test.([mc]js|[jt]sx?)$'",
+    "test:md": "uvu lib 'md.test.([mc]js|[jt]sx?)$'",
     "test:fs": "uvu lib 'fs.test.([mc]js|[jt]sx?)$'",
     "test:js": "uvu test 'block-parser-js.test.([mc]js|[jt]sx?)$'",
     "test:errors": "uvu test 'errors.test.([mc]js|[jt]sx?)$'",
@@ -44,6 +45,7 @@
   "dependencies": {
     "@technote-space/doctoc": "2.4.7",
     "globrex": "^0.1.2",
+    "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
     "is-local-path": "^0.1.6",
     "is-valid-path": "^0.1.1",
