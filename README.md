@@ -21,7 +21,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 ## Table of Contents
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (TOC:collapse=true&collapseText=Click to expand) -->
 <details>
-<summary>Click to expaxnd</summary>
+<summary>Click to expand</summary>
 
 - [About](#about)
 - [Install](#install)
@@ -139,7 +139,7 @@ module.exports = {
 
 ## Transforms
 
-Markdown Magic comes with a couple of built in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
+Markdown Magic comes with a couple of built-in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
 ### > TOC
