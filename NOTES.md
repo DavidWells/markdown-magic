@@ -31,17 +31,20 @@
 - List organization repos https://github.com/tripflex/awesome-mongoose-os/tree/4fd8f1023e532d1dde623a35d69b7920402f0203#L28
 - Directory tree https://github.com/willsaavedra/tweet-project/blob/06c1f342fb333320e15d70a6944312dfd6451833/src/doc-directory-tree.js
 - Exec command and output std? https://github.com/yuanqing/markdown-interpolate
+- tweets? https://github.com/zernonia/tweetic
 
 ## Ideas
 
 - Dep svg https://github.com/dyatko/arkit
 - Content graph https://github.com/mattpocock/graph-docs-cli
-- Visualize content graph tree https://github.com/dundalek/markmap or https://github.com/markmap/markmap
+- Visualize content graph tree https://github.com/dundalek/markmap or https://github.com/markmap/markmap or https://github.com/pahen/madge
 - For github action https://github.com/gautamkrishnar/blog-post-workflow/blob/c663c4bcbbcf114b98994d611903cdd3d781aec1/src/utils.js#L97-L119
 - Visualizations https://github.com/lowlighter/metrics
 - Code images https://satori-syntax-highlighter.vercel.app/
 - Repo visualizer https://github.com/githubocto/repo-visualizer
 - Include md helpers https://www.npmjs.com/package/markdown-utils
+- VScode plugin https://github.com/mohitsinghs/vscode-markdoc/blob/d7bf7d439e1d647acc2fa956b33cf26d1c6fa4ea/syntaxes/markdoc.tmLanguage.json#L2973
+- Typedoc output https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/typedoc-plugin-markdown
 
 ## Workflow?
 
