@@ -4,7 +4,7 @@ console.log('hi')
 console.log('yesss')
 /* END-GENERATED */
 
-/* GENERATED a */
+/* ⛔️ GENERATED a */
 // comment inside
 /* END-GENERATED */
 

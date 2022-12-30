@@ -1,8 +1,8 @@
 # Doc title
 
-Hi Cool Cool Cool Cool <!--doc-gen wordCount-->ok<!--end-doc-gen-->
+Hi Cool Cool Cool Cool <!--doc-gen wordCount-->ok<!-- end-doc-gen -->
 
-<!--doc-gen (TOC)-->
+<!--doc-gen TOC -->
 ok
 <!--end-doc-gen-->
 
@@ -11,7 +11,7 @@ ok
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 
-<!--doc-gen TOC sub=true maxDepth=5 -->
+<!--doc-gen sectionToc maxDepth=5 collapse -->
 ok
 <!--end-doc-gen-->
 

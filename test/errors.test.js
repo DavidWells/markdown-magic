@@ -20,6 +20,7 @@ test('Throw on unbalanced blocks', async () => {
       outputDir: OUTPUT_DIR 
     })
   } catch (e) {
+    console.log(e)
     error = e
   }
 

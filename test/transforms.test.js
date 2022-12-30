@@ -92,6 +92,27 @@ test('<!-- AUTO-GENERATED-CONTENT:START wordCount -->', async () => {
   assert.ok(newContent.match(/41/), 'Count added')
 })
 
+test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
+  const fileName = 'transform-toc.md'
+  const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
+  const newFilePath = path.join(OUTPUT_DIR, fileName)
+
+  const result = await markdownMagic(filePath, {
+    open: 'doc-gen',
+    close: 'end-doc-gen',
+    outputDir: OUTPUT_DIR 
+  })
+  // console.log('result', result)
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
+  // console.log('newContent', newContent)
+  const whatever = newContent.match(/\[Whatever 2\]/gm)
+  const two = newContent.match(/\[Two Sub 2\]/gm)
+  assert.ok(whatever, 'found')
+  assert.is(whatever.length, 2)
+  assert.ok(two, 'found')
+  assert.is(two.length, 2)
+})
+
 test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {
   const fileName = 'transform-remote.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
