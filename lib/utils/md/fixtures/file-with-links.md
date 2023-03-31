@@ -49,6 +49,10 @@ authors:
 
 ![](https://avatars2.githubusercontent.com/u/532272?v=3&s=400)
 
+This is the weird markdown link syntax <https://foooooooooooo.com>
+
+this is less than sign
+
 Hear Bob Bobster discuss the evolution of Serverless and the launch of ABC at the AWS Serverless Community Day.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/KX7tj3giizI" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>

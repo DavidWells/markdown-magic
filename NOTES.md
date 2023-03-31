@@ -45,6 +45,7 @@
 - Include md helpers https://www.npmjs.com/package/markdown-utils
 - VScode plugin https://github.com/mohitsinghs/vscode-markdoc/blob/d7bf7d439e1d647acc2fa956b33cf26d1c6fa4ea/syntaxes/markdoc.tmLanguage.json#L2973
 - Typedoc output https://github.com/tgreyuk/typedoc-plugin-markdown/tree/master/packages/typedoc-plugin-markdown
+- Exec output https://github.com/cdklabs/markmac
 
 ## Workflow?
 

@@ -15,6 +15,7 @@
     "/lib"
   ],
   "scripts": {
+    "xtypes": "tsc --noEmit false --emitDeclarationOnly true",
     "docs": "node examples/generate-readme.js",
     "test": "npm run test:lib && npm run test:test && echo 'tests done'",
     "test:lib": "uvu lib '.test.([mc]js|[jt]sx?)$'",
@@ -48,8 +49,9 @@
     "is-glob": "^4.0.3",
     "is-local-path": "^0.1.6",
     "is-valid-path": "^0.1.1",
-    "json-alexander": "^0.1.8",
+    "micro-mdx-parser": "^1.1.0",
     "mri": "^1.2.0",
+    "oparser": "^2.1.1",
     "smart-glob": "^1.0.2",
     "sync-request": "^6.1.0"
   },
@@ -59,6 +61,7 @@
     "doxxx": "^1.0.0",
     "rimraf": "^3.0.2",
     "safe-chalk": "^1.0.0",
+    "typescript": "^5.0.2",
     "uvu": "^0.5.1"
   }
 }
