@@ -4,7 +4,7 @@
     "lib": ["ESNext"],
     "allowJs": true,
     "checkJs": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
