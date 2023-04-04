@@ -59,7 +59,7 @@
   "devDependencies": {
     "ansi-styles": "^4.2.1",
     "concordance": "^5.0.1",
-    "doxxx": "^1.0.0",
+    "doxxx": "^2.0.1",
     "rimraf": "^3.0.2",
     "safe-chalk": "^1.0.0",
     "typescript": "^5.0.2",

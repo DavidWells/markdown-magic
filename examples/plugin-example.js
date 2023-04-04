@@ -7,7 +7,7 @@ module.exports = function customPlugin(pluginOptions) {
   const userOptions = pluginOptions || {}
   const pluginConfig = Object.assign(defaultOptions, userOptions)
   // return the transform function
-  return function myCustomTransform (content, options) {
+  return function myCustomTransform ({ content, options }) {
     const newLine = (pluginConfig.addNewLine) ? '\n' : ''
     const updatedContent = content + newLine
     return updatedContent
