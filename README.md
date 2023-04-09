@@ -261,6 +261,7 @@ The face symbol 👉 <!-- MD-MAGIC-EXAMPLE:START (INLINE_EXAMPLE) -->**⊂◉‿
 * [figlet](https://github.com/lafourchette/markdown-magic-figlet) - Add FIGfont text to markdown files
 * [local-image](https://github.com/stevenbenisek/markdown-magic-local-image) - plugin to add local images to markdown
 * [markdown-magic-build-badge](https://github.com/rishichawda/markdown-magic-build-badge) - A plugin to update your branch badges to point to correct branch status
+* [markdown-magic-json-path](https://github.com/mariohamann/markdown-magic-json-path) – Extract and insert specific values from any JSON file into your Markdown documents.
 
 ## Adding Custom Transforms
 
