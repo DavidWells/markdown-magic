@@ -32,6 +32,7 @@
 - Directory tree https://github.com/willsaavedra/tweet-project/blob/06c1f342fb333320e15d70a6944312dfd6451833/src/doc-directory-tree.js
 - Exec command and output std? https://github.com/yuanqing/markdown-interpolate
 - tweets? https://github.com/zernonia/tweetic
+- Array tables https://github.com/iaseth/readmix/blob/43ce5def6f4caade32249b6cf2ecec7d130fecce/src/mixins/table/table.ts#L9
 
 ## Ideas
 

@@ -65,6 +65,12 @@ Hear Bob Bobster discuss the evolution of Serverless and the launch of ABC at th
   <img src="/img/deploy/button.svg">
 </a>
 
+
+<a href="https://www.yoursite.com/pricing?utm_source=active%20users&utm_medium=email&utm_campaign=feature%20launch&utm_content=bottom%20cta%20button">
+  Utm params link
+</a>
+
+
 Title xyz
 ============================
 
