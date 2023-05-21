@@ -80,5 +80,5 @@ function defaultCallback(err, msg) {
 }
 
 function getConfigFilepath() {
-  return program.config || findUp.sync(defaultConfigPath) || findUp.sync('md-magic.config.js')
+  return program.opts().config || findUp.sync(defaultConfigPath) || findUp.sync('md-magic.config.js')
 }
