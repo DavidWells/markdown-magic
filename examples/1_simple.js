@@ -10,12 +10,15 @@ markdownMagic(files, {
   close: 'MD-MAGIC-EXAMPLE:END',
   transforms: {
     LOLZ: (api) => {
-      console.log(api)
-      const { content, options } = api
+      const { transform, settings, content, options } = api
+      console.log('api keys', Object.keys(api))
+      console.log('transformName', transform)
+      console.log('settings', settings)
+      // console.log('api', api)
       // console.log('content', content)
       return `nice ${options.dope}`
     }
   }
-}).then(({ changes }) => {
-  console.log('changes', changes)
+}).then((result) => {
+  console.log('result', result)
 })

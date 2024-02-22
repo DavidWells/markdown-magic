@@ -9,6 +9,8 @@ const {
   OUTPUT_DIR
 } = require('./config')
 
+const SILENT = true
+
 test('Throw on unbalanced blocks', async () => {
   const fileName = 'error-unbalanced.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
@@ -17,7 +19,8 @@ test('Throw on unbalanced blocks', async () => {
     await markdownMagic(filePath, {
       open: 'docs-start',
       close: 'docs-end',
-      outputDir: OUTPUT_DIR 
+      outputDir: OUTPUT_DIR,
+      silent: SILENT
     })
   } catch (e) {
     console.log(e)
@@ -25,7 +28,7 @@ test('Throw on unbalanced blocks', async () => {
   }
 
   assert.ok(error, 'Missing match words dont time out')
-  assert.ok(error.message.match(/Blocks are unbalanced/), 'Blocks are unbalanced error')
+  assert.ok(error.message.match(/Comment blocks are unbalanced in string/), 'Blocks are unbalanced error')
 })
 
 test('Throw on missing transforms single file', async () => {
@@ -36,7 +39,8 @@ test('Throw on missing transforms single file', async () => {
       open: 'doc-gen',
       close: 'end-doc-gen',
       outputDir: OUTPUT_DIR,
-      failOnMissingTransforms: true
+      failOnMissingTransforms: true,
+      silent: SILENT
     })
   } catch (e) {
     error = e
@@ -54,7 +58,8 @@ test('Throw on missing transforms multi file', async () => {
       open: 'doc-gen',
       close: 'end-doc-gen',
       outputDir: OUTPUT_DIR,
-      failOnMissingTransforms: true
+      failOnMissingTransforms: true,
+      silent: SILENT
     })
   } catch (e) {
     error = e

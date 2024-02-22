@@ -27,6 +27,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 - [Install](#install)
 - [Usage](#usage)
   - [API](#api)
+  - [API](#api-1)
   - [Configuration Options](#configuration-options)
 - [CLI Usage](#cli-usage)
 - [Transforms](#transforms)
@@ -68,9 +69,86 @@ markdownMagic(markdownPath)
 
 ### API
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/index.js)
-- Do not remove or modify this section -->
-Markdown Magic
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCSX:path=./lib/index.js) - Do not remove or modify this section -->
+Configuration for markdown magic
+
+Below is the main config for `markdown-magic`
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `transforms` | `Array` | Custom commands to transform block contents, see transforms & custom transforms sections below. |
+| `outputDir` | `string` | Change output path of new content. Default behavior is replacing the original file |
+| `syntax` | `SyntaxType` | Syntax to parse |
+| `open` | `string` | Opening match word |
+| `close` | `string` | Closing match word. If not defined will be same as opening word. |
+| `cwd` | `string` | Current working directory. Default process.cwd() |
+| `outputFlatten` | `boolean` | Flatten files that are output |
+| `handleOutputPath` | `function` | Custom function for altering output paths |
+| `useGitGlob` | `boolean` | Use git glob for LARGE file directories |
+| `dryRun` | `boolean` | See planned execution of matched blocks |
+| `debug` | `boolean` | See debug details |
+| `failOnMissingTransforms` | `boolean` | Fail if transform functions are missing. Default skip blocks. |
+
+Result of processing
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `errors` | `Array` | Any errors encountered. |
+| `changes` | `Array` | Change log |
+| `data` | `Array` | md data |
+
+<!-- docs xCODE src=https://raw.githubusercontent.com/DavidWells/awesome-stoicism/master/scripts/generate.js -->
+
+<!-- /docs -->
+<!-- docs xCODE src=https://raw.githubusercontent.com/DavidWells/awesome-stoicism/master/scripts/generate.js -->
+```js
+const fs = require('fs')
+const path = require('path')
+const markdownMagic = require('markdown-magic')
+
+const MARKDOWN_PATH = path.join(__dirname, '..', 'README.md')
+const QUOTES_PATH = path.join(__dirname, '..', 'quotes.json')
+const QUOTES = JSON.parse(fs.readFileSync(QUOTES_PATH, 'utf8'))
+
+const mdConfig = {
+  transforms: {
+    /* Usage example in markdown:
+      <!-- AUTO-GENERATED-CONTENT:START (GENERATE_QUOTE_LIST)-->
+        quote will be generated here
+      <!-- AUTO-GENERATED-CONTENT:END -->
+     */
+    GENERATE_QUOTE_LIST: function(content, options) {
+      let md = ''
+      QUOTES.sort(sortByAuthors).forEach((data) => {
+        md += `- **${data.author}** ${data.quote}\n`
+      })
+      return md.replace(/^\s+|\s+$/g, '')
+    }
+  }
+}
+
+/* Utils functions */
+function sortByAuthors(a, b) {
+  const aName = a.author.toLowerCase()
+  const bName = b.author.toLowerCase()
+  return aName.localeCompare(bName)
+}
+
+markdownMagic(MARKDOWN_PATH, mdConfig, () => {
+  console.log('quotes', QUOTES.length)
+  console.log('Docs updated!')
+})
+```
+<!-- /docs -->
+
+### API
+
+Markdown Magic Instance
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `globOrOpts` | `string | MarkdownMagicOptions` | Files to process or config. Uses [globby patterns](https://github.com/sindresorhus/multimatch/blob/master/test.js) |
+| `options` | `MarkdownMagicOptions` | Markdown magic config |
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/process-file.js)
@@ -279,6 +357,8 @@ const fs = require('fs')
 const path = require('path')
 const doxxx = require('doxxx')
 const { markdownMagic } = require('../lib')
+const { deepLog } = require('../lib/utils/logs')
+
 // const { markdownMagic } = require('markdown-magic')
 
 const config = {
@@ -292,21 +372,54 @@ const config = {
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
     /* Match <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../file.js) --> */
-    RENDERDOCS(api) {
-      console.log('api', api)
+    RENDERDOCSX(api) {
+      // console.log('api', api)
       const { options } = api
       console.log('options.path', path.resolve(options.path))
       const fileContents = fs.readFileSync(options.path, 'utf8')
-      const docBlocs = doxxx.parseComments(fileContents, { raw: true, skipSingleStar: true })
+      // console.log('fileContents', fileContents)
+      // process.exit(1)
+      const docBlocs = doxxx.parseComments(fileContents, { 
+        //raw: true, 
+        skipSingleStar: true,
+        // excludeIgnored: true,
+      })
+        .filter((item) => {
+          return !item.isIgnored
+        })
         .filter((item) => {
           return item.tags.length
         })
-      console.log('docBlocs', docBlocs)
+
+      docBlocs.forEach((data) => {
+        // console.log('data', data)
+        delete data.code
+      })
+      // console.log('docBlocs', docBlocs)
+      deepLog(docBlocs)
+      // console.log(docBlocs.length)
       // process.exit(1)
       let updatedContent = ''
       docBlocs.forEach((data) => {
-        updatedContent += `${data.description.full}\n\n`
+        // console.log('data', data)
+        updatedContent += `${data.description.text}\n`
+
+        if (data.tags.length) {
+         let table =  '| Name | Type | Description |\n'
+          table += '|:---------------------------|:---------------:|:-----------|\n'
+          data.tags.filter((tag) => {
+            if (tag.tagType === 'param') return true
+            if (tag.tagType === 'property') return true
+            return false
+          }).forEach((tag) => {
+            table += `| \`${tag.name}\` `
+            table += `| \`${tag.type}\` `
+            table += `| ${tag.description} |\n`
+          })
+          updatedContent+= `\n${table}\n`
+        }
       })
+
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
     INLINE_EXAMPLE: () => {

@@ -9,6 +9,7 @@ test/fixtures/output
 _out.md
 misc
 misc/**/**.js
+__misc
 
 /**/old-test/cool.md
 

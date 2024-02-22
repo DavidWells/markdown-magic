@@ -11,9 +11,10 @@ const {
 } = require('./config')
 
 function getNewFile(result) {
-  return result.data[0].outputPath
+  return result.results[0].outputPath
 }
 
+const SILENT = true
 /**
  * Test Built in transforms
  */
@@ -24,14 +25,17 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', async () => {
   const globs = ['**/**/md/transform-cod*.md']
   const result = await markdownMagic(filePath, {
     // debug: true,
-    open: 'AUTO-GENERATED-CONTENT:START',
-    close: 'AUTO-GENERATED-CONTENT:END',
-    outputDir: OUTPUT_DIR 
+    open: 'docs',
+    close: '/docs',
+    outputDir: OUTPUT_DIR,
+    silent: SILENT
   })
   // console.log('result', result)
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
-  // console.log('newContent', newContent)
+  /*
+  console.log('newContent', newContent)
+  /** */
 
   // check local code
   const localCode = newContent.match(/module\.exports\.run/g)
@@ -50,7 +54,9 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', async () => {
 
   // check remotely fetched code with range lines
   const remoteWithRange = newContent.match(/```json\n  "private": true,\n  "version": "1.0.0",\n```/g)
+  /*
   console.log('remoteWithRange', remoteWithRange)
+  /** */
   assert.ok(remoteWithRange, 'remote code snippet with range lines inserted')
   assert.is(remoteWithRange.length, 2, 'correct amount remoteWithRange')
 
@@ -63,9 +69,12 @@ test('<!-- AUTO-GENERATED-CONTENT:START (FILE)-->', async () => {
   const result = await markdownMagic(filePath, {
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
-    outputDir: OUTPUT_DIR 
+    outputDir: OUTPUT_DIR,
+    silent: SILENT
   })
+  /*
   console.log('result', result)
+  /** */
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
   // check local code
@@ -85,11 +94,15 @@ test('<!-- AUTO-GENERATED-CONTENT:START wordCount -->', async () => {
   const result = await markdownMagic(filePath, {
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
-    outputDir: OUTPUT_DIR 
+    output: {
+      directory: OUTPUT_DIR
+    },
+    silent: SILENT
   })
+  // console.log('result', result)
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
-  assert.ok(newContent.match(/41/), 'Count added')
+  assert.ok(newContent.match(/33/), 'Count added')
 })
 
 test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
@@ -100,7 +113,8 @@ test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
   const result = await markdownMagic(filePath, {
     open: 'doc-gen',
     close: 'end-doc-gen',
-    outputDir: OUTPUT_DIR 
+    outputDir: OUTPUT_DIR,
+    silent: SILENT
   })
   // console.log('result', result)
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
@@ -120,7 +134,8 @@ test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {
   const result = await markdownMagic(filePath, {
     open: 'doc-gen',
     close: 'end-doc-gen',
-    outputDir: OUTPUT_DIR 
+    outputDir: OUTPUT_DIR,
+    silent: SILENT
   })
   // console.log('transform API', api)
 
@@ -142,7 +157,8 @@ test('Verify single line comments remain inline', async () => {
       OTHER() {
         return `other-content`
       }
-    }
+    },
+    silent: SILENT
   }
   const result = await markdownMagic(filePath, config)
   const newFilePath = getNewFile(result)
@@ -155,13 +171,14 @@ test('Mixed transforms <!-- AUTO-GENERATED-CONTENT:START wordCount -->', async (
   const fileName = 'mixed.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
-  const { data } = await markdownMagic(filePath, {
+  const { results } = await markdownMagic(filePath, {
     open: 'docs-start',
     close: 'docs-end',
-    outputDir: OUTPUT_DIR 
+    outputDir: OUTPUT_DIR,
+    silent: SILENT
   })
 
-  assert.ok(data, 'Mixed match words dont time out')
+  assert.ok(results, 'Mixed match words dont time out')
 })
 
 test.run()

@@ -44,6 +44,7 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
+    "@davidwells/md-utils": "^0.0.40",
     "@technote-space/doctoc": "2.4.7",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
@@ -52,14 +53,14 @@
     "is-valid-path": "^0.1.1",
     "micro-mdx-parser": "^1.1.0",
     "mri": "^1.2.0",
-    "oparser": "^2.1.1",
+    "oparser": "^3.0.8",
     "smart-glob": "^1.0.2",
     "sync-request": "^6.1.0"
   },
   "devDependencies": {
     "ansi-styles": "^4.2.1",
     "concordance": "^5.0.1",
-    "doxxx": "^2.0.1",
+    "doxxx": "^2.0.7",
     "rimraf": "^3.0.2",
     "safe-chalk": "^1.0.0",
     "typescript": "^5.0.2",
