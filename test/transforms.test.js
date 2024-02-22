@@ -15,6 +15,7 @@ function getNewFile(result) {
 }
 
 const SILENT = true
+const UPDATE_FIXTURE = false
 /**
  * Test Built in transforms
  */
@@ -28,6 +29,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (CODE)-->', async () => {
     open: 'docs',
     close: '/docs',
     outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
   // console.log('result', result)
@@ -70,6 +72,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START (FILE)-->', async () => {
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
     outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
   /*
@@ -95,14 +98,15 @@ test('<!-- AUTO-GENERATED-CONTENT:START wordCount -->', async () => {
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
     output: {
-      directory: OUTPUT_DIR
+      directory: OUTPUT_DIR,
+      applyTransformsToSource: UPDATE_FIXTURE,
     },
     silent: SILENT
   })
   // console.log('result', result)
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
-  assert.ok(newContent.match(/33/), 'Count added')
+  assert.ok(newContent.match(/41/), 'Count added')
 })
 
 test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
@@ -114,6 +118,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
     open: 'doc-gen',
     close: 'end-doc-gen',
     outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
   // console.log('result', result)
@@ -135,6 +140,7 @@ test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {
     open: 'doc-gen',
     close: 'end-doc-gen',
     outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
   // console.log('transform API', api)
@@ -148,6 +154,7 @@ test('Verify single line comments remain inline', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
   const config = { 
     outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
     open: 'AUTO-GENERATED-CONTENT:START',
     close: 'AUTO-GENERATED-CONTENT:END',
     transforms: {
@@ -175,6 +182,7 @@ test('Mixed transforms <!-- AUTO-GENERATED-CONTENT:START wordCount -->', async (
     open: 'docs-start',
     close: 'docs-end',
     outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
 
