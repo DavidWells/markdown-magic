@@ -14,6 +14,7 @@ const SILENT = true
 test('Throw on unbalanced blocks', async () => {
   const fileName = 'error-unbalanced.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
+  // console.log('filePath', filePath)
   let error
   try {
     await markdownMagic(filePath, {
