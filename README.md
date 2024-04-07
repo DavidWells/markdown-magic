@@ -19,23 +19,24 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8) • [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Table of Contents
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (TOC:collapse=true&collapseText=Click to expand) -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START TOC collapse=true collapseText="Click to expand" -->
 <details>
 <summary>Click to expand</summary>
 
 - [About](#about)
 - [Install](#install)
 - [Usage](#usage)
+  - [Running via CLI](#running-via-cli)
+  - [Running programmatically](#running-programmatically)
 - [Syntax Examples](#syntax-examples)
-  - [Raw](#raw)
-  - [Curlies](#curlies)
-  - [Brackets](#brackets)
+  - [Basic](#basic)
+  - [Curly braces](#curly-braces)
+  - [Square brackets](#square-brackets)
   - [Parentheses](#parentheses)
   - [Functions](#functions)
   - [API](#api)
   - [API](#api-1)
   - [Configuration Options](#configuration-options)
-- [CLI Usage](#cli-usage)
 - [Transforms](#transforms)
   - [> TOC](#-toc)
   - [> CODE](#-code)
@@ -56,7 +57,6 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START FILE src=./docs/1_Getting-Started.md -->
-<!-- The below content is automatically added from ./docs/1_Getting-Started.md -->
 ## Install
 
 To get started. Install the npm package.
@@ -66,50 +66,96 @@ npm install markdown-magic --save-dev
 ```
 
 ## Usage
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/1-_basic-usage.js) -->
+
+Use comment blocks in your markdown
+
+**Example:**
+```md
+<!-- doc-gen remote url=http://url-to-raw-md-file.md -->
+This content will be dynamically replaced from the remote url
+<!-- end-doc-gen -->
+```
+
+Then run `markdown-magic` via it's CLI or programmatically.
+
+### Running via CLI
+
+Run `markdown --help` to see all available CLI options
+
+```bash
+markdown
+# or
+md-magic
+```
+
+CLI usage example with options
+
+```bash
+md-magic --path '**/*.md' --config ./config.file.js
+```
+
+In NPM scripts, `npm run docs` would run the markdown magic and parse all the `.md` files in the directory.
+
+```json
+"scripts": {
+  "docs": "md-magic --path '**/*.md'"
+},
+```
+
+If you have a `markdown.config.js` file where `markdown-magic` is invoked, it will automatically use that as the configuration unless otherwise specified by `--config` flag.
+
+### Running programmatically
+
+```js
+const { markdownMagic } = require('../lib')
+
+/* By default all .md files in cwd will be processed */
+markdownMagic().then((results) => {
+  console.log('result keys', Object.keys(results))
+})
+```
+
 ```js
 import path from 'path'
 import markdownMagic from 'markdown-magic'
 
+// Process a Single File
 const markdownPath = path.join(__dirname, 'README.md')
 markdownMagic(markdownPath)
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (FILE:src=./docs/Syntax.md) -->
-<!-- The below content is automatically added from ./docs/Syntax.md -->
 ## Syntax Examples
 
 There are various syntax options. Choose your favorite.
 
-### Raw
+### Basic
 
 `openWord transformName [opts]`
 
 ```md
-<!-- doc-gen transformName optionOne='hello' -->
+<!-- doc-gen transformName optionOne='hello' optionTwo='there' -->
 content to be replaced
 <!-- end-doc-gen -->
 ```
 
-### Curlies
+### Curly braces
 
 `openWord {transformName} [opts]`
 
 ```md
-<!-- doc-gen {transformName} optionOne='hello' -->
+<!-- doc-gen {transformName} optionOne='hello' optionTwo='there' -->
 content to be replaced
 <!-- end-doc-gen -->
 ```
 
-### Brackets
+### Square brackets
 
 `openWord [transformName] [opts]`
 
 ```md
-<!-- doc-gen [transformName] optionOne='hello' -->
+<!-- doc-gen [transformName] optionOne='hello' optionTwo='there' -->
 content to be replaced
 <!-- end-doc-gen -->
 ```
@@ -119,7 +165,7 @@ content to be replaced
 `openWord (transformName) [opts]`
 
 ```md
-<!-- doc-gen (transformName) optionOne='hello' -->
+<!-- doc-gen (transformName) optionOne='hello' optionTwo='there' -->
 content to be replaced
 <!-- end-doc-gen -->
 ```
@@ -207,34 +253,6 @@ Markdown Magic Instance
 - `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
-## CLI Usage
-
-You can use `markdown-magic` as a CLI command. Run `markdown --help` to see all available CLI options
-
-```bash
-markdown --help
-# or
-md-magic
-```
-
-This is useful for adding the package quickly to your `package.json` npm scripts
-
-CLI usage example with options
-
-```bash
-md-magic --path '**/*.md' --config ./config.file.js
-```
-
-In NPM scripts, `npm run docs` would run the markdown magic and parse all the `.md` files in the directory.
-
-```json
-"scripts": {
-  "docs": "md-magic --path '**/*.md' --ignore 'node_modules'"
-},
-```
-
-If you have a `markdown.config.js` file where `markdown-magic` is invoked, it will automatically use that as the configuration unless otherwise specified by `--config` flag.
-
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./md.config.js) -->
 ```js
 /* CLI markdown.config.js file example */
@@ -279,9 +297,9 @@ Generate table of contents from markdown file
 
 **Example:**
 ```md
-<!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+<!-- doc-gen (TOC) -->
 toc will be generated here
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- doc-gen-end -->
 ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
@@ -300,15 +318,15 @@ Get code from file or URL and put in markdown
 
 **Example:**
 ```md
-<!-- AUTO-GENERATED-CONTENT:START (CODE:src=./relative/path/to/code.js) -->
+<!-- doc-gen (CODE:src=./relative/path/to/code.js) -->
 This content will be dynamically replaced with code from the file
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- doc-gen-end -->
 ```
 
 ```md
- <!-- AUTO-GENERATED-CONTENT:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->
+ <!-- doc-gen (CODE:src=./relative/path/to/code.js&lines=22-44) -->
  This content will be dynamically replaced with code from the file lines 22 through 44
- <!-- AUTO-GENERATED-CONTENT:END -->
+ <!-- doc-gen-end -->
  ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
@@ -324,9 +342,9 @@ Get local file contents.
 
 **Example:**
 ```md
-<!-- AUTO-GENERATED-CONTENT:START (FILE:src=./path/to/file) -->
+<!-- doc-gen (FILE:src=./path/to/file) -->
 This content will be dynamically replaced from the local file
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- doc-gen-end -->
 ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
@@ -342,9 +360,9 @@ Get any remote Data and put in markdown
 
 **Example:**
 ```md
-<!-- AUTO-GENERATED-CONTENT:START (REMOTE:url=http://url-to-raw-md-file.md) -->
+<!-- doc-gen (REMOTE:url=http://url-to-raw-md-file.md) -->
 This content will be dynamically replaced from the remote url
-<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- doc-gen-end -->
 ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
@@ -360,7 +378,7 @@ The face symbol 👉 <!-- MD-MAGIC-EXAMPLE:START (INLINE_EXAMPLE) -->**⊂◉‿
 
 **Example:**
 ```md
-<!-- AUTO-GENERATED-CONTENT:START (FILE:src=./path/to/file) -->xyz<!-- AUTO-GENERATED-CONTENT:END -->
+<!-- doc-gen (FILE:src=./path/to/file) -->xyz<!-- doc-gen-end -->
 ```
 
 ## 🔌 Markdown magic plugins
