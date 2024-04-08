@@ -66,7 +66,6 @@ const config = {
           }).forEach((tag) => {
             const optionalText = tag.isOptional ? ' (optional) ' : ' '
             const defaultValueText = (typeof tag.defaultValue !== 'undefined') ? ` Default: \`${tag.defaultValue}\` ` : ' '
-            console.log('tag', tag)
             table += `| \`${tag.name}\`${optionalText}`
             table += `| \`${tag.type.replace('|', 'or')}\` `
             table += `| ${tag.description.replace(/\.\s?$/, '')}.${defaultValueText}|\n`
