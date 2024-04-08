@@ -35,23 +35,24 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   - [Parentheses](#parentheses)
   - [Functions](#functions)
   - [API](#api)
-  - [API](#api-1)
-  - [Configuration Options](#configuration-options)
+    - [`MarkdownMagicOptions`](#markdownmagicoptions)
+    - [`OutputConfig`](#outputconfig)
+    - [`MarkdownMagicResult`](#markdownmagicresult)
 - [Transforms](#transforms)
   - [> TOC](#-toc)
   - [> CODE](#-code)
   - [> FILE](#-file)
   - [> REMOTE](#-remote)
 - [Inline transforms](#inline-transforms)
-- [🔌 Markdown magic plugins](#-markdown-magic-plugins)
+- [Legacy v1 & v2 plugins](#legacy-v1--v2-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
 - [Plugin Example](#plugin-example)
 - [Other usage examples](#other-usage-examples)
 - [Custom Transform Demo](#custom-transform-demo)
-- [Prior Art](#prior-art)
-- [License](#license)
 - [Usage examples](#usage-examples)
 - [Misc Markdown helpers](#misc-markdown-helpers)
+- [Prior Art](#prior-art)
+- [License](#license)
 
 </details>
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END -->
@@ -184,18 +185,33 @@ content to be replaced
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
-
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START JSDocs path="./lib/index.js" -->
 ### API
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCSX:path=./lib/index.js) - Do not remove or modify this section -->
-Optional output configuration
+Markdown Magic Instance
+
+```js
+markdownMagic(globOrOpts, options)
+```
 
 | Name | Type | Description |
 |:---------------------------|:---------------:|:-----------|
-| `directory` | `string` | Change output path of new content. Default behavior is replacing the original file |
-| `removeComments` | `boolean` | Remove comments from output. Default is false. |
-| `pathFormatter` | `function` | Custom function for altering output paths |
-| `applyTransformsToSource` | `boolean` | Apply transforms to source file. Default is true. This is for when outputDir is set. |
+| `globOrOpts` | `FilePathsOrGlobs or MarkdownMagicOptions` | Files to process or config. |
+| `options` (optional) | `MarkdownMagicOptions` | Markdown magic config. |
+
+**Returns**
+
+`Promise<MarkdownMagicResult>`
+
+**Example**
+
+```js
+markdownMagic(['**.**.md'], options).then((result) => {
+  console.log(`Processing complete`, result)
+})
+```
+
+#### `MarkdownMagicOptions`
 
 Configuration for markdown magic
 
@@ -203,87 +219,47 @@ Below is the main config for `markdown-magic`
 
 | Name | Type | Description |
 |:---------------------------|:---------------:|:-----------|
-| `files` | `FilePathsOrGlobs` | Files to process. |
-| `transforms` | `Array` | Custom commands to transform block contents, see transforms & custom transforms sections below. |
-| `output` | `OutputConfig` | Output configuration |
-| `syntax` | `SyntaxType` | Syntax to parse |
-| `open` | `string` | Opening match word |
-| `close` | `string` | Closing match word. If not defined will be same as opening word. |
-| `cwd` | `string` | Current working directory. Default process.cwd() |
-| `outputFlatten` | `boolean` | Flatten files that are output |
-| `useGitGlob` | `boolean` | Use git glob for LARGE file directories |
-| `dryRun` | `boolean` | See planned execution of matched blocks |
-| `debug` | `boolean` | See debug details |
-| `silent` | `boolean` | Silence all console output |
-| `failOnMissingTransforms` | `boolean` | Fail if transform functions are missing. Default skip blocks. |
+| `files` (optional) | `FilePathsOrGlobs` | Files to process. |
+| `transforms` (optional) | `Array` | Custom commands to transform block contents, see transforms & custom transforms sections below. Default: `defaultTransforms` |
+| `output` (optional) | `OutputConfig` | Output configuration. |
+| `syntax` (optional) | `SyntaxType` | Syntax to parse. Default: `md` |
+| `open` (optional) | `string` | Opening match word. Default: `doc-gen` |
+| `close` (optional) | `string` | Closing match word. If not defined will be same as opening word. Default: `end-doc-gen` |
+| `cwd` (optional) | `string` | Current working directory. Default process.cwd(). Default: `process.cwd() ` |
+| `outputFlatten` (optional) | `boolean` | Flatten files that are output. |
+| `useGitGlob` (optional) | `boolean` | Use git glob for LARGE file directories. |
+| `dryRun` (optional) | `boolean` | See planned execution of matched blocks. Default: `false` |
+| `debug` (optional) | `boolean` | See debug details. Default: `false` |
+| `silent` (optional) | `boolean` | Silence all console output. Default: `false` |
+| `failOnMissingTransforms` (optional) | `boolean` | Fail if transform functions are missing. Default skip blocks. Default: `false` |
 
-Result of processing
+#### `OutputConfig`
+
+Optional output configuration
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `directory` (optional) | `string` | Change output path of new content. Default behavior is replacing the original file. |
+| `removeComments` (optional) | `boolean` | Remove comments from output. Default is false. Default: `false` |
+| `pathFormatter` (optional) | `function` | Custom function for altering output paths. |
+| `applyTransformsToSource` (optional) | `boolean` | Apply transforms to source file. Default is true. This is for when outputDir is set. Default: `false` |
+
+#### `MarkdownMagicResult`
+
+Result of markdown processing
 
 | Name | Type | Description |
 |:---------------------------|:---------------:|:-----------|
 | `errors` | `Array` | Any errors encountered. |
-| `filesChanged` | `Array<string>` | Modified files |
-| `results` | `Array` | md data |
-
-### API
-
-Markdown Magic Instance
-
-| Name | Type | Description |
-|:---------------------------|:---------------:|:-----------|
-| `globOrOpts` | `FilePathsOrGlobs | MarkdownMagicOptions` | Files to process or config. |
-| `options` | `MarkdownMagicOptions` | Markdown magic config |
-
-
-
-| Name | Type | Description |
-|:---------------------------|:---------------:|:-----------|
+| `filesChanged` | `Array<string>` | Modified files. |
+| `results` | `Array` | md data. |
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
-
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/process-file.js)
-- Do not remove or modify this section -->
-### Configuration Options
-
-- `transforms` - *object* - (optional) Custom commands to transform block contents, see transforms & custom transforms sections below.
-
-- `outputDir` - *string* - (optional) Change output path of new content. Default behavior is replacing the original file
-
-- `matchWord` - *string* - (optional) Comment pattern to look for & replace inner contents. Default `AUTO-GENERATED-CONTENT`
-
-- `DEBUG` - *Boolean* - (optional) set debug flag to `true` to inspect the process
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
-
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./md.config.js) -->
-```js
-/* CLI markdown.config.js file example */
-module.exports = {
-  // handleOutputPath: (currentPath) => {
-  //   const newPath =  'x' + currentPath
-  //   return newPath
-  // },
-  // handleOutputPath: (currentPath) => {
-  //   const newPath = currentPath.replace(/fixtures/, 'fixtures-out')
-  //   return newPath
-  // },
-  transforms: {
-    /* Match <!-- AUTO-GENERATED-CONTENT:START (transformOne) --> */
-    transformOne() {
-      return `This section was generated by the cli config md.config.js file`
-    },
-    functionName({options}) {
-      console.log('Options in plugin', options)
-      return `xyz`
-    }
-  }
-}
-```
-<!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
 ## Transforms
 
 Markdown Magic comes with a couple of built-in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START (RENDERDOCS:path=./lib/transforms/index.js) - Do not remove or modify this section -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START JSDocs path="./lib/transforms/index.js" -->
 ### > TOC
 
 Generate table of contents from markdown file
@@ -299,12 +275,17 @@ Generate table of contents from markdown file
 ```md
 <!-- doc-gen (TOC) -->
 toc will be generated here
-<!-- doc-gen-end -->
+<!-- end-doc-gen -->
 ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `content` | `string` | The current content of the comment block. |
+| `options` | `object` | The options passed in from the comment declaration. |
 
 ### > CODE
 
@@ -320,18 +301,23 @@ Get code from file or URL and put in markdown
 ```md
 <!-- doc-gen (CODE:src=./relative/path/to/code.js) -->
 This content will be dynamically replaced with code from the file
-<!-- doc-gen-end -->
+<!-- end-doc-gen -->
 ```
 
 ```md
  <!-- doc-gen (CODE:src=./relative/path/to/code.js&lines=22-44) -->
  This content will be dynamically replaced with code from the file lines 22 through 44
- <!-- doc-gen-end -->
+ <!-- end-doc-gen -->
  ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `content` | `string` | The current content of the comment block. |
+| `options` | `object` | The options passed in from the comment declaration. |
 
 ### > FILE
 
@@ -344,12 +330,17 @@ Get local file contents.
 ```md
 <!-- doc-gen (FILE:src=./path/to/file) -->
 This content will be dynamically replaced from the local file
-<!-- doc-gen-end -->
+<!-- end-doc-gen -->
 ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `content` | `string` | The current content of the comment block. |
+| `options` | `object` | The options passed in from the comment declaration. |
 
 ### > REMOTE
 
@@ -362,12 +353,17 @@ Get any remote Data and put in markdown
 ```md
 <!-- doc-gen (REMOTE:url=http://url-to-raw-md-file.md) -->
 This content will be dynamically replaced from the remote url
-<!-- doc-gen-end -->
+<!-- end-doc-gen -->
 ```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 
 ---
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `content` | `string` | The current content of the comment block. |
+| `options` | `object` | The options passed in from the comment declaration. |
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
 ## Inline transforms
@@ -378,10 +374,12 @@ The face symbol 👉 <!-- MD-MAGIC-EXAMPLE:START (INLINE_EXAMPLE) -->**⊂◉‿
 
 **Example:**
 ```md
-<!-- doc-gen (FILE:src=./path/to/file) -->xyz<!-- doc-gen-end -->
+<!-- doc-gen (FILE:src=./path/to/file) -->xyz<!-- end-doc-gen -->
 ```
 
-## 🔌 Markdown magic plugins
+## Legacy v1 & v2 plugins
+
+These plugins work with older versions of markdown-magic. Adapting them to the newer plugin syntax should be pretty straight forward.
 
 * [wordcount](https://github.com/DavidWells/markdown-magic-wordcount/) - Add wordcount to markdown files
 * [github-contributors](https://github.com/DavidWells/markdown-magic-github-contributors) - List out the contributors of a given repository
@@ -413,13 +411,11 @@ The below code is used to generate **this markdown file** via the plugin system.
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (CODE:src=./examples/generate-readme.js) -->
 ```js
-const fs = require('fs')
 const path = require('path')
-const doxxx = require('doxxx')
+const { readFileSync } = require('fs')
+const { parseComments } = require('doxxx')
 const { markdownMagic } = require('../lib')
 const { deepLog } = require('../lib/utils/logs')
-
-// const { markdownMagic } = require('markdown-magic')
 
 const config = {
   matchWord: 'MD-MAGIC-EXAMPLE', // default matchWord is AUTO-GENERATED-CONTENT
@@ -431,24 +427,27 @@ const config = {
       // options = { optionOne: hi, optionOne: DUDE}
       return `This will replace all the contents of inside the comment ${options.optionOne}`
     },
-    /* Match <!-- AUTO-GENERATED-CONTENT:START (RENDERDOCS:path=../file.js) --> */
-    RENDERDOCSX(api) {
-      // console.log('api', api)
-      const { options } = api
-      console.log('options.path', path.resolve(options.path))
-      const fileContents = fs.readFileSync(options.path, 'utf8')
-      // console.log('fileContents', fileContents)
-      // process.exit(1)
-      const docBlocs = doxxx.parseComments(fileContents, { 
-        //raw: true, 
-        skipSingleStar: true,
-        // excludeIgnored: true,
-      })
+    /* Match <!-- AUTO-GENERATED-CONTENT:START JSDocs path="../file.js" --> */
+    JSDocs(markdownMagicPluginAPI) {
+      const { options } = markdownMagicPluginAPI
+      const fileContents = readFileSync(options.path, 'utf8')
+      const docBlocs = parseComments(fileContents, { skipSingleStar: true })
         .filter((item) => {
           return !item.isIgnored
         })
+        /* Remove empty comments with no tags */
         .filter((item) => {
           return item.tags.length
+        })
+        /* Remove inline type defs */
+        .filter((item) => {
+          return item.description.text !== ''
+        })
+        /* Sort types to end */
+        .sort((a, b) => {
+          if (a.type && !b.type) return 1
+          if (!a.type && b.type) return -1
+          return 0
         })
 
       docBlocs.forEach((data) => {
@@ -456,12 +455,18 @@ const config = {
         delete data.code
       })
       // console.log('docBlocs', docBlocs)
-      deepLog(docBlocs)
+
+      if (docBlocs.length === 0) {
+        throw new Error('No docBlocs found')
+      }
+
       // console.log(docBlocs.length)
-      // process.exit(1)
       let updatedContent = ''
       docBlocs.forEach((data) => {
-        // console.log('data', data)
+        if (data.type) {
+          updatedContent += `#### \`${data.type}\`\n\n`
+        }
+
         updatedContent += `${data.description.text}\n`
 
         if (data.tags.length) {
@@ -472,21 +477,38 @@ const config = {
             if (tag.tagType === 'property') return true
             return false
           }).forEach((tag) => {
-            table += `| \`${tag.name}\` `
-            table += `| \`${tag.type}\` `
-            table += `| ${tag.description} |\n`
+            const optionalText = tag.isOptional ? ' (optional) ' : ' '
+            const defaultValueText = (typeof tag.defaultValue !== 'undefined') ? ` Default: \`${tag.defaultValue}\` ` : ' '
+            console.log('tag', tag)
+            table += `| \`${tag.name}\`${optionalText}`
+            table += `| \`${tag.type.replace('|', 'or')}\` `
+            table += `| ${tag.description.replace(/\.\s?$/, '')}.${defaultValueText}|\n`
           })
           updatedContent+= `\n${table}\n`
+
+          const returnValues = data.tags.filter((tag) => tag.tagType === 'returns')
+          if (returnValues.length) {
+            returnValues.forEach((returnValue) => {
+              updatedContent += `**Returns**\n\n`
+              updatedContent += `\`${returnValue.type}\`\n\n`
+            })
+          }
+
+          const examples = data.tags.filter((tag) => tag.tagType === 'example')
+          if (examples.length) {
+            examples.forEach((example) => {
+              updatedContent += `**Example**\n\n`
+              updatedContent += `\`\`\`js\n${example.tagValue}\n\`\`\`\n\n`
+            })
+          }
         }
       })
-
       return updatedContent.replace(/^\s+|\s+$/g, '')
     },
     INLINE_EXAMPLE: () => {
       return '**⊂◉‿◉つ**'
     },
     lolz() {
-      console.log('run lol')
       return `This section was generated by the cli config markdown.config.js file`
     },
     /* Match <!-- AUTO-GENERATED-CONTENT:START (pluginExample) --> */
@@ -558,6 +580,16 @@ View the raw source of this `README.md` file to see the comment block and see ho
 This will replace all the contents of inside the comment DUDE
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END - Do not remove or modify this section -->
 
+## Usage examples
+
+- [Project using markdown-magic](https://github.com/search?o=desc&q=filename%3Apackage.json+%22markdown-magic%22&s=indexed&type=Code)
+- [Examples in md](https://github.com/search?l=Markdown&o=desc&q=AUTO-GENERATED-CONTENT&s=indexed&type=Code)
+
+
+## Misc Markdown helpers
+
+- https://github.com/azu/markdown-function
+
 ## Prior Art
 
 This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmengels](https://github.com/jfmengels)'s [all contributors cli](https://github.com/jfmengels/all-contributors-cli) project.
@@ -570,13 +602,3 @@ This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmenge
 [npm-link]: http://www.npmjs.com/package/markdown-magic
 [mit]:      http://opensource.org/licenses/MIT
 [author]:   http://github.com/davidwells
-
-## Usage examples
-
-- [Project using markdown-magic](https://github.com/search?o=desc&q=filename%3Apackage.json+%22markdown-magic%22&s=indexed&type=Code)
-- [Examples in md](https://github.com/search?l=Markdown&o=desc&q=AUTO-GENERATED-CONTENT&s=indexed&type=Code)
-
-
-## Misc Markdown helpers
-
-- https://github.com/azu/markdown-function
