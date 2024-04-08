@@ -273,7 +273,7 @@ Generate table of contents from markdown file
 
 **Example:**
 ```md
-<!-- doc-gen (TOC) -->
+<!-- doc-gen TOC -->
 toc will be generated here
 <!-- end-doc-gen -->
 ```
@@ -299,13 +299,13 @@ Get code from file or URL and put in markdown
 
 **Example:**
 ```md
-<!-- doc-gen (CODE:src=./relative/path/to/code.js) -->
+<!-- doc-gen CODE src="./relative/path/to/code.js" -->
 This content will be dynamically replaced with code from the file
 <!-- end-doc-gen -->
 ```
 
 ```md
- <!-- doc-gen (CODE:src=./relative/path/to/code.js&lines=22-44) -->
+ <!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
  This content will be dynamically replaced with code from the file lines 22 through 44
  <!-- end-doc-gen -->
  ```
@@ -328,7 +328,7 @@ Get local file contents.
 
 **Example:**
 ```md
-<!-- doc-gen (FILE:src=./path/to/file) -->
+<!-- doc-gen FILE src=./path/to/file -->
 This content will be dynamically replaced from the local file
 <!-- end-doc-gen -->
 ```
@@ -351,7 +351,7 @@ Get any remote Data and put in markdown
 
 **Example:**
 ```md
-<!-- doc-gen (REMOTE:url=http://url-to-raw-md-file.md) -->
+<!-- doc-gen REMOTE url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
 <!-- end-doc-gen -->
 ```
@@ -479,7 +479,6 @@ const config = {
           }).forEach((tag) => {
             const optionalText = tag.isOptional ? ' (optional) ' : ' '
             const defaultValueText = (typeof tag.defaultValue !== 'undefined') ? ` Default: \`${tag.defaultValue}\` ` : ' '
-            console.log('tag', tag)
             table += `| \`${tag.name}\`${optionalText}`
             table += `| \`${tag.type.replace('|', 'or')}\` `
             table += `| ${tag.description.replace(/\.\s?$/, '')}.${defaultValueText}|\n`
