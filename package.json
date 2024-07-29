@@ -53,6 +53,7 @@
     "is-valid-path": "^0.1.1",
     "micro-mdx-parser": "^1.1.0",
     "mri": "^1.2.0",
+    "node-fetch": "^2.7.0",
     "oparser": "^3.0.13",
     "smart-glob": "^1.0.2",
     "sync-request": "^6.1.0"
