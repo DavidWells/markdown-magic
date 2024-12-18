@@ -581,7 +581,7 @@ This will replace all the contents of inside the comment DUDE
 
 ## Usage examples
 
-- [Project using markdown-magic](https://github.com/search?o=desc&q=filename%3Apackage.json+%22markdown-magic%22&s=indexed&type=Code)
+- [Projects using markdown-magic](https://github.com/search?q=path%3A**%2Fpackage.json+%22markdown-magic%22&type=code)
 - [Examples in md](https://github.com/search?l=Markdown&o=desc&q=AUTO-GENERATED-CONTENT&s=indexed&type=Code)
 
 
