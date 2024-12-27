@@ -1,6 +1,6 @@
 # Markdown Magic [![npm-version][npm-badge]][npm-link]
 
-✨ Add a little magic to your markdown ✨
+✨ Add a little magic to your markdown! ✨
 
 ## About
 
