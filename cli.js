@@ -5,7 +5,8 @@ const argv = process.argv.slice(2)
 const cliArgs = mri(argv)
 
 /*
-console.log('Raw args:', argv)
-console.log('Before args:', cliArgs)
+console.log('Raw argv:', argv)
+console.log('mri argv:', cliArgs)
+// process.exit(1)
 /** */
-runCli(cliArgs)
+runCli(cliArgs, argv)
