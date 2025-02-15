@@ -305,10 +305,10 @@ This content will be dynamically replaced with code from the file
 ```
 
 ```md
- <!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
- This content will be dynamically replaced with code from the file lines 22 through 44
- <!-- end-doc-gen -->
- ```
+<!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
+This content will be dynamically replaced with code from the file lines 22 through 44
+<!-- end-doc-gen -->
+```
 
 Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
 

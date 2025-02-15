@@ -54,7 +54,7 @@
     "micro-mdx-parser": "^1.1.0",
     "mri": "^1.2.0",
     "node-fetch": "^2.7.0",
-    "oparser": "^3.0.13",
+    "oparser": "^3.0.22",
     "smart-glob": "^1.0.2",
     "sync-request": "^6.1.0"
   },
