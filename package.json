@@ -1,6 +1,6 @@
 {
   "name": "markdown-magic",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "Automatically update markdown files with content from external sources",
   "main": "lib/index.js",
   "bin": {
