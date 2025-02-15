@@ -21,7 +21,6 @@
     "test": "npm run test:lib && npm run test:test && echo 'tests done'",
     "test:lib": "uvu lib '.test.([mc]js|[jt]sx?)$'",
     "test:test": "uvu test '.test.([mc]js|[jt]sx?)$'",
-    "test:options": "uvu lib 'options-parser.test.([mc]js|[jt]sx?)$'",
     "test:block": "uvu lib 'block-parser.test.([mc]js|[jt]sx?)$'",
     "test:cli": "uvu lib 'cli.test.([mc]js|[jt]sx?)$'",
     "test:md": "uvu lib 'md.test.([mc]js|[jt]sx?)$'",
