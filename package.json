@@ -43,8 +43,7 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
-    "@davidwells/md-utils": "^0.0.40",
-    "@technote-space/doctoc": "2.4.7",
+    "@davidwells/md-utils": "^0.0.44",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
