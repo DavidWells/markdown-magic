@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "bin": {
     "markdown": "./cli.js",
-    "md-magic": "./cli.js"
+    "md-magic": "./cli.js",
+    "mdm": "./cli.js"
   },
   "files": [
     "README.md",
