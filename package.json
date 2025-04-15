@@ -51,9 +51,11 @@
     "is-local-path": "^0.1.6",
     "is-valid-path": "^0.1.1",
     "micro-mdx-parser": "^1.1.0",
+    "module-alias": "^2.2.3",
     "mri": "^1.2.0",
     "node-fetch": "^2.7.0",
     "oparser": "^3.0.22",
+    "punycode": "^2.3.1",
     "smart-glob": "^1.0.2",
     "string-width": "^4.2.3",
     "sync-request": "^6.1.0"
