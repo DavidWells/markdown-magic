@@ -2,8 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const { test } = require('uvu') 
 const assert = require('uvu/assert')
-const { markdownMagic } = require('../lib')
-const { resolveOutputPath, resolveCommonParent } = require('../lib/utils/fs')
+const { markdownMagic } = require('../src')
+const { resolveOutputPath, resolveCommonParent } = require('../src/utils/fs')
 const {
   FIXTURE_DIR,
   MARKDOWN_FIXTURE_DIR,
@@ -125,11 +125,12 @@ test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
   // console.log('newContent', newContent)
   const whatever = newContent.match(/\[Whatever 2\]/gm)
+  // console.log('whatever', whatever)
   const two = newContent.match(/\[Two Sub 2\]/gm)
-  assert.ok(whatever, 'found')
-  assert.is(whatever.length, 2)
-  assert.ok(two, 'found')
-  assert.is(two.length, 2)
+  assert.ok(whatever, 'found', 'Found whatever')
+  assert.is(whatever.length, 2, 'Found 2 whatever')
+  assert.ok(two, 'found', 'Found two')
+  assert.is(two.length, 2, 'Found 2 two')
 })
 
 test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {

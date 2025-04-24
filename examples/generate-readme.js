@@ -1,8 +1,8 @@
 const path = require('path')
 const { readFileSync } = require('fs')
 const { parseComments } = require('doxxx')
-const { markdownMagic } = require('../lib')
-const { deepLog } = require('../lib/utils/logs')
+const { markdownMagic } = require('../src')
+const { deepLog } = require('../src/utils/logs')
 
 const config = {
   matchWord: 'MD-MAGIC-EXAMPLE', // default matchWord is AUTO-GENERATED-CONTENT

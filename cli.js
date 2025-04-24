@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const mri = require('mri')
-const { runCli } = require('./lib/cli')
+const { runCli } = require('./src/cli')
 const argv = process.argv.slice(2)
 const cliArgs = mri(argv)
 

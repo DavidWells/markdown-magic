@@ -22,8 +22,8 @@
     "noEmitOnError": false,
   },
   "include": [
-    "./lib/**/*.js",
-    "./lib/**/*.d.ts"
+    "./src/**/*.js",
+    "./src/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"

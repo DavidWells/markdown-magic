@@ -50,7 +50,7 @@ If you have a `markdown.config.js` file where `markdown-magic` is invoked, it wi
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START CODE src=../examples/0_zero-config.js -->
 ```js
-const { markdownMagic } = require('../lib')
+const { markdownMagic } = require('../src')
 
 /* By default all .md files in cwd will be processed */
 markdownMagic().then((results) => {

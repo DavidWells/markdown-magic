@@ -1,4 +1,4 @@
-const { markdownMagic } = require('../lib')
+const { markdownMagic } = require('../src')
 
 const files = [
   'test/fixtures/md/transform-remote.md',

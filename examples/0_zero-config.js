@@ -1,4 +1,4 @@
-const { markdownMagic } = require('../lib')
+const { markdownMagic } = require('../src')
 
 /* By default all .md files in cwd will be processed */
 markdownMagic().then((results) => {
