@@ -19,7 +19,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 [Video demo](http://www.youtube.com/watch?v=4V2utrvxwJ8) • [Example Repo](https://github.com/DavidWells/repo-using-markdown-magic)
 
 ## Table of Contents
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START TOC collapse=true collapseText="Click to expand" -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START TOC collapseText="Click to expand" -->
 <details>
 <summary>Click to expand</summary>
 
@@ -108,7 +108,7 @@ If you have a `markdown.config.js` file where `markdown-magic` is invoked, it wi
 ### Running programmatically
 
 ```js
-const { markdownMagic } = require('../lib')
+const { markdownMagic } = require('../src')
 
 /* By default all .md files in cwd will be processed */
 markdownMagic().then((results) => {
@@ -185,7 +185,7 @@ content to be replaced
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START JSDocs path="./lib/index.js" -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START JSDocs path="./src/index.js" -->
 ### API
 
 Markdown Magic Instance
@@ -231,7 +231,9 @@ Below is the main config for `markdown-magic`
 | `dryRun` (optional) | `boolean` | See planned execution of matched blocks. Default: `false` |
 | `debug` (optional) | `boolean` | See debug details. Default: `false` |
 | `silent` (optional) | `boolean` | Silence all console output. Default: `false` |
+| `applyTransformsToSource` (optional) | `boolean` | Apply transforms to source file. Default is true. Default: `true` |
 | `failOnMissingTransforms` (optional) | `boolean` | Fail if transform functions are missing. Default skip blocks. Default: `false` |
+| `failOnMissingRemote` (optional) | `boolean` | Fail if remote file is missing. Default: `true` |
 
 #### `OutputConfig`
 
@@ -259,15 +261,15 @@ Result of markdown processing
 
 Markdown Magic comes with a couple of built-in transforms for you to use or you can extend it with your own transforms. See 'Custom Transforms' below.
 
-<!-- ⛔️ MD-MAGIC-EXAMPLE:START JSDocs path="./lib/transforms/index.js" -->
+<!-- ⛔️ MD-MAGIC-EXAMPLE:START JSDocs path="./src/transforms/index.js" -->
 ### > TOC
 
 Generate table of contents from markdown file
 
 **Options:**
 - `firsth1` - *boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
-- `collapse` - *boolean* - (optional): Collapse the table of contents in a detail accordian. Default `false`
-- `collapseText` - *string* - (optional): Text the toc accordian summary
+- `collapse` - *boolean* - (optional): Collapse the table of contents in a detail accordion. Default `false`
+- `collapseText` - *string* - (optional): Text the toc accordion summary
 - `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`
 - `maxDepth` - *number* - (optional): Max depth of headings. Default 4
 
@@ -278,7 +280,7 @@ toc will be generated here
 <!-- end-doc-gen -->
 ```
 
-Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+Default `matchWord` is `doc-gen`
 
 ---
 
@@ -305,12 +307,12 @@ This content will be dynamically replaced with code from the file
 ```
 
 ```md
-<!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
-This content will be dynamically replaced with code from the file lines 22 through 44
-<!-- end-doc-gen -->
-```
+ <!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
+ This content will be dynamically replaced with code from the file lines 22 through 44
+ <!-- end-doc-gen -->
+ ```
 
-Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+Default `matchWord` is `doc-gen`
 
 ---
 
@@ -333,7 +335,7 @@ This content will be dynamically replaced from the local file
 <!-- end-doc-gen -->
 ```
 
-Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+Default `matchWord` is `doc-gen`
 
 ---
 
@@ -356,7 +358,7 @@ This content will be dynamically replaced from the remote url
 <!-- end-doc-gen -->
 ```
 
-Default `MATCHWORD` is `AUTO-GENERATED-CONTENT`
+Default `matchWord` is `doc-gen`
 
 ---
 
@@ -414,8 +416,8 @@ The below code is used to generate **this markdown file** via the plugin system.
 const path = require('path')
 const { readFileSync } = require('fs')
 const { parseComments } = require('doxxx')
-const { markdownMagic } = require('../lib')
-const { deepLog } = require('../lib/utils/logs')
+const { markdownMagic } = require('../src')
+const { deepLog } = require('../src/utils/logs')
 
 const config = {
   matchWord: 'MD-MAGIC-EXAMPLE', // default matchWord is AUTO-GENERATED-CONTENT

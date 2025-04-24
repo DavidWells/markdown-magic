@@ -26,6 +26,7 @@ module.exports = async function TOC(api) {
 
   // process.exit(1)
   const opts = options || {}
+  const includeToc = opts.includeToc || false
   const isSub = opts.sub
 
   if (isSub) {
@@ -68,6 +69,15 @@ module.exports = async function TOC(api) {
     // separator: '<span>|</span>',
     // footer: 'end',
   }
+
+  /* Exclude Table of contents section from toc */
+  if (!includeToc) {
+    tocOptions.filter = (item) => {
+      const text = item.text.trim().toLowerCase()
+      return text !== 'table of contents' && text !== 'toc'
+    }
+  }
+
   const tocObject = generateToc(contents, tocOptions)
   // console.log("TOC OPTIONS", contents)
   // console.log("TOC OBJECT", tocObject)
