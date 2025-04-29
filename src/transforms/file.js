@@ -1,8 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const isLocalPath = require('is-local-path')
-const { findFrontmatter } = require('@davidwells/md-utils/find-frontmatter')
-const { removeLeadingH1 } = require('@davidwells/md-utils/string-utils')
+const { formatMd } = require('../utils/format-md')
 
 module.exports = function FILE(api) {
   /*
@@ -32,27 +31,11 @@ module.exports = function FILE(api) {
   // trim leading and trailing spaces/line breaks in code and keeps the indentation of the first non-empty line
   fileContents = fileContents.replace(/^(?:[\t ]*(?:\r?\n|\r))+|\s+$/g, '')
 
-  if (options.removeLeadingH1) {
-    fileContents = removeLeadingH1(fileContents)
-  }
-
-  const isMarkdown = path.extname(options.src).toLowerCase() === '.md'
-  // Shift headers up or down by the specified number of levels if shiftHeaders is enabled and file is markdown
-  if (options.shiftHeaders && isMarkdown) {
-    fileContents = fileContents.replace(/^(#{1,6})\s/gm, (match, hashes) => {
-      const currentLevel = hashes.length;
-      const shiftAmount = options.shiftHeaders;
-      const newLevel = Math.max(1, Math.min(6, currentLevel + shiftAmount));
-      return '#'.repeat(newLevel) + ' ';
-    })
-  }
-
-  /* automatically trim frontmatter if file is markdown */
-  if (isMarkdown && options.trimFrontmatter !== false) {
-    const frontmatter = findFrontmatter(fileContents)
-    if (frontmatter && frontmatter.frontMatterRaw) {
-      fileContents = fileContents.replace(frontmatter.frontMatterRaw, '')
-    }
+  const ext = path.extname(options.src).toLowerCase()
+  const isMarkdown = ext === '.md' || ext === '.markdown' || ext === '.mdown' || ext === '.mdx'
+  
+  if (isMarkdown) {
+    fileContents = formatMd(fileContents, options)
   }
 
   if (options.textBefore) {
