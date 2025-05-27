@@ -24,7 +24,6 @@ const path = require('path')
  * @return {string} Updated content to place in the content block
  */
 function install(api) {
-  console.log('INSTALL API', api)
   const { options } = api
   const { isDev = false } = options
   let packageName = options.packageName

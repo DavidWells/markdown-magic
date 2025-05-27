@@ -465,9 +465,9 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   }
 
   logger()
-  info(`Available Transforms:`, silent, '🔁 ') 
+  info(` Available Transforms:`, silent, '🔁 ') 
   logger(`\n${Object.keys(useTransforms).join(', ')}\n`)
-  info(`Syntax example:`, silent, '🧱 ') 
+  info(` Syntax example:`, silent, '🧱 ') 
   logger()
   logCommentBlockSyntax({
     syntax: syntax,
@@ -551,7 +551,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
       results: plan
     }
   } else  {
-    info(`Parse results:`, silent, "🟢 ")
+    info(` Parse results:`, silent, "🟢 ")
     const total = planTotal + missingTotal
     logger()
     logger(`Total transforms:        ${total}`)
@@ -576,11 +576,11 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     // logger('\nStats:')
 
     if (planOutput.length) {
-      info(`Execution plan:`, silent, "📑 ")
+      info(` Execution plan:`, silent, "📑 ")
       logger()
       logger(planOutput.join('\n'))
     } else {
-      info(`Execution plan:`, silent, "📑 ")
+      info(` Execution plan:`, silent, "📑 ")
       logger('\nNo transforms to run. Exiting markdown magic early.')
       logger('If you think this is incorrect, verify your comment blocks in your src and the settings in your config.')
     }
@@ -674,7 +674,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   process.exit(1)
   /** */
   logger()
-  info(`Results:`, silent, "💫 ")
+  info(` Results:`, silent, "💫 ")
 
   /*
   TODO:
