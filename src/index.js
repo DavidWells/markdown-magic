@@ -206,7 +206,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   success(` Markdown Magic Starting...`, silent, '✨ ')
   logger(`${LINE}\n`)
 
-  info(`Searching for comment blocks...`, silent, '🔎 ')
+  info(` Searching for comment blocks...`, silent, '🔎 ')
   logger(`\nSyntax:        ${syntax}`)
   logger(`Block Open:    ${open}`)
   logger(`Block Close:   ${close}`)
