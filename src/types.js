@@ -1,6 +1,6 @@
 /**
  * Allowed file syntaxes
- * @typedef {'md' | 'js' | 'yml' | 'yaml'} SyntaxType
+ * @typedef {'md' | 'js' | 'yml' | 'yaml' | 'toml' | 'sql'} SyntaxType
  */
 
 /** @type {SyntaxType} */

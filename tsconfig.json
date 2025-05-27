@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "lib",
+    "rootDir": "src",
     "target": "ESNext",
     "lib": ["ESNext"],
     "allowJs": true,
@@ -19,7 +19,7 @@
     "declaration": true,
     "declarationDir": "types",
     "noEmit": true,
-    "noEmitOnError": false,
+    "noEmitOnError": false
   },
   "include": [
     "./src/**/*.js",

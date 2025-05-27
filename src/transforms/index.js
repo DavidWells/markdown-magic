@@ -12,7 +12,7 @@ const transforms = {
    * Generate table of contents from markdown file
    *
    * **Options:**
-   * - `firsth1` - *boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
+   * - `firstH1` - *boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
    * - `collapse` - *boolean* - (optional): Collapse the table of contents in a detail accordion. Default `false`
    * - `collapseText` - *string* - (optional): Text the toc accordion summary
    * - `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`

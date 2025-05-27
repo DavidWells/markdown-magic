@@ -1,7 +1,7 @@
 const path = require('path')
 // @TODO remove this once we have swapped out node-fetch@2.7
-const moduleAlias = require('module-alias') // "Fix" for puncode dep warning in node 22+
-moduleAlias.addAlias('punycode', 'punycode/') // "Fix" for puncode dep warning in node 22+
+const moduleAlias = require('module-alias') // "Fix" for punycode dep warning in node 22+
+moduleAlias.addAlias('punycode', 'punycode/') // "Fix" for punycode dep warning in node 22+
 const { glob, globWithGit } = require('smart-glob')
 const codeTransform = require('./transforms/code')
 const fileTransform = require('./transforms/file')

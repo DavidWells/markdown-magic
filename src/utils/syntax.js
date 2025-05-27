@@ -53,6 +53,30 @@ const yaml = {
   }
 }
 
+const sql = {
+  tags: ['/*', '*/'],
+  pattern: [
+    '\/\\*+',
+    '\\*+/'
+  ],
+  singleLineTag: '--',
+  singleLinePattern: '--',
+  singleLine: '--.*$',
+  content: '[\\s\\S]*?'
+}
+
+const toml = {
+  tags: ['#', '#'],
+  pattern: [
+    '#+',
+    '#+'
+  ],
+  singleLineTag: '#',
+  singleLinePattern: '#+',
+  singleLine: '#.*$',
+  content: '[ \\t\\S]*?'
+}
+
 const syntaxMap = {
   // <!-- x -->
   md: html,
@@ -66,8 +90,12 @@ const syntaxMap = {
   jsx: jsx,
   mdx: jsx,
   // ## x ##
+  yml: yaml,
   yaml: yaml,
-  yml: yaml
+  // -- x
+  sql: sql,
+  // # x
+  toml: toml
 }
 
 // Additional comment syntaxes for future

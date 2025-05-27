@@ -11,6 +11,10 @@ misc
 misc/**/**.js
 __misc
 
+large-table.md
+large-table.js
+large-table-data.json
+
 /**/old-test/cool.md
 
 # Runtime data

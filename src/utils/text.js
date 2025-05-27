@@ -188,11 +188,18 @@ function stripComments(str, syntax = 'md') {
   const [ openPattern, closePattern ] = syntaxData.pattern
   const OR = (syntaxData.singleLine) ? `|\\s?[ \\t]*${syntaxData.singleLine}` : ''
   const CONTENT = syntaxData.content || '[\\s\\S]*?'
-  const pattern = new RegExp(`\\s?[ \\t]*${openPattern}(${CONTENT})?${closePattern}${OR}`, 'gim')
-  // console.log('pattern', pattern)
-  return str.replace(pattern, '')
-  // https://regex101.com/r/XKHU18/5
-  return str.replace(/\s?[ \t]*\/\*[\s\S]*?\*\/|\s?[ \t]*\/\/.*$|\/\*{1,}[\n\*]*(\s?[\s\S]*?)?\*+\//gm, '')
+  
+  // Handle multi-line comments
+  const multiLinePattern = new RegExp(`\\s?[ \\t]*${openPattern}${CONTENT}${closePattern}`, 'gim')
+  let result = str.replace(multiLinePattern, '')
+  
+  // Handle single-line comments if they exist
+  if (syntaxData.singleLine) {
+    const singleLinePattern = new RegExp(`\\s?[ \\t]*${syntaxData.singleLine}.*$`, 'gm')
+    result = result.replace(singleLinePattern, '')
+  }
+  
+  return result
 }
 
 

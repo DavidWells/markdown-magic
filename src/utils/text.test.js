@@ -50,7 +50,7 @@ nice
  nice={{ value: nice, cool: "true" }}
  soclose=[jdjdjd, hdhfhfhffh]
  rad="boss"
- cool=true notCool=false
+ cool=true notCool=false
  nooooo={[one, two, 3, 4]}
  numberZero=0,
  xyz=999,
@@ -72,7 +72,7 @@ actual content
 <!-- XYZ:START(cool) xxx
 hhddh=cool -->
 wowow
-whatever we want 
+whatever we want 
 <!-- XYZ:END -->
 
 
@@ -135,7 +135,7 @@ test('Remove Markdown comments', () => {
     '',
     '',
     'wowow',
-    'whatever we want ',
+    'whatever we want ',
     '',
     '',
     'xyz',
@@ -297,6 +297,79 @@ test('Convert comment syntax', () => {
   // assert.equal(typeof parsedValue, 'string')
 })
 
+test('Remove TOML comments', () => {
+  const parsedValue = stripComments(`
+# This is a TOML comment
+title = "TOML Example"
+# Another comment
+[owner]
+name = "Tom Preston-Werner"
+# Inline comment
+organization = "GitHub" # This is an inline comment
+# Multi-line comment
+# that continues
+# on multiple lines
+created = 1979-05-27T07:32:00Z
+
+[database]
+server = "192.168.1.1"
+ports = [ 8001, 8001, 8002 ]
+connection_max = 5000
+enabled = true
+`, 'toml')
+
+  assert.equal(typeof parsedValue, 'string')
+  assert.equal(parsedValue.match(/#/), null)
+  assert.equal(parsedValue.split('\n'), [
+    '',
+    'title = "TOML Example"',
+    '[owner]',
+    'name = "Tom Preston-Werner"',
+    'organization = "GitHub"',
+    'created = 1979-05-27T07:32:00Z',
+    '',
+    '[database]',
+    'server = "192.168.1.1"',
+    'ports = [ 8001, 8001, 8002 ]',
+    'connection_max = 5000',
+    'enabled = true',
+    ''
+  ])
+})
+
+test('Remove SQL comments', () => {
+  const parsedValue = stripComments(`
+-- This is a single line comment
+SELECT * FROM users
+-- Another single line comment
+WHERE id = 1
+/* This is a multi-line
+   comment that spans
+   multiple lines */
+
+AND active = true
+SELECT name -- inline comment
+FROM products
+WHERE price > 100 /* another inline comment */
+`, 'sql')
+
+  console.log('parsedValue', parsedValue)
+  assert.equal(typeof parsedValue, 'string')
+  assert.equal(parsedValue.match(/--/), null, 'SQL comments should be removed 1')
+  assert.equal(parsedValue.match(/\/\*/), null, 'SQL comments should be removed 2')
+  assert.equal(parsedValue.match(/\*\//), null, 'SQL comments should be removed 3')
+  assert.equal(parsedValue.split('\n'), [
+    '',
+    'SELECT * FROM users',
+    'WHERE id = 1',
+    '',
+    'AND active = true',
+    'SELECT name',
+    'FROM products',
+    'WHERE price > 100',
+    ''
+  ])
+})
 
 function logOutput(value) {
   console.log(value.split('\n'))

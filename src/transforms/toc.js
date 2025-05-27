@@ -33,7 +33,7 @@ module.exports = async function TOC(api) {
     return sectionToc(api)
   }
 
-  opts.firsth1 = (opts.firsth1) ? true : false
+  opts.firsth1 = (opts.firsth1 || opts.firstH1) ? true : false
   let contents = currentFileContent
   // console.log('contents', contents)
 
@@ -54,7 +54,7 @@ module.exports = async function TOC(api) {
     trimLeadingHeading: true,
     // maxHeaderLevel: 2, // default: 4
     // title: '**Table of Contents**',
-    // isNotitle: true,
+    // isNoTitle: true,
     // isFolding: true,
     // entryPrefix: '*',
     // processAll: true,
