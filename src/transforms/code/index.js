@@ -3,7 +3,13 @@ const path = require('path')
 const { remoteRequest } = require('../../utils/remoteRequest')
 const { isLocalPath } = require('../../utils/fs')
 const { deepLog } = require('../../utils/logs')
-const { getLineCount, getTextBetweenLines, stripMultiLineDoubleDashComments, stripHTMLComments } = require('../../utils/text')
+const { 
+  getLineCount,
+  getTextBetweenLines,
+  stripMultiLineDoubleSlashComments,
+  stripSingleLineDoubleSlashComments,
+  stripHTMLComments
+} = require('../../utils/text')
 const { resolveGithubContents, isGithubLink } = require('./resolve-github-file')
 
 const GITHUB_LINK = /https:\/\/github\.com\/([^/\s]*)\/([^/\s]*)\/blob\//
@@ -158,7 +164,7 @@ module.exports = async function CODE(api) {
     const endLineIndex = lines.findIndex(line => line.includes(`CODE_SECTION:${id}:END`));
     const endLine = endLineIndex !== -1 ? endLineIndex : lines.length - 1;
     // console.log('startLine', startLine)
-    // console.log('endLineendLine', endLine)
+    // console.log('endLine', endLine)
     if (startLine === -1 && endLine === -1) {
       throw new Error(`Missing ${id} code section from ${codeFilePath}`)
     }
@@ -179,10 +185,16 @@ module.exports = async function CODE(api) {
   if (options.header) {
     header = `\n${options.header}`
   }
+
+  if (options.trimSingleLineComments) {
+    if (syntax === 'js' || syntax === 'ts' || syntax === 'javascript' || syntax === 'typescript') {
+      code = stripSingleLineDoubleSlashComments(code)
+    }
+  }
   
   if (options.trimDeadCode) {
     if (syntax === 'js' || syntax === 'ts' || syntax === 'javascript' || syntax === 'typescript') {
-      code = stripMultiLineDoubleDashComments(code)
+      code = stripMultiLineDoubleSlashComments(code)
     } else if (syntax === 'html') {
       code = stripHTMLComments(code, { multilineOnly: true })
     }

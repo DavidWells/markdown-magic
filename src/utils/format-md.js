@@ -3,7 +3,7 @@ const { removeLeadingH1 } = require('@davidwells/md-utils/string-utils')
 
 function formatMd(content, options = {}) {
   let fileContents = content
-  if (options.removeLeadingH1) {
+  if (options.removeLeadingH1 || options.stripFirstH1) {
     fileContents = removeLeadingH1(fileContents)
   }
   
@@ -11,7 +11,7 @@ function formatMd(content, options = {}) {
   if (options.shiftHeaders) {
     fileContents = fileContents.replace(/^(#{1,6})\s/gm, (match, hashes) => {
       const currentLevel = hashes.length;
-      const shiftAmount = options.shiftHeaders;
+      const shiftAmount = Number(options.shiftHeaders);
       const newLevel = Math.max(1, Math.min(6, currentLevel + shiftAmount));
       return '#'.repeat(newLevel) + ' ';
     })

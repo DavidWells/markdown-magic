@@ -3,6 +3,7 @@ const file = require('./file')
 const remoteContent = require('./remote')
 const toc = require('./toc')
 const sectionToc = require('./sectionToc')
+const install = require('./install')
 
 const transforms = {
   /**
@@ -111,6 +112,32 @@ const transforms = {
    * @return {string} Updated content to place in the content block
    */
   REMOTE: remoteContent,
+  /**
+   * ### > install
+   *
+   * Generate installation instructions in a markdown table format
+   *
+   * **Options:**
+   * - `packageName` (optional): The name of the package to install. If not provided, will try to read from package.json
+   * - `isDev` (optional): Whether to install the package as a dev dependency. Default `false`
+   * - `header` (optional): The header to use for the installation instructions. Default `# Installation`
+   * - `body` (optional): The body to use for the installation instructions. Default `Install the \`${packageName}\` cli using your favorite package manager.`
+   *
+   * **Example:**
+   * ```md
+   * <!-- doc-gen install -->
+   * Installation instructions will be generated here
+   * <!-- end-doc-gen -->
+   * ```
+   *
+   * Default `matchWord` is `doc-gen`
+   *
+   * ---
+   * @param {string} content The current content of the comment block
+   * @param {object} options The options passed in from the comment declaration
+   * @return {string} Updated content to place in the content block
+   */
+  install: install,
 }
 
 module.exports = transforms

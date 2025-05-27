@@ -197,8 +197,12 @@ function stripComments(str, syntax = 'md') {
 
 
 // https://regex101.com/r/nCnt2J/1
-function stripMultiLineDoubleDashComments(str = '') {
+function stripMultiLineDoubleSlashComments(str = '') {
   return str.replace(/(?:\n\s*\/\/.*){2,}/g, '')
+}
+
+function stripSingleLineDoubleSlashComments(str = '') {
+  return str.replace(/\/\/.*$/gm, '')
 }
 
 // https://regex101.com/r/plpXmr/1
@@ -351,7 +355,8 @@ module.exports = {
   dedentString,
   stripComments,
   convertCommentSyntax,
-  stripMultiLineDoubleDashComments,
+  stripSingleLineDoubleSlashComments,
+  stripMultiLineDoubleSlashComments,
   stripHTMLComments,
   // stripCommentBlockJS,
   trimString,

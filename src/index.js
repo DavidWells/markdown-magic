@@ -9,6 +9,7 @@ const tocTransform = require('./transforms/toc')
 const sectionTocTransform = require('./transforms/sectionToc')
 const wordCountTransform = require('./transforms/wordCount')
 const remoteTransform = require('./transforms/remote')
+const installTransform = require('./transforms/install')
 const { getSyntaxInfo } = require('./utils/syntax')
 const { onlyUnique, getCodeLocation, pluralize } = require('./utils')
 const { readFile, resolveOutputPath, resolveFlatPath } = require('./utils/fs')
@@ -34,7 +35,8 @@ const defaultTransforms = {
   TOC: tocTransform,
   sectionToc: sectionTocTransform,
   wordCount: wordCountTransform,
-  remote: remoteTransform
+  remote: remoteTransform,
+  install: installTransform,
 }
 
 const defaultOptions = {
