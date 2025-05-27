@@ -113,7 +113,7 @@ const defaultOptions = {
   })
  */
 async function markdownMagic(globOrOpts = {}, options = {}) {
-  const hrstart = process.hrtime.bigint()
+  const hrStart = process.hrtime.bigint()
   let opts = options || {}
   let globPat
   if (typeof globOrOpts === 'string' || Array.isArray(globOrOpts)) {
@@ -134,11 +134,12 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     useGitGlob = false, 
     failOnMissingTransforms = false,
     failOnMissingRemote = true,
-    dryRun = false,
     debug = false,
     syntax = 'md',
     silent = false,
   } = opts
+
+  let dryRun = opts.dryRun || opts.dry || opts.plan || false
 
   // @ts-ignore 
   const outputDir = output.directory || opts.outputDir
@@ -203,7 +204,8 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   opts.globPattern = globs
 
   logger(LINE)
-  success(` Markdown Magic Starting...`, silent, '✨ ')
+  const dryRunPostFix = (dryRun) ? ' - Dry run' : ''
+  success(` Markdown Magic Starting...${dryRunPostFix}`, silent, '✨ ')
   logger(`${LINE}\n`)
 
   info(` Searching for comment blocks...`, silent, '🔎 ')
@@ -213,9 +215,9 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   logger(`Searching:    `, globs)
 
   if (dryRun || debug) {
+    logger()
     info(`Glob patterns:`, silent)
     logger(globs)
-    logger()
     /*
     process.exit(1)
     /** */
@@ -360,7 +362,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   const sortedItems = sortedIds.map(id => blocks.find(item => item.id === id)).filter(Boolean);
 
   // topoSort(blocks)
-  const orderedFiles = sortedItems.map((item) => item.id)
+  const orderedFiles = sortedItems.map((block) => block.id)
   // console.log('sortedItems', sortedItems)
   // console.log('orderedFiles', orderedFiles)
 
@@ -674,8 +676,17 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   process.exit(1)
   /** */
   logger()
-  info(` Results:`, silent, "💫 ")
 
+  if (dryRun) {
+    logger('Dry run complete. Exiting markdown magic early.')
+    return {
+      errors,
+      filesChanged: [],
+      results: plan
+    }
+  }
+  
+  info(` Results:`, silent, "💫 ")
   /*
   TODO:
     - Output to new file
@@ -686,14 +697,14 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     logErrors(errors)
   }
 
-  const elasped = convertHrtime(process.hrtime.bigint() - hrstart)
+  const elapsed = convertHrtime(process.hrtime.bigint() - hrStart)
 
   logger()
   logger(`${LINE}`)
-  success(`Markdown Magic Done. ${elasped.seconds} seconds`, silent)
+  success(`Markdown Magic Done. ${elapsed.seconds} seconds`, silent)
   logger(`${LINE}`)
   return {
-    // @TODO maybe seperate changed and output files
+    // @TODO maybe separate changed and output files
     filesChanged: plan.filter(({ isChanged, isNewPath }) => isChanged || isNewPath).map(({ outputPath }) => outputPath),
     results: plan,
     errors,
