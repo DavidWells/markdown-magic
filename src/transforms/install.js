@@ -47,11 +47,19 @@ function install(api) {
   }
   header = `${header}\n\n`
 
+  if (options.header === false) {
+    header = ''
+  }
+
   let body = `Install the \`${packageName}\` cli using your favorite package manager.`
   if (options.body) {
     body = (options.body.startsWith('\n')) ? options.body : `\n${options.body}`
   }
   body = `${body}\n`
+
+  if (options.body === false) {
+    body = ''
+  }
 
   if (!packageName) {
     return 'Error: No package name provided'
