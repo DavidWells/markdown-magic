@@ -43,6 +43,8 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   - [> CODE](#-code)
   - [> FILE](#-file)
   - [> REMOTE](#-remote)
+  - [> fileTree](#-filetree)
+  - [> install](#-install)
 - [Inline transforms](#inline-transforms)
 - [Legacy v1 & v2 plugins](#legacy-v1--v2-plugins)
 - [Adding Custom Transforms](#adding-custom-transforms)
@@ -267,7 +269,7 @@ Markdown Magic comes with a couple of built-in transforms for you to use or you 
 Generate table of contents from markdown file
 
 **Options:**
-- `firsth1` - *boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
+- `firstH1` - *boolean* - (optional): Show first h1 of doc in table of contents. Default `false`
 - `collapse` - *boolean* - (optional): Collapse the table of contents in a detail accordion. Default `false`
 - `collapseText` - *string* - (optional): Text the toc accordion summary
 - `excludeText` - *string* - (optional): Text to exclude in the table of contents. Default `Table of Contents`
@@ -355,6 +357,99 @@ Get any remote Data and put in markdown
 ```md
 <!-- doc-gen REMOTE url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
+<!-- end-doc-gen -->
+```
+
+Default `matchWord` is `doc-gen`
+
+---
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `content` | `string` | The current content of the comment block. |
+| `options` | `object` | The options passed in from the comment declaration. |
+
+### > fileTree
+
+Generate a file tree table of contents
+
+**Options:**
+- `src` (optional): The directory path to generate the file tree for. Default `.` (current directory)
+- `maxDepth` (optional): Maximum depth to traverse in the directory tree. Default `3`
+- `includeFiles` (optional): Whether to include files in the tree or just directories. Default `true`
+- `exclude` (optional): Array of glob patterns to exclude from the tree. Default `[]`
+- `showSize` (optional): Whether to show file sizes. Default `false`
+- `format` (optional): Output format: "tree" or "list". Default `"tree"`
+
+**Example:**
+```md
+<!-- doc-gen fileTree src="./src" maxDepth=2 -->
+file tree will be generated here
+<!-- end-doc-gen -->
+```
+
+**Example Output (tree format):**
+```
+└── src/
+    ├── transforms/
+    │   ├── code/
+    │   │   ...
+    │   ├── fileTree.js
+    │   ├── index.js
+    │   └── toc.js
+    ├── utils/
+    │   ├── fs.js
+    │   ├── logs.js
+    │   └── text.js
+    └── index.js
+```
+
+**Example Output (list format):**
+```md
+- **src/**
+  - **transforms/**
+    - **code/**
+      - ...
+    - fileTree.js
+    - index.js
+    - toc.js
+  - **utils/**
+    - fs.js
+    - logs.js
+    - text.js
+  - index.js
+```
+
+**Example with file sizes:**
+```
+└── src/
+    ├── index.js (15.2 KB)
+    └── package.json (552 B)
+```
+
+Default `matchWord` is `doc-gen`
+
+---
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `content` | `string` | The current content of the comment block. |
+| `options` | `object` | The options passed in from the comment declaration. |
+
+### > install
+
+Generate installation instructions in a markdown table format
+
+**Options:**
+- `packageName` (optional): The name of the package to install. If not provided, will try to read from package.json
+- `isDev` (optional): Whether to install the package as a dev dependency. Default `false`
+- `header` (optional): The header to use for the installation instructions. Default `# Installation`
+- `body` (optional): The body to use for the installation instructions. Default `Install the \`${packageName}\` cli using your favorite package manager.`
+
+**Example:**
+```md
+<!-- doc-gen install -->
+Installation instructions will be generated here
 <!-- end-doc-gen -->
 ```
 

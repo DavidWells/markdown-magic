@@ -1,5 +1,6 @@
 const code = require('./code')
 const file = require('./file')
+const fileTree = require('./fileTree')
 const remoteContent = require('./remote')
 const toc = require('./toc')
 const sectionToc = require('./sectionToc')
@@ -112,6 +113,73 @@ const transforms = {
    * @return {string} Updated content to place in the content block
    */
   REMOTE: remoteContent,
+  /**
+   * ### > fileTree
+   *
+   * Generate a file tree table of contents
+   *
+   * **Options:**
+   * - `src` (optional): The directory path to generate the file tree for. Default `.` (current directory)
+   * - `maxDepth` (optional): Maximum depth to traverse in the directory tree. Default `3`
+   * - `includeFiles` (optional): Whether to include files in the tree or just directories. Default `true`
+   * - `exclude` (optional): Array of glob patterns to exclude from the tree. Default `[]`
+   * - `showSize` (optional): Whether to show file sizes. Default `false`
+   * - `format` (optional): Output format: "tree" or "list". Default `"tree"`
+   *
+   * **Example:**
+   * ```md
+   * <!-- doc-gen fileTree src="./src" maxDepth=2 -->
+   * file tree will be generated here
+   * <!-- end-doc-gen -->
+   * ```
+   *
+   * **Example Output (tree format):**
+   * ```
+   * └── src/
+   *     ├── transforms/
+   *     │   ├── code/
+   *     │   │   ...
+   *     │   ├── fileTree.js
+   *     │   ├── index.js
+   *     │   └── toc.js
+   *     ├── utils/
+   *     │   ├── fs.js
+   *     │   ├── logs.js
+   *     │   └── text.js
+   *     └── index.js
+   * ```
+   *
+   * **Example Output (list format):**
+   * ```md
+   * - **src/**
+   *   - **transforms/**
+   *     - **code/**
+   *       - ...
+   *     - fileTree.js
+   *     - index.js
+   *     - toc.js
+   *   - **utils/**
+   *     - fs.js
+   *     - logs.js
+   *     - text.js
+   *   - index.js
+   * ```
+   *
+   * **Example with file sizes:**
+   * ```
+   * └── src/
+   *     ├── index.js (15.2 KB)
+   *     └── package.json (552 B)
+   * ```
+   *
+   * Default `matchWord` is `doc-gen`
+   *
+   * ---
+   * @param {string} content The current content of the comment block
+   * @param {object} options The options passed in from the comment declaration
+   * @return {string} Updated content to place in the content block
+   */
+  fileTree: fileTree,
   /**
    * ### > install
    *
