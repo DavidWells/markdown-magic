@@ -1,0 +1,48 @@
+# .github/workflows/claude.yml
+name: Claude PR Assistant
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude-code-action:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Env
+        id: setup-env
+        uses: DavidWells/actions/get-claude-tokens@master
+        with:
+          api-key: ${{ secrets.CLAUDE_CREDS_API_KEY }}
+          api-endpoint: ${{ secrets.CLAUDE_CREDS_API }}
+
+      - name: Run Claude PR Action
+        uses: davidwells/claude-code-action@main
+        with:
+          use_oauth: true
+          claude_access_token: ${{ steps.setup-env.outputs.access-token }}
+          claude_refresh_token: ${{ steps.setup-env.outputs.refresh-token }}
+          claude_expires_at: ${{ steps.setup-env.outputs.expires-at }}
+          model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
+          timeout_minutes: "60"
