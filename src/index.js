@@ -5,7 +5,7 @@ moduleAlias.addAlias('punycode', 'punycode/') // "Fix" for punycode dep warning 
 const { glob, globWithGit } = require('smart-glob')
 const codeTransform = require('./transforms/code')
 const fileTransform = require('./transforms/file')
-const fileTocTransform = require('./transforms/fileToc')
+const fileTreeTransform = require('./transforms/fileTree')
 const tocTransform = require('./transforms/toc')
 const sectionTocTransform = require('./transforms/sectionToc')
 const wordCountTransform = require('./transforms/wordCount')
@@ -33,7 +33,7 @@ const LINE = '──────────────────────
 const defaultTransforms = {
   CODE: codeTransform,
   FILE: fileTransform,
-  FILETOC: fileTocTransform,
+  fileTree: fileTreeTransform,
   TOC: tocTransform,
   sectionToc: sectionTocTransform,
   wordCount: wordCountTransform,

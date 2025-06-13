@@ -1,6 +1,6 @@
 const code = require('./code')
 const file = require('./file')
-const fileToc = require('./fileToc')
+const fileTree = require('./fileTree')
 const remoteContent = require('./remote')
 const toc = require('./toc')
 const sectionToc = require('./sectionToc')
@@ -114,7 +114,7 @@ const transforms = {
    */
   REMOTE: remoteContent,
   /**
-   * ### > FILETOC
+   * ### > fileTree
    *
    * Generate a file tree table of contents
    *
@@ -128,7 +128,7 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen FILETOC src="./src" maxDepth=2 -->
+   * <!-- doc-gen fileTree src="./src" maxDepth=2 -->
    * file tree will be generated here
    * <!-- end-doc-gen -->
    * ```
@@ -139,7 +139,7 @@ const transforms = {
    *     ├── transforms/
    *     │   ├── code/
    *     │   │   ...
-   *     │   ├── fileToc.js
+   *     │   ├── fileTree.js
    *     │   ├── index.js
    *     │   └── toc.js
    *     ├── utils/
@@ -155,7 +155,7 @@ const transforms = {
    *   - **transforms/**
    *     - **code/**
    *       - ...
-   *     - fileToc.js
+   *     - fileTree.js
    *     - index.js
    *     - toc.js
    *   - **utils/**
@@ -179,7 +179,7 @@ const transforms = {
    * @param {object} options The options passed in from the comment declaration
    * @return {string} Updated content to place in the content block
    */
-  FILETOC: fileToc,
+  fileTree: fileTree,
   /**
    * ### > install
    *

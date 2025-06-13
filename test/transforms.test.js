@@ -190,8 +190,8 @@ test('Mixed transforms <!-- AUTO-GENERATED-CONTENT:START wordCount -->', async (
   assert.ok(results, 'Mixed match words dont time out')
 })
 
-test('<!-- doc-gen FILETOC -->', async () => {
-  const fileName = 'transform-filetoc.md'
+test('<!-- doc-gen fileTree -->', async () => {
+  const fileName = 'transform-fileTree.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {

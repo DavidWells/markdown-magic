@@ -43,7 +43,7 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
   - [> CODE](#-code)
   - [> FILE](#-file)
   - [> REMOTE](#-remote)
-  - [> FILETOC](#-filetoc)
+  - [> fileTree](#-filetree)
   - [> install](#-install)
 - [Inline transforms](#inline-transforms)
 - [Legacy v1 & v2 plugins](#legacy-v1--v2-plugins)
@@ -369,7 +369,7 @@ Default `matchWord` is `doc-gen`
 | `content` | `string` | The current content of the comment block. |
 | `options` | `object` | The options passed in from the comment declaration. |
 
-### > FILETOC
+### > fileTree
 
 Generate a file tree table of contents
 
@@ -383,7 +383,7 @@ Generate a file tree table of contents
 
 **Example:**
 ```md
-<!-- doc-gen FILETOC src="./src" maxDepth=2 -->
+<!-- doc-gen fileTree src="./src" maxDepth=2 -->
 file tree will be generated here
 <!-- end-doc-gen -->
 ```
@@ -394,7 +394,7 @@ file tree will be generated here
     ├── transforms/
     │   ├── code/
     │   │   ...
-    │   ├── fileToc.js
+    │   ├── fileTree.js
     │   ├── index.js
     │   └── toc.js
     ├── utils/
@@ -410,7 +410,7 @@ file tree will be generated here
   - **transforms/**
     - **code/**
       - ...
-    - fileToc.js
+    - fileTree.js
     - index.js
     - toc.js
   - **utils/**
