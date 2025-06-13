@@ -45,4 +45,5 @@ jobs:
           claude_refresh_token: ${{ steps.setup-env.outputs.refresh-token }}
           claude_expires_at: ${{ steps.setup-env.outputs.expires-at }}
           model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
+          allowed_tools: ${{ steps.setup-env.outputs.allowed_tools || 'Bash,Edit,Read,Write,Glob,Grep,LS,MultiEdit,NotebookRead,NotebookEdit' }}
           timeout_minutes: "60"
