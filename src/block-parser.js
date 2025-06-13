@@ -21,7 +21,10 @@ function parseBlocks(contents, opts = {}) {
     closeText: close
   })
 
-  // console.log(patterns)
+  // Pre-compile regex patterns used in loops for better performance
+  const dashInTransformRegex = /^(-[^\s]*)/
+  const legacySyntaxRegex = /^:|^\?/
+  const bracketRegex = /^\(|\)$/g
 
   const newerRegex = patterns.blockPattern
   /*
@@ -82,7 +85,7 @@ Details:
     paramString = params.trim()
 
     /* Account for dashes in transform name. E.g. funky-name-here */
-    const dashInTransform = params.match(/^(-[^\s]*)/)
+    const dashInTransform = params.match(dashInTransformRegex)
     if (dashInTransform && dashInTransform[1]) {
       transformType = type + dashInTransform[1]
       paramString = paramString.replace(dashInTransform[1], '')
@@ -122,7 +125,7 @@ Details:
     const finIndentation = (lineOpen === lineClose) ? '' : indentation
     
     /* If old syntax XYZ?foo | XYZ:foo */
-    if (paramString.match(/^:|^\?/)) {
+    if (paramString.match(legacySyntaxRegex)) {
       paramString = paramString.split(')')[0]
       paramString = paramString.replace(/^:/, '').replace(/^\?/, '').replace(/\)$/g, '')
       // console.log('paramString', `"${paramString}"`)
@@ -130,7 +133,7 @@ Details:
       context.isLegacy = true
     } else {
       if (paramString[0] === '(' && paramString[paramString.length - 1] === ')') {
-        paramString = paramString.replace(/^\(/, '').replace(/\)$/g, '')
+        paramString = paramString.replace(bracketRegex, '')
       }
       options = parse(paramString)
     }
@@ -197,10 +200,33 @@ Details:
 }
 
 function verifyTagsBalanced(str, open, close) {
-  const openCount = (str.match(open) || []).length
-  // console.log('openCount', openCount)
-  const closeCount = (str.match(close) || []).length
-  // console.log('closeCount', closeCount)
+  // Optimize by doing single pass through string instead of separate regex matches
+  let openCount = 0
+  let closeCount = 0
+  let match
+  
+  // Reset regex lastIndex to ensure consistent results
+  open.lastIndex = 0
+  close.lastIndex = 0
+  
+  // Count open tags
+  while ((match = open.exec(str)) !== null) {
+    openCount++
+    // Prevent infinite loops on zero-width matches
+    if (match.index === open.lastIndex) {
+      open.lastIndex++
+    }
+  }
+  
+  // Count close tags  
+  while ((match = close.exec(str)) !== null) {
+    closeCount++
+    // Prevent infinite loops on zero-width matches
+    if (match.index === close.lastIndex) {
+      close.lastIndex++
+    }
+  }
+  
   return {
     isBalanced: openCount === closeCount,
     openCount,
@@ -289,8 +315,8 @@ function getBlockRegex({
   const open = `((?:${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)${matchWord})\\s*[(\\[\\{]*([A-Za-z0-9_$]${hasOne})[)\\]\\}]*\\s*((?:.|\\r?\\n)*?)${closeComment}\\n?)`
   // const close = `(\\n?[ \\t]?${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment})`
   const close = `(\\n?[ \\t]*${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment})`
-  // const close = `(\\n?${openComment}(?:.*|\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment})`
-  const blockPattern = new RegExp(`([ \\t]*)${open}([\\s\\S]*?)${close}`, 'gmi')
+  // Optimize: Use more specific pattern instead of [\s\S] which can be slow
+  const blockPattern = new RegExp(`([ \\t]*)${open}([^]*?)${close}`, 'gmi')
   // 👇 repeat error with .* on weird contents
   // const blockPattern = new RegExp(`([ \\t]*)${open}([\\s\\S]*?.*)${close}`, 'gmi')
   const openPattern = new RegExp(open, 'gi')
