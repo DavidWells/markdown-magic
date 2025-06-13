@@ -190,4 +190,26 @@ test('Mixed transforms <!-- AUTO-GENERATED-CONTENT:START wordCount -->', async (
   assert.ok(results, 'Mixed match words dont time out')
 })
 
+test('<!-- doc-gen FILETOC -->', async () => {
+  const fileName = 'transform-filetoc.md'
+  const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
+
+  const result = await markdownMagic(filePath, {
+    open: 'doc-gen',
+    close: 'end-doc-gen',
+    outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
+    silent: SILENT
+  })
+
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
+  // Check that file tree structure is generated
+  assert.ok(newContent.match(/├──/), 'file tree structure generated with tree connectors')
+  assert.ok(newContent.match(/└──/), 'file tree structure generated with tree endings')
+  // Check that list format works
+  assert.ok(newContent.match(/- \*\*.*\/\*\*/), 'list format directories generated')
+  // Check that fixture files are included
+  assert.ok(newContent.match(/simple\.js/), 'fixture files included in tree')
+})
+
 test.run()
