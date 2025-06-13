@@ -6,15 +6,15 @@ env:
   FORCE_COLOR: 2
 jobs:
   full:
-    name: Node.js 15 Full
+    name: Node.js 20 Full
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: 15
+          node-version: 20
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
       - name: Run tests
@@ -24,14 +24,14 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 14
-          - 12
+          - 18
+          - 22
     name: Node.js ${{ matrix.node-version }} Quick
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
