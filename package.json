@@ -45,6 +45,8 @@
   },
   "dependencies": {
     "@davidwells/md-utils": "0.0.52",
+    "github-contributors": "^0.4.1",
+    "github-url-from-git": "^1.5.0",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
@@ -56,6 +58,7 @@
     "node-fetch": "^2.7.0",
     "oparser": "^3.0.22",
     "punycode": "^2.3.1",
+    "remote-origin-url": "^2.0.0",
     "smart-glob": "^1.0.2",
     "string-width": "^4.2.3",
     "sync-request": "^6.1.0"

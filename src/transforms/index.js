@@ -1,4 +1,5 @@
 const code = require('./code')
+const contributors = require('./contributors')
 const file = require('./file')
 const fileTree = require('./fileTree')
 const remoteContent = require('./remote')
@@ -67,6 +68,39 @@ const transforms = {
    * @return {string} Updated inner contents of the comment block
    */
   CODE: code,
+  /**
+   * ### > CONTRIBUTORS
+   *
+   * Generate a list of GitHub contributors for the repository
+   *
+   * **Options:**
+   * - `repo` (optional): The GitHub repository in the format 'owner/repo'. If not provided, will be auto-detected from git remote.
+   * - `format` (optional): Output format: "table", "list", or "aligned". Default is "table".
+   * - `id` (optional): GitHub client ID for authentication (can also use CLIENT_ID env var).
+   * - `secret` (optional): GitHub client secret for authentication (can also use CLIENT_SECRET env var).
+   *
+   * **Example:**
+   * ```md
+   * <!-- doc-gen contributors -->
+   * contributors will be generated here
+   * <!-- end-doc-gen -->
+   * ```
+   *
+   * **Example with options:**
+   * ```md
+   * <!-- doc-gen contributors format=list repo=owner/reponame -->
+   * contributors list will be generated here
+   * <!-- end-doc-gen -->
+   * ```
+   *
+   * Default `matchWord` is `doc-gen`
+   *
+   * ---
+   * @param {string} content The current content of the comment block
+   * @param {object} options The options passed in from the comment declaration
+   * @return {string} Updated content to place in the content block
+   */
+  CONTRIBUTORS: contributors,
   /**
    * ### > FILE
    *

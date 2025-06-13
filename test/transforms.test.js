@@ -212,4 +212,32 @@ test('<!-- doc-gen fileTree -->', async () => {
   assert.ok(newContent.match(/simple\.js/), 'fixture files included in tree')
 })
 
+test('<!-- doc-gen CONTRIBUTORS -->', async () => {
+  const fileName = 'transform-contributors.md'
+  const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
+
+  const result = await markdownMagic(filePath, {
+    open: 'doc-gen',
+    close: 'end-doc-gen',
+    outputDir: OUTPUT_DIR,
+    applyTransformsToSource: UPDATE_FIXTURE,
+    silent: SILENT
+  })
+
+  const newContent = fs.readFileSync(getNewFile(result), 'utf8')
+  
+  // Check table format (default)
+  assert.ok(newContent.match(/\| \*\*Commits\*\* \| \*\*Contributor\*\*<br\/> \|/), 'table format header generated')
+  assert.ok(newContent.match(/\| --- \| --- \|/), 'table format separator generated')
+  assert.ok(newContent.match(/\| \d+ \| \[.*\]\(https:\/\/github\.com\/.*\) \|/), 'table format contributor row generated')
+  
+  // Check list format
+  assert.ok(newContent.match(/\* \d+ \[.*\]\(https:\/\/github\.com\/.*\)/), 'list format contributor generated')
+  
+  // Check aligned format
+  assert.ok(newContent.match(/COMMITS \| CONTRIBUTOR/), 'aligned format header generated')
+  assert.ok(newContent.match(/--- \| -----------/), 'aligned format separator generated')
+  assert.ok(newContent.match(/\d+\s+\w+/), 'aligned format contributor row generated')
+})
+
 test.run()
