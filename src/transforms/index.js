@@ -133,6 +133,45 @@ const transforms = {
    * <!-- end-doc-gen -->
    * ```
    *
+   * **Example Output (tree format):**
+   * ```
+   * └── src/
+   *     ├── transforms/
+   *     │   ├── code/
+   *     │   │   ...
+   *     │   ├── fileToc.js
+   *     │   ├── index.js
+   *     │   └── toc.js
+   *     ├── utils/
+   *     │   ├── fs.js
+   *     │   ├── logs.js
+   *     │   └── text.js
+   *     └── index.js
+   * ```
+   *
+   * **Example Output (list format):**
+   * ```md
+   * - **src/**
+   *   - **transforms/**
+   *     - **code/**
+   *       - ...
+   *     - fileToc.js
+   *     - index.js
+   *     - toc.js
+   *   - **utils/**
+   *     - fs.js
+   *     - logs.js
+   *     - text.js
+   *   - index.js
+   * ```
+   *
+   * **Example with file sizes:**
+   * ```
+   * └── src/
+   *     ├── index.js (15.2 KB)
+   *     └── package.json (552 B)
+   * ```
+   *
    * Default `matchWord` is `doc-gen`
    *
    * ---
