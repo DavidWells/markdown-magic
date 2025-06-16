@@ -1,0 +1,37 @@
+{
+  "name": "markdown-magic-block-parser",
+  "version": "1.0.0",
+  "description": "Block parser for markdown-magic - Parse comment blocks in markdown and other files",
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "README.md",
+    "package.json"
+  ],
+  "keywords": [
+    "markdown",
+    "parser",
+    "comment-blocks",
+    "regex",
+    "parsing"
+  ],
+  "author": "David Wells",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DavidWells/markdown-magic",
+    "directory": "block-parser"
+  },
+  "scripts": {
+    "test": "uvu test '.test.([mc]js|[jt]sx?)$'"
+  },
+  "dependencies": {
+    "oparser": "^3.0.22"
+  },
+  "devDependencies": {
+    "uvu": "^0.5.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

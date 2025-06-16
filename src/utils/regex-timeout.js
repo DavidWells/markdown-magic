@@ -1,7 +1,7 @@
 // https://stackoverflow.com/questions/38859506/cancel-regex-match-if-timeout
 const util = require('util')
 const vm = require('vm')
-const { getBlockRegex } = require('../block-parser')
+const { getBlockRegex } = require('../../block-parser/src/index')
 const { getSyntaxInfo } = require('./syntax')
 
 const goodString = `
