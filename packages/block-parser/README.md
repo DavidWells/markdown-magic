@@ -8,6 +8,32 @@ A standalone block parser for parsing comment blocks in markdown and other file 
 npm install comment-block-parser
 ```
 
+## Example
+
+The library works with a variety of [syntaxes](#supported-syntaxes).
+
+As an example, it matches `html` comments like this
+
+```html
+<!-- matchWord blockType [...args] -->
+contents inside
+<!-- closeMatchWord -->
+```
+
+and returns
+
+```js
+{
+  type: 'blockType',
+  options: { ...parsedArgs },
+  openValue: "<-- matchWord type [...args] -->",
+  contentValue: 'contents inside',
+  closeValue: '<!--/docs-->',
+  rawArgs: "[...args]",
+  blockValue: "<-- closeMatchWord -->"
+}
+```
+
 ## Usage
 
 ```js
