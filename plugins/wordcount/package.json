@@ -1,0 +1,20 @@
+{
+  "name": "markdown-magic-wordcount",
+  "version": "3.0.0",
+  "description": "Add word count to markdown files - Plugin for markdown-magic",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.test.js"
+  },
+  "keywords": [
+    "markdown",
+    "wordcount",
+    "markdown magic",
+    "plugin"
+  ],
+  "author": "David Wells",
+  "license": "MIT",
+  "peerDependencies": {
+    "markdown-magic": "^3.0.0"
+  }
+}
