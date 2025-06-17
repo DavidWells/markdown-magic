@@ -1,0 +1,24 @@
+# My TOML Configuration
+
+# GENERATED a #
+# This is a comment inside
+# END-GENERATED #
+
+# GENERATED b #
+# Another comment block
+# END-GENERATED #
+
+# GENERATED c #
+# Multiline
+# comment block
+# END-GENERATED #
+
+
+# GENERATED MyCodeGen foo='bar' #
+# Comment
+value = "test"
+# END-GENERATED #
+
+[database]
+host = "localhost"
+port = 5432

@@ -1,0 +1,63 @@
+{
+  "name": "markdown-magic",
+  "version": "3.7.0",
+  "description": "Automatically update markdown files with content from external sources",
+  "main": "index.js",
+  "bin": {
+    "markdown": "./cli.js",
+    "md-magic": "./cli.js",
+    "mdm": "./cli.js"
+  },
+  "files": [
+    "README.md",
+    "package.json",
+    "package-lock.json",
+    "src",
+    "cli.js"
+  ],
+  "scripts": {
+    "types": "tsc",
+    "emit-types": "tsc --noEmit false --emitDeclarationOnly true",
+    "docs": "node examples/generate-readme.js",
+    "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
+    "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
+    "publish": "git push origin && git push origin --tags",
+    "release:patch": "npm version patch && npm publish",
+    "release:minor": "npm version minor && npm publish",
+    "release:major": "npm version major && npm publish"
+  },
+  "author": "David Wells",
+  "license": "MIT",
+  "homepage": "https://github.com/DavidWells/markdown-magic#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DavidWells/markdown-magic"
+  },
+  "dependencies": {
+    "@davidwells/md-utils": "0.0.52",
+    "comment-block-parser": "^1.0.0",
+    "globrex": "^0.1.2",
+    "gray-matter": "^4.0.3",
+    "is-glob": "^4.0.3",
+    "is-local-path": "^0.1.6",
+    "is-valid-path": "^0.1.1",
+    "micro-mdx-parser": "^1.1.0",
+    "module-alias": "^2.2.3",
+    "mri": "^1.2.0",
+    "node-fetch": "^2.7.0",
+    "oparser": "^3.0.22",
+    "punycode": "^2.3.1",
+    "smart-glob": "^1.0.2",
+    "string-width": "^4.2.3",
+    "sync-request": "^6.1.0"
+  },
+  "devDependencies": {
+    "ansi-styles": "^4.2.1",
+    "concordance": "^5.0.1",
+    "doxxx": "^2.0.7",
+    "rimraf": "^3.0.2",
+    "safe-chalk": "^1.0.0",
+    "typescript": "^5.0.2",
+    "uvu": "^0.5.1"
+  }
+}
