@@ -1,17 +1,17 @@
-# Markdown Magic Block Parser
+# Comment Block Parser
 
 A standalone block parser for parsing comment blocks in markdown and other file types. Extracted from [markdown-magic](https://github.com/DavidWells/markdown-magic).
 
 ## Installation
 
 ```bash
-npm install markdown-magic-block-parser
+npm install comment-block-parser
 ```
 
 ## Usage
 
 ```javascript
-const { parseBlocks, getBlockRegex } = require('markdown-magic-block-parser')
+const { parseBlocks, getBlockRegex } = require('comment-block-parser')
 
 // Parse markdown comment blocks
 const content = `

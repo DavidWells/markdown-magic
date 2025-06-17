@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { remoteRequest } = require('../../utils/remoteRequest')
 const { isLocalPath } = require('../../utils/fs')
-const { deepLog } = require('../../utils/logs')
+const { deepLog } = require('../../../src/utils/logs')
 const { 
   getLineCount,
   getTextBetweenLines,

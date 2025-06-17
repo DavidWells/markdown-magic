@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { test } = require('uvu') 
 const assert = require('uvu/assert')
-const { markdownMagic } = require('../index')
+const { markdownMagic } = require('../src')
 const {
   MARKDOWN_FIXTURE_DIR,
   OUTPUT_DIR

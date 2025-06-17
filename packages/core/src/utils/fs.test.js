@@ -26,7 +26,7 @@ test('Finds file from dir', async () => {
 })
 
 test('getGitignoreContents', async () => {
-  const files = await getGitignoreContents()
+  const files = await getGitignoreContents(path.resolve(__dirname, '../../', '.gitignore'))
   //*
   console.log('files', files)
   /** */

@@ -20,10 +20,10 @@ const { processContents } = require('./process-contents')
 const { parseMarkdown } = require('@davidwells/md-utils')
 const { success, error, info, convertHrtime, deepLog } = require('./utils/logs')
 const { OPEN_WORD, CLOSE_WORD, DEFAULT_GLOB_PATTERN } = require('./defaults')
-const { getBlockRegex, parseBlocks } = require('../block-parser/src/index')
+const { getBlockRegex, parseBlocks } = require('comment-block-parser')
 const toposort = require('./utils/toposort')
 // const { hashFile } = require('./utils/hash-file')
-// const { getBlockRegex } = require('./block-parser')
+// const { getBlockRegex } = require('comment-block-parser')
 // const diff = require('../misc/old-test/utils/diff')
 
 // old https://raw.githubusercontent.com/DavidWells/markdown-magic/add-package-scripts-plugin/index.js

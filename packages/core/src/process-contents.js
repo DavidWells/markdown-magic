@@ -1,4 +1,4 @@
-const { parseBlocks } = require('../block-parser/src/index')
+const { parseBlocks } = require('comment-block-parser')
 const { deepLog } = require('./utils/logs')
 const { getCodeLocation } = require('./utils')
 const { indentString, trimString } = require('./utils/text')

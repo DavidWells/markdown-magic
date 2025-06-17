@@ -1,8 +1,8 @@
 const path = require('path')
 const { test } = require('uvu') 
 const assert = require('uvu/assert')
-const { markdownMagic } = require('../index')
-const { deepLog } = require('../utils/logs')
+const { markdownMagic } = require('../src')
+const { deepLog } = require('../src/utils/logs')
 
 const {
   MARKDOWN_FIXTURE_DIR,

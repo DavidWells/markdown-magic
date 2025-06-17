@@ -2,7 +2,7 @@
   "name": "markdown-magic",
   "version": "3.7.0",
   "description": "Automatically update markdown files with content from external sources",
-  "main": "src/index.js",
+  "main": "index.js",
   "bin": {
     "markdown": "./cli.js",
     "md-magic": "./cli.js",
@@ -12,8 +12,8 @@
     "README.md",
     "package.json",
     "package-lock.json",
-    "cli.js",
-    "src"
+    "src",
+    "cli.js"
   ],
   "scripts": {
     "types": "tsc",
@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@davidwells/md-utils": "0.0.52",
+    "comment-block-parser": "^1.0.0",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
