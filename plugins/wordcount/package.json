@@ -1,5 +1,5 @@
 {
-  "name": "markdown-magic-wordcount",
+  "name": "@markdown-magic/wordcount",
   "version": "3.0.0",
   "description": "Add word count to markdown files - Plugin for markdown-magic",
   "main": "index.js",

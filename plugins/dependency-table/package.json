@@ -1,5 +1,5 @@
 {
-  "name": "markdown-magic-dependency-table",
+  "name": "@markdown-magic/dependency-table",
   "version": "3.0.0",
   "description": "Generate table of information about dependencies automatically in markdown - Plugin for markdown-magic",
   "main": "index.js",
