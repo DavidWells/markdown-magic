@@ -12,6 +12,7 @@ const defaults = {
 
 const npmPkgUrl = 'https://npmjs.org/package/'
 
+
 function findPkg(dir) {
   const pkgPath = findup.sync('package.json', { cwd: dir })
   if (!pkgPath) throw new Error('No package.json file found')
