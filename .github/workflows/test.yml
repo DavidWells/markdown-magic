@@ -17,14 +17,16 @@ jobs:
           node-version: 20
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
+        with:
+          working-directory: packages/core
       - name: Run tests
         run: npm test
+        working-directory: packages/core
   short:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version:
-          - 18
           - 22
     name: Node.js ${{ matrix.node-version }} Quick
     steps:
@@ -36,5 +38,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
+        with:
+          working-directory: packages/core
       - name: Run unit tests
         run: npm test
+        working-directory: packages/core
