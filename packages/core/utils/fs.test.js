@@ -27,7 +27,7 @@ test('Finds file from dir', async () => {
 
 test('getGitignoreContents', async () => {
   const files = await getGitignoreContents()
-  /*
+  //*
   console.log('files', files)
   /** */
   assert.is(Array.isArray(files), true)

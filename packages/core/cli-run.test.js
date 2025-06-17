@@ -1,7 +1,7 @@
 const { test } = require('uvu') 
 const assert = require('uvu/assert')
 const { deepLog } = require('./utils/logs')
-const { getGlobGroupsFromArgs, runCli } = require('./cli')
+const { getGlobGroupsFromArgs, runCli } = require('./cli-run')
 
 const DEBUG = true
 const logger = (DEBUG) ? console.log : () => {}

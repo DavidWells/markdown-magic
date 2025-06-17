@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": "packages",
     "target": "ESNext",
     "lib": ["ESNext"],
     "allowJs": true,
@@ -22,8 +22,8 @@
     "noEmitOnError": false
   },
   "include": [
-    "./src/**/*.js",
-    "./src/**/*.d.ts"
+    "./packages/**/*.js",
+    "./packages/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"

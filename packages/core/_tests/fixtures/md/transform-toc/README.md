@@ -6,7 +6,7 @@ This file shows how to use the `TOC` and `sectionToc` transforms.
 - [Heading 1](#heading-1)
   - [heading 2](#heading-2)
   - [heading 2 2](#heading-2-2)
-  - [Sub](#sub)
+  - [Subsection one](#subsection-one)
 - [Heading 1 2](#heading-1-2)
   - [one two](#one-two)
 <!-- end-doc-gen -->
@@ -19,7 +19,7 @@ This file shows how to use the `TOC` and `sectionToc` transforms.
 
 - [heading 2](#heading-2)
 - [heading 2 2](#heading-2-2)
-- [Sub](#sub)
+- [Subsection one](#subsection-one)
   - [nice](#nice)
   - [yyy](#yyy)
     - [four](#four)
@@ -37,7 +37,7 @@ Nice
 
 <!-- doc-gen sectionToc -->
 <details>
-<summary>Sub contents</summary>
+<summary>Subsection one contents</summary>
 
 - [nice](#nice)
 - [yyy](#yyy)

@@ -2,8 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const { test } = require('uvu') 
 const assert = require('uvu/assert')
-const { markdownMagic } = require('../src')
-const { resolveOutputPath, resolveCommonParent } = require('../src/utils/fs')
+const { markdownMagic } = require('../index')
+const { resolveOutputPath, resolveCommonParent } = require('../utils/fs')
 const {
   FIXTURE_DIR,
   MARKDOWN_FIXTURE_DIR,
