@@ -1,0 +1,22 @@
+# This is a comment 
+
+foo: bar
+baz: 123
+
+## GENERATED a ##
+# comment inside
+## END-GENERATED ##
+
+## GENERATED b ##
+# another comment
+## END-GENERATED ##
+
+## GENERATED c ##
+# multiline
+# comment block
+## END-GENERATED ##
+
+## GENERATED MyCodeGen foo='bar' ##
+# Generated content
+value: test
+## END-GENERATED ##

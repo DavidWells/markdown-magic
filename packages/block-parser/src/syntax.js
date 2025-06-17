@@ -74,8 +74,9 @@ const toml = {
   singleLineTag: '#',
   singleLinePattern: '#+',
   singleLine: '#.*$',
-  content: '[ \\t\\S]*?'
+  content: '[ \\t\\S]*?',
 }
+
 
 const syntaxMap = {
   // <!-- x -->
@@ -95,7 +96,7 @@ const syntaxMap = {
   // -- x
   sql: sql,
   // # x
-  toml: toml
+  toml: toml,
 }
 
 // Additional comment syntaxes for future
