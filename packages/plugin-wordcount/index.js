@@ -1,4 +1,7 @@
-const { getWordCount } = require('../../src/utils/text')
+
+function getWordCount(str = '') {
+  return str.trim().split(/\s+/).length
+}
 
 /**
  * ### > wordcount
