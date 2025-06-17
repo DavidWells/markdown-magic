@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Automatically update markdown files with content from external sources",
   "scripts": {
-    "test": "npm run test:src && npm run test:test && echo 'tests done'"
+    "test": "tt run"
   },
   "author": "David Wells",
   "license": "MIT",

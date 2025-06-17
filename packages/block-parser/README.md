@@ -10,22 +10,51 @@ npm install comment-block-parser
 
 ## Usage
 
-```javascript
+```js
 const { parseBlocks, getBlockRegex } = require('comment-block-parser')
 
 // Parse markdown comment blocks
 const content = `
-<!-- DOCS:START(toc) -->
-<!-- DOCS:END -->
+<!-- docs inlineExample foo={{ rad: 'bar' }}-->99<!--/docs-->
+
+<!-- docs fooBar isCool -->
+Stuff inside the block
+<!--/docs-->
 `
 
 const result = parseBlocks(content, {
-  open: 'DOCS:START',
-  close: 'DOCS:END',
-  syntax: 'md'
+  open: 'docs',
+  close: '/docs'
 })
 
 console.log(result.blocks)
+/*
+// Result
+[
+  {
+    index: 1,
+    type: 'inlineExample',
+    options: { foo: { rad: 'bar' } },
+    openValue: "<!-- docs inlineExample foo={{ rad: 'bar' }}-->",
+    contentValue: '99',
+    closeValue: '<!--/docs-->',
+    rawArgs: "foo={{ rad: 'bar' }}",
+    rawContent: '99',
+    blockValue: "<!-- docs inlineExample foo={{ rad: 'bar' }}-->99<!--/docs-->"
+  },
+  {
+    index: 2,
+    type: 'fooBar',
+    options: { isCool: true },
+    openValue: '<!-- docs fooBar isCool -->\n',
+    contentValue: 'Stuff inside the block',
+    closeValue: '\n<!--/docs-->',
+    rawArgs: 'isCool',
+    rawContent: 'Stuff inside the block',
+    blockValue: '<!-- docs fooBar isCool -->\nStuff inside the block\n<!--/docs-->'
+  }
+]
+*/
 ```
 
 ## API
