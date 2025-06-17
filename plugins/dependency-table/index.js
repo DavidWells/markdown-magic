@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const findup = require('find-up')
+const findUp = require('find-up')
 const semver = require('semver')
 
 const defaults = {
@@ -14,7 +14,7 @@ const npmPkgUrl = 'https://npmjs.org/package/'
 
 
 function findPkg(dir) {
-  const pkgPath = findup.sync('package.json', { cwd: dir })
+  const pkgPath = findUp.sync('package.json', { cwd: dir })
   if (!pkgPath) throw new Error('No package.json file found')
   return pkgPath
 }
@@ -63,7 +63,6 @@ function sanitizeLicense(license) {
 
 const readDependencies = (pkg) => (manifest, type) => {
   const dependencyType = type || 'production'
-
   let dependencies
 
   if (type === 'production') {
@@ -74,7 +73,7 @@ const readDependencies = (pkg) => (manifest, type) => {
 
   return manifest.concat(
     Object.keys(dependencies || {}).map((name) => {
-      const localPkgPath = findup.sync(`node_modules/${name}/package.json`)
+      const localPkgPath = findUp.sync(`node_modules/${name}/package.json`)
       const localPkg = JSON.parse(fs.readFileSync(localPkgPath, 'utf8'))
       const { description, homepage, version, repository, license } = localPkg
 
