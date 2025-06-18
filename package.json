@@ -2,8 +2,14 @@
   "name": "markdown-magic-monorepo",
   "version": "0.0.0",
   "description": "Automatically update markdown files with content from external sources",
+  "private": true,
+  "engines": {
+    "pnpm": ">=7.0.0"
+  },
   "scripts": {
-    "test": "tt run"
+    "test": "pnpm -r test",
+    "build": "pnpm -r build",
+    "clean": "pnpm -r clean"
   },
   "author": "David Wells",
   "license": "MIT",
@@ -13,6 +19,7 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "devDependencies": {
+    "rimraf": "^5.0.0",
     "typescript": "^5.0.2",
     "uvu": "^0.5.1"
   }

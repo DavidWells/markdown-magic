@@ -28,6 +28,7 @@
     "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
     "types": "tsc --emitDeclarationOnly --outDir types",
     "build": "npm run types",
+    "clean": "rimraf types",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "npm run build && npm version patch && npm publish",
     "release:minor": "npm run build && npm version minor && npm publish",
