@@ -34,7 +34,7 @@ async function processContents(text, config) {
     open = OPEN_WORD, // 'DOCS:START',
     close = CLOSE_WORD, // 'DOCS:END',
     syntax = SYNTAX, // 'md'
-    transforms = [],
+    transforms = {},
     beforeMiddleware = [],
     afterMiddleware = [],
     debug = false,
@@ -86,7 +86,7 @@ async function processContents(text, config) {
   // console.log('blocksWithTransforms', blocksWithTransforms)
   // process.exit(1)
 
-  const transformsToRun = sortTranforms(blocksWithTransforms, transforms)
+  const transformsToRun = sortTransforms(blocksWithTransforms, transforms)
   // .map((transform) => {
   //   return {
   //     ...transform,
@@ -169,6 +169,7 @@ async function processContents(text, config) {
         }
       }
     }, md, afterMiddleware)
+    
     /*
     console.log('afterContent', afterContent)
     process.exit(1)
@@ -434,11 +435,11 @@ function getTransform(name, transforms = {}) {
   return transforms[name] || transforms[name.toLowerCase()]
 }
 
-function sortTranforms(foundTransForms, registeredTransforms) {
+function sortTransforms(foundTransForms, registeredTransforms) {
   // console.log('transforms', transforms)
   if (!foundTransForms) return []
   return foundTransForms.sort((a, b) => {
-    // put table of contents (TOC) at end of tranforms
+    // put table of contents (TOC) at end of transforms
     if (a.transform === 'TOC' || a.transform === 'sectionToc') return 1
     if (b.transform === 'TOC' || b.transform === 'sectionToc') return -1
     return 0

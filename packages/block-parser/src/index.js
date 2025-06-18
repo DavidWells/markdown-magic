@@ -29,7 +29,7 @@ const defaultOptions = {
  */
 
 /**
- * @typedef {Object} BlockBlock
+ * @typedef {Object} BlockDetails
  * @property {string} indentation - Final indentation to use
  * @property {number[]} lines - Array of [startLine, endLine]
  * @property {number} start - Start position in the file
@@ -55,7 +55,7 @@ const defaultOptions = {
  * @property {BlockPosition} open - Open tag information
  * @property {BlockContent} content - Content information
  * @property {BlockPosition} close - Close tag information
- * @property {BlockBlock} block - Full block information
+ * @property {BlockDetails} block - Full block information
  */
 
 /**
