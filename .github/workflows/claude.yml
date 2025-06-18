@@ -28,7 +28,9 @@ jobs:
       # 🔧 Development & CI/CD management
       actions: write
       checks: write
-
+      statuses: write
+      # 🆔 Authentication & token management
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
