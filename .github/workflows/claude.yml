@@ -760,7 +760,7 @@ jobs:
               2. Confirm that tests pass
               3. Merge if there are no issues
 
-              **If additional fixes are needed:** Mention \`@claude\` in this PR
+              **If additional fixes are needed:** Mention \`@člaude\` in this PR
 
               ---
               *Automated PR by [Claude Code Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})*`;
@@ -793,7 +793,7 @@ jobs:
             **🌿 Branch:** \`${branchName}\`
 
             Please review the PR and merge if there are no issues.
-            If additional fixes are needed, please mention \`@claude\` in the PR.`
+            If additional fixes are needed, please mention \`@člaude\` in the PR.`
               });
               
             } catch (error) {
@@ -809,7 +809,7 @@ jobs:
 
               **Error:** \`${error.message}\`
 
-              Solution: Create a PR manually or rerun with \`@claude\`
+              Solution: Create a PR manually or rerun with \`@člaude\`
               Details: [Actions run log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
               });
             }
@@ -918,11 +918,11 @@ jobs:
             
             Object.entries(commands).forEach(([category, cmds]) => {
               message += `**${category}:**\n`;
-              cmds.forEach(cmd => message += `- \`@claude ${cmd}\`\n`);
+              cmds.forEach(cmd => message += `- \`@člaude ${cmd}\`\n`);
               message += `\n`;
             });
             
-            message += `🔄 **Rerun**: You can run again anytime with \`@claude [your instructions]\``;
+            message += `🔄 **Rerun**: You can run again anytime with \`@člaude [your instructions]\``;
             
             await github.rest.issues.createComment({
               issue_number: ${{ steps.context-info.outputs.issue-number }},
@@ -957,7 +957,7 @@ jobs:
             
             message += `**1. Temporary Issue** (most common)\n`;
             message += `- Temporary limitations of the Claude API\n`;
-            message += `- → **Solution**: Rerun with \`@claude\` after 5 minutes\n\n`;
+            message += `- → **Solution**: Rerun with \`@člaude\` after 5 minutes\n\n`;
             
             message += `**2. Timeout** (15-minute limit)\n`;
             message += `- The task may be too complex\n`;
@@ -972,12 +972,12 @@ jobs:
             
             // Concise rerun guide
             message += `**💡 Rerun Tips:**\n`;
-            message += `- Be specific: \`@claude review src/components/Button.tsx\`\n`;
+            message += `- Be specific: \`@člaude review src/components/Button.tsx\`\n`;
             message += `- Step by step: Start with one file\n`;
             message += `- Be clear: State the expected outcome\n\n`;
             
             message += `---\n`;
-            message += `🔄 **Rerun**: Please try again with \`@claude [specific instructions]\`\n`;
+            message += `🔄 **Rerun**: Please try again with \`@člaude [specific instructions]\`\n`;
             message += `📞 **Support**: If the problem persists, please contact an administrator`;
             
             await github.rest.issues.createComment({
