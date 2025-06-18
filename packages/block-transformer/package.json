@@ -1,0 +1,23 @@
+{
+  "name": "comment-block-transformer",
+  "version": "0.1.0",
+  "description": "Transform markdown blocks based on configured transforms",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "test": "uvu test",
+    "build": "npm run types",
+    "types": "tsc --emitDeclarationOnly --outDir types",
+    "publish": "git push origin && git push origin --tags",
+    "release:patch": "npm run build && npm version patch && npm publish",
+    "release:minor": "npm run build && npm version minor && npm publish",
+    "release:major": "npm run build && npm version major && npm publish"
+  },
+  "dependencies": {
+    "comment-block-parser": "^1.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "uvu": "^0.5.6"
+  }
+}
