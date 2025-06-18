@@ -28,8 +28,8 @@ markdownMagic('README.md', config)
 Then use in your markdown files:
 
 ```md
-<!-- CONTRIBUTORS:START -->
-<!-- CONTRIBUTORS:END -->
+<!-- doc-gen CONTRIBUTORS -->
+<!-- end-doc-gen -->
 ```
 
 ## Options
@@ -43,22 +43,22 @@ Then use in your markdown files:
 ### Table Format (Default)
 
 ```md
-<!-- CONTRIBUTORS:START -->
-<!-- CONTRIBUTORS:END -->
+<!-- doc-gen CONTRIBUTORS -->
+<!-- end-doc-gen -->
 ```
 
 ### List Format
 
 ```md
-<!-- CONTRIBUTORS:START format=list -->
-<!-- CONTRIBUTORS:END -->
+<!-- doc-gen CONTRIBUTORS format=list -->
+<!-- end-doc-gen -->
 ```
 
 ### Aligned Format with Specific Repository
 
 ```md
-<!-- CONTRIBUTORS:START repo=facebook/react format=aligned -->
-<!-- CONTRIBUTORS:END -->
+<!-- doc-gen CONTRIBUTORS repo=facebook/react format=aligned -->
+<!-- end-doc-gen -->
 ```
 
 ## Authentication
@@ -72,8 +72,8 @@ export GITHUB_TOKEN=your_github_token_here
 Or pass it as an option:
 
 ```md
-<!-- CONTRIBUTORS:START token=your_github_token_here -->
-<!-- CONTRIBUTORS:END -->
+<!-- doc-gen CONTRIBUTORS token=your_github_token_here -->
+<!-- end-doc-gen -->
 ```
 
 ## Output Formats
