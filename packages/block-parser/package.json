@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "files": [
     "src",
+    "types",
     "README.md",
     "package.json"
   ],
@@ -24,16 +25,19 @@
   },
   "scripts": {
     "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
+    "types": "tsc --emitDeclarationOnly --outDir types",
+    "build": "npm run types",
     "publish": "git push origin && git push origin --tags",
-    "release:patch": "npm version patch && npm publish",
-    "release:minor": "npm version minor && npm publish",
-    "release:major": "npm version major && npm publish"
+    "release:patch": "npm run build && npm version patch && npm publish",
+    "release:minor": "npm run build && npm version minor && npm publish",
+    "release:major": "npm run build && npm version major && npm publish"
   },
   "dependencies": {
     "oparser": "^3.0.22"
   },
   "devDependencies": {
-    "uvu": "^0.5.1"
+    "uvu": "^0.5.1",
+    "typescript": "^5.0.0"
   },
   "engines": {
     "node": ">=14.0.0"

@@ -1,8 +1,11 @@
 const { parse } = require('oparser')
 const { getSyntaxInfo } = require('./syntax')
 const { getTextBetweenChars, findMinIndent } = require('./text')
-const { OPEN_WORD, CLOSE_WORD, SYNTAX } = require('./defaults')
 // Alt parser https://github.com/LesterLyu/fast-formula-parser/blob/master/grammar/lexing.js
+
+const SYNTAX = 'md'
+const OPEN_WORD = 'doc-gen'
+const CLOSE_WORD = 'end-doc-gen'
 
 const defaultOptions = {
   syntax: SYNTAX,
@@ -10,6 +13,68 @@ const defaultOptions = {
   close: CLOSE_WORD,
 }
 
+/**
+ * @typedef {Object} BlockPosition
+ * @property {string} value - The raw text value
+ * @property {number} start - Start position in the file
+ * @property {number} end - End position in the file
+ */
+
+/**
+ * @typedef {Object} BlockContent
+ * @property {string} value - The content between open and close tags
+ * @property {number} start - Start position in the file
+ * @property {number} end - End position in the file
+ * @property {string} indentation - Minimum indentation of the content
+ */
+
+/**
+ * @typedef {Object} BlockBlock
+ * @property {string} indentation - Final indentation to use
+ * @property {number[]} lines - Array of [startLine, endLine]
+ * @property {number} start - Start position in the file
+ * @property {number} end - End position in the file
+ * @property {string} rawArgs - Raw arguments string
+ * @property {string} rawContent - Raw content between tags
+ * @property {string} value - The full block value
+ */
+
+/**
+ * @typedef {Object} BlockContext
+ * @property {boolean} isMultiline - Whether the block spans multiple lines
+ * @property {boolean} [isLegacy] - Whether using legacy syntax
+ */
+
+/**
+ * Details about the matched comment block
+ * @typedef {Object} BlockData
+ * @property {number} index - Block index in the file
+ * @property {string} type - Transform type
+ * @property {Object} options - Parsed options object
+ * @property {BlockContext} context - Block context information
+ * @property {BlockPosition} open - Open tag information
+ * @property {BlockContent} content - Content information
+ * @property {BlockPosition} close - Close tag information
+ * @property {BlockBlock} block - Full block information
+ */
+
+/**
+ * @typedef {Object} ParseBlocksResult
+ * @property {RegExp} pattern - The regex pattern used
+ * @property {RegExp} COMMENT_OPEN_REGEX - Regex for open comments
+ * @property {RegExp} COMMENT_CLOSE_REGEX - Regex for close comments
+ * @property {BlockData[]} blocks - Array of parsed blocks
+ */
+
+/**
+ * Parse blocks from content string
+ * @param {string} contents - The content string to parse
+ * @param {Object} [opts={}] - Options object
+ * @param {string} [opts.syntax=SYNTAX] - Comment syntax to use
+ * @param {string} [opts.open=OPEN_WORD] - Open tag word
+ * @param {string} [opts.close=CLOSE_WORD] - Close tag word
+ * @returns {ParseBlocksResult} Result containing parsed blocks and patterns used
+ */
 function parseBlocks(contents, opts = {}) {
   const _options = Object.assign({}, defaultOptions, opts)
   const { syntax, open, close } = _options
