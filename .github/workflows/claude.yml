@@ -28,17 +28,7 @@ jobs:
       # 🔧 Development & CI/CD management
       actions: write
       checks: write
-      statuses: write
-      pages: write
-      deployments: write
-      # 📦 Package & security management
-      packages: write
-      security-events: write
-      # 🎯 Project & metadata management
-      repository-projects: write
-      metadata: read
-      # 🆔 Authentication & token management
-      id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
