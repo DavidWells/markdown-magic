@@ -290,6 +290,17 @@ jobs:
         with:
           api-key: ${{ secrets.CLAUDE_CREDS_API_KEY }}
           api-endpoint: ${{ secrets.CLAUDE_CREDS_API }}
+
+      # - name: Run Claude PR Action
+      #   uses: davidwells/claude-code-action@main
+      #   with:
+      #     use_oauth: true
+      #     claude_access_token: ${{ steps.setup-env.outputs.access-token }}
+      #     claude_refresh_token: ${{ steps.setup-env.outputs.refresh-token }}
+      #     claude_expires_at: ${{ steps.setup-env.outputs.expires-at }}
+      #     model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
+      #     allowed_tools: ${{ steps.setup-env.outputs.allowed_tools || 'Bash,Edit,Read,Write,Glob,Grep,LS,MultiEdit,NotebookRead,NotebookEdit' }}
+      #     timeout_minutes: "60"
           
       - name: Run Claude Code
         id: claude
@@ -368,9 +379,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = '${{ steps.context-info.outputs.issue-number }}';
+            const issueNumber = ${{ steps.context-info.outputs.issue-number }};
             const isPR = '${{ steps.context-info.outputs.is-pr }}' === 'true';
-            const triggerText = '${{ steps.context-info.outputs.trigger-text }}'.toLowerCase();
+            const triggerText = (${{ toJSON(steps.context-info.outputs.trigger-text) }} || '').toLowerCase();
             const framework = '${{ steps.project-info.outputs.framework }}';
             const hashSymbol = String.fromCharCode(35);
             
