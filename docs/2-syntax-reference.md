@@ -1,3 +1,8 @@
+---
+title: Syntax Reference
+description: Complete guide to markdown-magic block syntax, including all available syntax variations, option formats, and best practices
+---
+
 # Syntax Reference
 
 Markdown-magic supports multiple syntax styles for transform blocks. Choose the style that works best for your project.

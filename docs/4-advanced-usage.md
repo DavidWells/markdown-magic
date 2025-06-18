@@ -1,3 +1,8 @@
+---
+title: Advanced Usage
+description: Advanced patterns and techniques for complex markdown-magic scenarios, including performance optimization, error handling, and debugging
+---
+
 # Advanced Usage
 
 This guide covers advanced patterns and techniques for using markdown-magic effectively in complex scenarios.

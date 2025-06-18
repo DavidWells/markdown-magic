@@ -1,3 +1,8 @@
+---
+title: Troubleshooting Guide
+description: Common issues and solutions for markdown-magic, including installation problems, transform errors, configuration issues, and debugging tips
+---
+
 # Troubleshooting Guide
 
 Common issues and solutions when using markdown-magic.

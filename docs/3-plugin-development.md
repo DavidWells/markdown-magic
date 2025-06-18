@@ -1,3 +1,8 @@
+---
+title: Plugin Development Guide
+description: Comprehensive guide to creating custom transforms and plugins for markdown-magic, including async transforms, error handling, and best practices
+---
+
 # Plugin Development Guide
 
 Learn how to create custom transforms (plugins) for markdown-magic to extend its functionality.

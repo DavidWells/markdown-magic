@@ -1,3 +1,8 @@
+---
+title: Getting Started
+description: Learn how to install and use markdown-magic with quick start examples, CLI usage, and basic configuration
+---
+
 # Getting Started
 
 ## Installation

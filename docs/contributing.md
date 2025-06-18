@@ -1,3 +1,8 @@
+---
+title: Contributing Guide
+description: Complete guide for contributing to markdown-magic, including development setup, coding standards, testing guidelines, and the pull request process
+---
+
 # Contributing Guide
 
 Thank you for your interest in contributing to markdown-magic! This guide will help you get started with contributing to the project.
