@@ -6,13 +6,13 @@
   "types": "types/index.d.ts",
   "scripts": {
     "test": "uvu test",
-    "build": "npm run types",
+    "build": "pnpm run types",
     "types": "tsc --emitDeclarationOnly --outDir types",
     "clean": "rimraf types",
-    "publish": "git push origin && git push origin --tags",
-    "release:patch": "npm run build && npm version patch && npm publish",
-    "release:minor": "npm run build && npm version minor && npm publish",
-    "release:major": "npm run build && npm version major && npm publish"
+    "publish": "pnpm publish",
+    "release:patch": "pnpm run build && pnpm version patch && pnpm publish",
+    "release:minor": "pnpm run build && pnpm version minor && pnpm publish",
+    "release:major": "pnpm run build && pnpm version major && pnpm publish"
   },
   "dependencies": {
     "comment-block-parser": "workspace:*"
@@ -20,5 +20,8 @@
   "devDependencies": {
     "typescript": "^5.0.0",
     "uvu": "^0.5.6"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
