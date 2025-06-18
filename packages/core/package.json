@@ -22,9 +22,9 @@
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
     "publish": "pnpm publish && git push origin && git push origin --tags",
-    "release:patch": "pnpm version patch && pnpm publish && git push origin && git push origin --tags",
-    "release:minor": "pnpm version minor && pnpm publish && git push origin && git push origin --tags",
-    "release:major": "pnpm version major && pnpm publish && git push origin && git push origin --tags"
+    "release:patch": "pnpm publish --version patch && git push origin && git push origin --tags",
+    "release:minor": "pnpm publish --version minor && git push origin && git push origin --tags",
+    "release:major": "pnpm publish --version major && git push origin && git push origin --tags"
   },
   "author": "David Wells",
   "license": "MIT",

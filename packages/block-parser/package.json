@@ -30,9 +30,9 @@
     "build": "pnpm run types",
     "clean": "rimraf types",
     "publish": "pnpm publish && git push origin && git push origin --tags",
-    "release:patch": "pnpm run build && pnpm version patch && pnpm publish && git push origin && git push origin --tags",
-    "release:minor": "pnpm run build && pnpm version minor && pnpm publish && git push origin && git push origin --tags",
-    "release:major": "pnpm run build && pnpm version major && pnpm publish && git push origin && git push origin --tags"
+    "release:patch": "pnpm run build && pnpm publish --version patch && git push origin && git push origin --tags",
+    "release:minor": "pnpm run build && pnpm publish --version minor && git push origin && git push origin --tags",
+    "release:major": "pnpm run build && pnpm publish --version major && git push origin && git push origin --tags"
   },
   "dependencies": {
     "oparser": "^3.0.22"
