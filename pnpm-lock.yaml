@@ -146,6 +146,16 @@ importers:
       remote-origin-url:
         specifier: ^2.0.0
         version: 2.0.0
+    devDependencies:
+      '@types/node':
+        specifier: ^18.0.0
+        version: 18.19.112
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      uvu:
+        specifier: ^0.5.6
+        version: 0.5.6
 
   packages/plugin-wordcount:
     dependencies:
@@ -174,6 +184,9 @@ packages:
 
   '@types/node@10.17.60':
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
+
+  '@types/node@18.19.112':
+    resolution: {integrity: sha512-i+Vukt9POdS/MBI7YrrkkI5fMfwFtOjphSmt4WXYLfwqsfr6z/HdCx7LqT9M7JktGob8WNgj8nFB4TbGNE4Cog==}
 
   '@types/node@8.10.66':
     resolution: {integrity: sha512-tktOkFUA4kXx2hhhrB8bIFb5TbwzS4uOhKEmwiD+NoiL0qtP2OQ9mFldbgD4dV1djrlBYP6eBuQZiWjuHUpqFw==}
@@ -1010,6 +1023,9 @@ packages:
   uc.micro@1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   use@3.1.1:
     resolution: {integrity: sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==}
     engines: {node: '>=0.10.0'}
@@ -1086,13 +1102,17 @@ snapshots:
 
   '@types/concat-stream@1.6.1':
     dependencies:
-      '@types/node': 8.10.66
+      '@types/node': 18.19.112
 
   '@types/form-data@0.0.33':
     dependencies:
-      '@types/node': 8.10.66
+      '@types/node': 18.19.112
 
   '@types/node@10.17.60': {}
+
+  '@types/node@18.19.112':
+    dependencies:
+      undici-types: 5.26.5
 
   '@types/node@8.10.66': {}
 
@@ -1961,6 +1981,8 @@ snapshots:
   typescript@5.8.3: {}
 
   uc.micro@1.0.6: {}
+
+  undici-types@5.26.5: {}
 
   use@3.1.1: {}
 

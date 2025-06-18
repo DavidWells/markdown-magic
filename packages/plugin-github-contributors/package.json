@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "description": "Generate GitHub contributors table automatically in markdown - Plugin for markdown-magic",
   "main": "index.js",
+  "types": "types/index.d.ts",
   "scripts": {
-    "test": "node index.test.js"
+    "test": "uvu . \\.test\\.js$",
+    "build": "pnpm run types",
+    "types": "tsc --emitDeclarationOnly --outDir types",
+    "clean": "rimraf types",
+    "publish": "pnpm publish",
+    "release:patch": "pnpm run build && pnpm version patch && pnpm publish",
+    "release:minor": "pnpm run build && pnpm version minor && pnpm publish",
+    "release:major": "pnpm run build && pnpm version major && pnpm publish"
   },
   "keywords": [
     "markdown",
@@ -21,7 +29,15 @@
     "github-url-from-git": "^1.5.0",
     "deepmerge": "^4.3.1"
   },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "uvu": "^0.5.6",
+    "@types/node": "^18.0.0"
+  },
   "peerDependencies": {
     "markdown-magic": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

@@ -109,24 +109,31 @@ async function getRepositoryFromOrigin() {
  * Default `matchWord` is `CONTRIBUTORS`
  *
  * ---
+ * @typedef {Object} ContributorsOptions
+ * @property {string} [format='table'] - Output format: 'table', 'list', or 'aligned'
+ * @property {string} [repo] - GitHub repository in format 'owner/repo' (auto-detected if not provided)
+ * @property {string} [token] - GitHub token for API authentication (uses GITHUB_TOKEN env var if not provided)
+ *
  * @param {object} api The markdown-magic API object
  * @param {string} api.content The current content of the comment block
- * @param {object} api.options The options passed in from the comment declaration
+ * @param {ContributorsOptions} api.options The options passed in from the comment declaration
  * @param {string} api.originalPath The path of the file being processed
  * @param {string} api.currentFileContent The full content of the file being processed
  * @return {Promise<string>} Contributors content in markdown format
  */
 async function contributors({ content, options = {}, originalPath, currentFileContent }) {
+  /** @type {ContributorsOptions & typeof defaults} */
   const opts = deepmerge(defaults, options)
   
   let repository = opts.repo
   
   // Auto-detect repository if not provided
   if (!repository) {
-    repository = await getRepositoryFromOrigin()
-    if (!repository) {
+    const detectedRepo = await getRepositoryFromOrigin()
+    if (!detectedRepo) {
       throw new Error('Repository not found. Please specify the "repo" option in format "owner/repo" or ensure you are in a git repository with a GitHub remote.')
     }
+    repository = detectedRepo
   }
   
   // Validate repository format
