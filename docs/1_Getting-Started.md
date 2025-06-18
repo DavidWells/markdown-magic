@@ -3,6 +3,8 @@
 
 To get started. Install the npm package.
 
+cool
+
 ```bash
 npm install markdown-magic --save-dev
 ```
