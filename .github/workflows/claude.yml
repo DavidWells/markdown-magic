@@ -762,6 +762,8 @@ jobs:
 
               **If additional fixes are needed:** Mention \`@člaude\` in this PR
 
+              Closes issue #${issueNumber}
+
               ---
               *Automated PR by [Claude Code Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})*`;
 
