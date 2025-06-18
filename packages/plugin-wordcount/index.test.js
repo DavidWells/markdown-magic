@@ -32,7 +32,7 @@ test('wordcount - counts words in comment content when useFile=false', () => {
   const result = wordcount({
     content: sampleContent,
     currentFileContent: sampleFileContent,
-    options: { useFile: false }
+    options: { useBlock: true }
   })
   
   assert.equal(result, '8', 'Should count exactly 8 words in comment content')

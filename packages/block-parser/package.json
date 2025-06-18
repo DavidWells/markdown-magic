@@ -1,6 +1,6 @@
 {
   "name": "comment-block-parser",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Block parser for markdown-magic - Parse comment blocks in markdown and other files",
   "main": "src/index.js",
   "types": "types/index.d.ts",
@@ -27,11 +27,12 @@
   "scripts": {
     "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
     "types": "tsc --emitDeclarationOnly --outDir types",
-    "build": "npm run types",
+    "build": "pnpm run types",
+    "clean": "rimraf types",
     "publish": "git push origin && git push origin --tags",
-    "release:patch": "npm run build && npm version patch && npm publish",
-    "release:minor": "npm run build && npm version minor && npm publish",
-    "release:major": "npm run build && npm version major && npm publish"
+    "release:patch": "pnpm version patch && pnpm publish --no-git-checks",
+    "release:minor": "pnpm version minor && pnpm publish --no-git-checks",
+    "release:major": "pnpm version major && pnpm publish --no-git-checks"
   },
   "dependencies": {
     "oparser": "^3.0.22"
@@ -42,5 +43,8 @@
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
