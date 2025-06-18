@@ -56,7 +56,7 @@ Some content
   }]
   /** @type {ProcessContentConfig} */
   const config = {
-    transforms: [],
+    transforms: {},
     beforeMiddleware
   }
 
