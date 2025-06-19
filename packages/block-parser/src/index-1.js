@@ -3,6 +3,11 @@ const { getSyntaxInfo } = require('./syntax')
 const { getTextBetweenChars, findMinIndent } = require('./text')
 // Alt parser https://github.com/LesterLyu/fast-formula-parser/blob/master/grammar/lexing.js
 
+// Performance optimizations: Pre-compiled regex patterns
+const LEGACY_PARAM_REGEX = /^:|^\?/
+const DASH_TRANSFORM_REGEX = /^(-[^\s]*)/
+const BRACKET_STRIP_REGEX = /[(\[\{]*([A-Z-a-z0-9_$-]*)[)\]\}]*/
+
 const SYNTAX = 'md'
 const OPEN_WORD = 'doc-gen'
 const CLOSE_WORD = 'end-doc-gen'
@@ -146,7 +151,7 @@ Details:
     paramString = params.trim()
 
     /* Account for dashes in transform name. E.g. funky-name-here */
-    const dashInTransform = params.match(/^(-[^\s]*)/)
+    const dashInTransform = DASH_TRANSFORM_REGEX.exec(params)
     if (dashInTransform && dashInTransform[1]) {
       transformType = type + dashInTransform[1]
       paramString = paramString.replace(dashInTransform[1], '')
@@ -186,7 +191,7 @@ Details:
     const finIndentation = (lineOpen === lineClose) ? '' : indentation
     
     /* If old syntax XYZ?foo | XYZ:foo */
-    if (paramString.match(/^:|^\?/)) {
+    if (LEGACY_PARAM_REGEX.test(paramString)) {
       paramString = paramString.split(')')[0]
       paramString = paramString.replace(/^:/, '').replace(/^\?/, '').replace(/\)$/g, '')
       // console.log('paramString', `"${paramString}"`)
@@ -261,10 +266,33 @@ Details:
 }
 
 function verifyTagsBalanced(str, open, close) {
-  const openCount = (str.match(open) || []).length
-  // console.log('openCount', openCount)
-  const closeCount = (str.match(close) || []).length
-  // console.log('closeCount', closeCount)
+  // Performance optimization: Single pass counting using exec instead of match
+  let openCount = 0
+  let closeCount = 0
+  let match
+  
+  // Reset regex lastIndex to ensure consistent behavior
+  open.lastIndex = 0
+  close.lastIndex = 0
+  
+  // Count open tags
+  while ((match = open.exec(str)) !== null) {
+    openCount++
+    // Prevent infinite loops on zero-width matches
+    if (match.index === open.lastIndex) {
+      open.lastIndex++
+    }
+  }
+  
+  // Count close tags
+  while ((match = close.exec(str)) !== null) {
+    closeCount++
+    // Prevent infinite loops on zero-width matches
+    if (match.index === close.lastIndex) {
+      close.lastIndex++
+    }
+  }
+  
   return {
     isBalanced: openCount === closeCount,
     openCount,
@@ -278,7 +306,8 @@ function verifyTagsBalanced(str, open, close) {
  * @returns {string}
  */
 function stripBrackets(str) {
-  return str.replace(/[(\[\{]*([A-Z-a-z0-9_$-]*)[)\]\}]*/, '$1')
+  // Performance optimization: Use pre-compiled regex
+  return str.replace(BRACKET_STRIP_REGEX, '$1')
 }
 
 function legacyParseOptions(options) {
@@ -286,12 +315,18 @@ function legacyParseOptions(options) {
   if (!options) {
     return returnOptions
   }
-  options.split('&').map((opt, i) => { // eslint-disable-line
-    const getValues = opt.split(/=(.+)/)
-    if (getValues[0] && getValues[1]) {
-      returnOptions[getValues[0]] = getValues[1]
+  // Performance optimization: Use for loop instead of map, avoid regex split
+  const opts = options.split('&')
+  for (let i = 0; i < opts.length; i++) {
+    const equalIndex = opts[i].indexOf('=')
+    if (equalIndex > 0) {
+      const key = opts[i].substring(0, equalIndex)
+      const value = opts[i].substring(equalIndex + 1)
+      if (key && value) {
+        returnOptions[key] = value
+      }
     }
-  })
+  }
   return returnOptions
 }
 
