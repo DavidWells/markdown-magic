@@ -26,6 +26,7 @@
   },
   "scripts": {
     "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
+    "benchmark": "node test/benchmark.js",
     "types": "tsc --emitDeclarationOnly --outDir types",
     "build": "pnpm run types",
     "clean": "rimraf types",
