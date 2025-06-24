@@ -101,10 +101,11 @@ test('getLastModifiedDate falls back to file stats', () => {
   
   try {
     const result = getLastModifiedDate(tempFile);
+    console.log('result', result);
     
     // Should return a date string (either from git or fs)
-    assert.type(result, 'string');
-    assert.ok(result.length > 0);
+    assert.type(result, 'string', 'result is a string');
+    assert.ok(result.length > 0, 'result is not empty');
   } finally {
     // Clean up
     if (fs.existsSync(tempFile)) {
