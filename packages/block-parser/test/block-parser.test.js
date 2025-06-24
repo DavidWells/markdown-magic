@@ -418,7 +418,7 @@ test('Parse md blocks', () => {
         start: 12,
         end: 65
       },
-      content: { value: 'ok', start: 65, end: 67, indentation: 0 },
+      content: { value: 'ok', rawValue: 'ok', start: 65, end: 67, indentation: 0 },
       close: { value: '\n<!-- DOCS:END -->', start: 67, end: 85 },
       block: {
         indentation: '',
@@ -444,6 +444,7 @@ test('Parse md blocks', () => {
       },
       content: {
         value: 'This content will be dynamically replaced with code from the file lines 22 through 44',
+        rawValue: 'This content will be dynamically replaced with code from the file lines 22 through 44',
         start: 157,
         end: 242,
         indentation: 0
