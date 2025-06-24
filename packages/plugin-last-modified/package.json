@@ -1,0 +1,21 @@
+{
+  "name": "@markdown-magic/last-modified",
+  "version": "3.0.0",
+  "description": "Add last modified date from git to markdown files - Plugin for markdown-magic",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.test.js"
+  },
+  "keywords": [
+    "markdown",
+    "last-modified",
+    "git",
+    "markdown magic",
+    "plugin"
+  ],
+  "author": "David Wells",
+  "license": "MIT",
+  "peerDependencies": {
+    "markdown-magic": "^3.0.0"
+  }
+}
