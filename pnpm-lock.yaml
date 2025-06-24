@@ -31,6 +31,22 @@ importers:
         specifier: ^0.5.1
         version: 0.5.6
 
+  packages/block-replacer:
+    dependencies:
+      comment-block-transformer:
+        specifier: workspace:*
+        version: link:../block-transformer
+      is-valid-path:
+        specifier: ^0.1.1
+        version: 0.1.1
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      uvu:
+        specifier: ^0.5.6
+        version: 0.5.6
+
   packages/block-transformer:
     dependencies:
       comment-block-parser:
@@ -52,6 +68,9 @@ importers:
       comment-block-parser:
         specifier: ^1.0.0
         version: 1.0.5
+      comment-block-transformer:
+        specifier: workspace:*
+        version: link:../block-transformer
       globrex:
         specifier: ^0.1.2
         version: 0.1.2
@@ -156,6 +175,12 @@ importers:
       uvu:
         specifier: ^0.5.6
         version: 0.5.6
+
+  packages/plugin-last-modified:
+    dependencies:
+      markdown-magic:
+        specifier: ^3.0.0
+        version: 3.7.0
 
   packages/plugin-wordcount:
     dependencies:
