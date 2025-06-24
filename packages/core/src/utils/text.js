@@ -128,7 +128,8 @@ function getTextBetweenLines(content, startLine, endLine) {
   if (startDefined && !endDefined) {
     return lines.slice(startLine - 1, startLine).join('')
   }
-  if (startLine && endLine && parseInt(startLine, 10) <= parseInt(endLine, 10)) {
+  // @ts-ignore
+  if (startLine && endLine && Number(startLine) <= Number(endLine)) {
     return lines.slice(startLine - 1, endLine).join('\n')
   }
 }
