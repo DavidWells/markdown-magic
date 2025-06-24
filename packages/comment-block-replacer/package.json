@@ -1,0 +1,28 @@
+{
+  "name": "comment-block-replacer",
+  "version": "0.1.0",
+  "description": "Process files with comment block replacements",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "test": "uvu test",
+    "build": "pnpm run types",
+    "types": "tsc --emitDeclarationOnly --outDir types",
+    "clean": "rimraf types",
+    "publish": "pnpm publish",
+    "release:patch": "pnpm run build && pnpm version patch && pnpm publish",
+    "release:minor": "pnpm run build && pnpm version minor && pnpm publish",
+    "release:major": "pnpm run build && pnpm version major && pnpm publish"
+  },
+  "dependencies": {
+    "comment-block-transformer": "workspace:*",
+    "is-valid-path": "^0.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "uvu": "^0.5.6"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
