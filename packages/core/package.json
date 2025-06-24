@@ -36,6 +36,7 @@
   "dependencies": {
     "@davidwells/md-utils": "0.0.52",
     "comment-block-transformer": "workspace:*",
+    "comment-block-replacer": "workspace:*",
     "comment-block-parser": "^1.0.0",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
