@@ -24,7 +24,7 @@ test('Throw on unbalanced blocks', async () => {
       silent: SILENT
     })
   } catch (e) {
-    console.log(e)
+    // console.log(e)
     error = e
   }
 
@@ -46,7 +46,7 @@ test('Throw on missing transforms single file', async () => {
   } catch (e) {
     error = e
   }
-  // deepLog(error.message)
+  deepLog(error.message)
   assert.ok(error, 'error was thrown')
   assert.ok(error.message.match(/Markdown Magic error: 1/), 'Has 1 errors')
 })
@@ -65,9 +65,10 @@ test('Throw on missing transforms multi file', async () => {
   } catch (e) {
     error = e
   }
-  // deepLog(error)
+  deepLog(error)
   assert.ok(error, 'error was thrown')
   assert.ok(error.message.match(/Markdown Magic errors: 2/), 'Has 2 errors')
+  console.log('error', error)
 })
 
 test.run()

@@ -67,25 +67,50 @@ const defaultOptions = {
  */
 
 /**
+ * Custom regex patterns for open and close tags
+ * @typedef {Object} CustomPatterns
+ * @property {RegExp} [openPattern] - Custom regex pattern for open tags
+ * @property {RegExp} [closePattern] - Custom regex pattern for close tags
+ * @property {RegExp} [blockPattern] - Custom regex pattern for block tags
+ */
+
+/**
  * Parse blocks from content string
  * @param {string} contents - The content string to parse
  * @param {Object} [opts={}] - Options object
  * @param {string} [opts.syntax=SYNTAX] - Comment syntax to use
  * @param {string} [opts.open=OPEN_WORD] - Open tag word
  * @param {string} [opts.close=CLOSE_WORD] - Close tag word
+ * @param {CustomPatterns} [opts.customPatterns] - Custom regex patterns for open and close tags
  * @returns {ParseBlocksResult} Result containing parsed blocks and patterns used
  */
 function parseBlocks(contents, opts = {}) {
   const _options = Object.assign({}, defaultOptions, opts)
-  const { syntax, open, close } = _options
+  const { syntax, open, close, customPatterns } = _options
 
-  const patterns = getBlockRegex({
-    syntax,
-    openText: open,
-    closeText: close
-  })
+  let patterns = {}
+  let hasCustomPatterns = false
+  if (customPatterns && typeof customPatterns === 'object') {
+    const { openPattern, closePattern } = customPatterns
+    if (openPattern instanceof RegExp && closePattern instanceof RegExp) {
+      // Ensure global flag is present
+      patterns.openPattern = openPattern.flags && openPattern.flags.indexOf('g') > -1 ? openPattern : new RegExp(openPattern.source, 'g')
+      patterns.closePattern = closePattern.flags && closePattern.flags.indexOf('g') > -1 ? closePattern : new RegExp(closePattern.source, 'g')
+      if (!patterns.blockPattern) {
+        patterns.blockPattern = new RegExp(`${openPattern.source}([\\s\\S]*?)${closePattern.source}`, 'g')
+      }
+      hasCustomPatterns = true
+    }
+  } else {
+    /* default patterns */
+    patterns = getBlockRegex({
+      syntax,
+      openText: open,
+      closeText: close
+    })
+  }
 
-  // console.log(patterns)
+  // console.log('patterns', patterns)
 
   const newerRegex = patterns.blockPattern
   /*
@@ -140,6 +165,57 @@ Details:
     blockIndex++
     let paramString = ''
     let options = {}
+    
+    if (hasCustomPatterns && newMatches.length < 4) {
+      let block = ''
+      let innerText = ''
+      let transformType = 'unknown'
+      let options = {}
+      if (newMatches.length === 2) {
+        [ block, innerText ] = newMatches
+      } else if (newMatches.length === 3) {
+        [ block, options, innerText ] = newMatches
+      } else if (newMatches.length === 4) {
+        [ block, transformType, options, innerText ] = newMatches
+      }
+      const openMatch = block.match(patterns.openPattern)
+      const closeMatch = block.match(patterns.closePattern)
+      newBlocks.push({
+        index: blockIndex,
+        type: transformType,
+        options,
+        context: {
+          isMultiline: innerText.indexOf('\n') > -1,
+        },
+        open: {
+          value: openMatch ? openMatch[0] : '',
+          start: 0,
+          end: 0,
+        },
+        content: {
+          value: innerText,
+          start: 0,
+          end: 0,
+          indentation: '',
+        },
+        close: {
+          value: closeMatch ? closeMatch[0] : '',
+          start: 0,
+          end: 0,
+        },
+        block: {
+          value: block,
+          indentation: '',
+          lines: [1, 1],
+          start: 0,
+          end: 0,
+          rawArgs: '',
+          rawContent: innerText,
+        },
+      })
+      continue
+    }
+
     const [ block, spaces, openTag, type, params = '', content, closeTag ] = newMatches
     
     let transformType = type
@@ -246,8 +322,6 @@ Details:
     newBlocks.push(blockData)
   }
 
-  // console.log("NEW BLOCKS", newBlocks)
-  // process.exit(1)
   return {
     // Close but no single line newPattern: newGetBlockRegex({ openComment, commentClose, start: START, ending: END }),
     // pattern: regexToUse,
@@ -353,7 +427,6 @@ function getBlockRegex({
   const open = `((?:${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)${matchWord})\\s*[(\\[\\{]*([A-Za-z0-9_$]${hasOne})[)\\]\\}]*\\s*((?:.|\\r?\\n)*?)${closeComment}\\n?)`
   // const close = `(\\n?[ \\t]?${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment})`
   const close = `(\\n?[ \\t]*${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment})`
-  // const close = `(\\n?${openComment}(?:.*|\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment})`
   const blockPattern = new RegExp(`([ \\t]*)${open}([\\s\\S]*?)${close}`, 'gmi')
   // 👇 repeat error with .* on weird contents
   // const blockPattern = new RegExp(`([ \\t]*)${open}([\\s\\S]*?.*)${close}`, 'gmi')
@@ -366,102 +439,6 @@ function getBlockRegex({
     closePattern
   }
 }
-
-// function getOpeningTags(block, {
-//   pattern, 
-//   open,
-//   close
-// }) {
-//   // console.log(block.match(/^\/\*+(.*)\*\//))
-//   // console.log('openTagRegex', pattern)
-//   let matches
-//   while ((matches = pattern.exec(block)) !== null) {
-//     if (matches.index === pattern.lastIndex) {
-//       pattern.lastIndex++  // avoid infinite loops with zero-width matches
-//     }
-//     const [ tag, spaces, tagStart, tagEnd ] = matches
-//     /*
-//     console.log('FULL Open Tag >>>>>', tag)
-//     console.log('openTag Start', "'"+tagStart+"'");
-//     console.log('openTag End', "'"+tagEnd+"'");
-//     /**/
-//     return {
-//       tag,
-//       spaces: spaces || '',
-//       length: tag.length,
-//       tagStart,
-//       tagEnd,
-//     }
-//   }
-// }
-
-// function getClosingTags(block, {
-//   pattern, 
-//   // open,
-//   // close
-// }) {
-//   // console.log('closeTagRegex', closeTagRegex)
-//   let matches
-//   while ((matches = pattern.exec(block)) !== null) {
-//     if (matches.index === pattern.lastIndex) {
-//       pattern.lastIndex++ // avoid infinite loops with zero-width matches
-//     }
-//     const [ _tag, spaces, tagStart, tagEnd] = matches
-//     /*
-//     console.log('FULL CLOSE Tag >>>>>', matches[0])
-//     console.log('closeTag Start', "'"+matches[1]+"'");
-//     console.log('closeTag End', "'"+matches[2]+"'");
-//     /**/
-//     const tag = spaces + tagStart + tagEnd
-//     return {
-//       tag: tag,
-//       length: tag.length,
-//       spaces: spaces || '',
-//       tagStart,
-//       tagEnd
-//     }
-//   }
-// }
-
-// /**
-//  * Get Regex pattern to match block
-//  * @param {object} options
-//  * @param {string} [options.openComment] - comment syntax open
-//  * @param {string} [options.closeComment] - comment syntax open
-//  * @param {string} [options.openText] - comment open text
-//  * @param {string} [options.closeText] - comment close text
-//  * @returns {RegExp}
-//  */
-// function getBlockRegexOld({ openComment, closeComment, openText, closeText }) {
-//   // /([ \t]*)(<!-{2,}(?:.|\r?|\n?|\s*)\bdoc-gen\b)((?:.|\r?\n)*?)-{2,}>(.*)<!-{2,}(?:.*|\r?|\n?|\s*)end-doc-gen(?:.|\r?\n)*?-{2,}>/i singleline
-//   return new RegExp(
-//     `([ \\t]*)(?:${openComment}(?:.*|\\r?|\\n?|\\s*)${openText}\\s*([(\\[\\{]*[A-Za-z0-9_$-]*[)\\]\\}]*)\\s*)((?:.*?|.*?\\r?\\n?)*?)${openComment}(?:.*|\\r?|\\n?|\\s*)${closeText}(?:.|\\r?\\n)*?${closeComment}`,
-//     'gmi'
-//   )
-// }
-
-
-// function newGetBlockRegex({ commentOpen, commentClose, start, ending }) {
-//   // https://regex101.com/r/C9WSk8/1 close but breaks on single line blocks. Maybe needs lookahead https://stackoverflow.com/questions/7124778/how-can-i-match-anything-up-until-this-sequence-of-characters-in-a-regular-exp
-//   return new RegExp(
-//     `([ \\t]*)(?:${commentOpen}(?:.*|\\r?|\\n?|\\s*)${start}\\s*([(\\[\\{]*[A-Za-z0-9_$-]*[)\\]\\}]*)\\s*)([\\s\\S]*?)${commentClose}((?:.*?|.*?\\r?\\n?)*?)${commentOpen}(?:.*|\\r?|\\n?|\\s*)${ending}(?:.|\\r?\\n)*?${commentClose}`,
-//     'gmi'
-//   )
-// }
-
-// function getOpenCommentRegex(word, open, close) {
-//   // console.log('open', open)
-//   const boundary = word.indexOf('/') > -1 ? '' : '\\b'
-//   // console.log('boundary', boundary)
-//   // return new RegExp(`(\\<\\!--(?:.|\\r?\\n)*?${matchWord}:START)((?:.|\\r?\\n)*?--\\>)`, 'g')
-//   return new RegExp(`([ \\t]*)(${open}(?:.|\r?|\n?|\\s*)${boundary}${word}${boundary})((?:.|\\r?\\n)*?${close}\n?)`, 'gi')
-// }
-
-// function getClosingCommentRegex(word, open, close) {
-//   const boundary = word.indexOf('/') > -1 ? '' : '\\b'
-//   return new RegExp(`${close}(?:.|\\r?\\n)*?([ \t]*)((?:${open}(?:.*|\\r?\\n)(?:.*|\\r?\\n))*?${boundary}${word}${boundary})((?:.|\\r?\\n)*?${close})`, 'gi')
-//   // return new RegExp(`--\\>(?:.|\\r?\\n)*?([ \t]*)((?:\\<\\!--(?:.*|\\r?\\n)(?:.*|\\r?\\n))*?${word}:END)((?:.|\\r?\\n)*?--\\>)`, 'gi')
-// }
 
 module.exports = {
   getBlockRegex,
