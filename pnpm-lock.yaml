@@ -68,6 +68,9 @@ importers:
       comment-block-parser:
         specifier: ^1.0.0
         version: 1.0.5
+      comment-block-replacer:
+        specifier: workspace:*
+        version: link:../block-replacer
       comment-block-transformer:
         specifier: workspace:*
         version: link:../block-transformer

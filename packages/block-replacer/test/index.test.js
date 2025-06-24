@@ -52,9 +52,9 @@ test('should process file content with transforms', async () => {
   const content = `
 # Test Document
 
-<!-- DOCS:START uppercase -->
+<!-- block uppercase -->
 hello world
-<!-- DOCS:END -->
+<!-- /block -->
 
 Some other content.
   `
@@ -77,9 +77,9 @@ test('should process file from path', async () => {
   const content = `
 # Test File
 
-<!-- DOCS:START wordcount -->
+<!-- block wordcount -->
 This is a test document with multiple words to count.
-<!-- DOCS:END -->
+<!-- /block -->
   `
   
   await fs.writeFile(testFile, content)
@@ -99,9 +99,9 @@ This is a test document with multiple words to count.
 
 test('should write to output file when not dry run', async () => {
   const content = `
-<!-- DOCS:START uppercase -->
+<!-- block uppercase -->
 test content
-<!-- DOCS:END -->
+<!-- /block -->
   `
 
   /** @type {ProcessFileOptions} */
@@ -124,9 +124,9 @@ test content
 
 test('should apply transforms to source file when applyTransformsToSource is true', async () => {
   const content = `
-<!-- DOCS:START uppercase -->
+<!-- block uppercase -->
 source content
-<!-- DOCS:END -->
+<!-- /block -->
   `
   
   await fs.writeFile(testFile, content)
@@ -150,9 +150,9 @@ source content
 test('should detect syntax from file extension', async () => {
   const jsFile = path.join(testDir, 'test.js')
   const content = `
-/* DOCS:START uppercase */
+/* block uppercase */
 const test = 'hello world'
-/* DOCS:END */
+/* /block */
   `
   
   await fs.writeFile(jsFile, content)
@@ -161,8 +161,8 @@ const test = 'hello world'
   const options = {
     srcPath: jsFile,
     dryRun: true,
-    open: 'DOCS:START',
-    close: 'DOCS:END',
+    open: 'block',
+    close: '/block',
     transforms: mockTransforms
   }
 
@@ -174,9 +174,9 @@ const test = 'hello world'
 
 test('should handle missing transforms', async () => {
   const content = `
-<!-- DOCS:START nonexistent -->
+<!-- block nonexistent -->
 test content
-<!-- DOCS:END -->
+<!-- /block -->
   `
 
   /** @type {ProcessFileOptions} */
@@ -210,9 +210,9 @@ test('should handle both srcPath and content error', async () => {
 
 test('should handle file with output directory', async () => {
   const content = `
-<!-- DOCS:START uppercase -->
+<!-- block uppercase -->
 directory test
-<!-- DOCS:END -->
+<!-- /block -->
   `
   
   const outputDir = path.join(testDir, 'output')
