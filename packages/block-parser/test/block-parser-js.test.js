@@ -6,7 +6,7 @@ const { parseBlocks } = require('../src/index')
 const { deepLog } = require('./logs')
 
 test('JS file parse', async () => {
-  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.js'), 'utf-8')
+  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.js'), 'utf8')
   const blocks = parseBlocks(contents, {
     syntax: 'js',
     open: 'GENERATED',

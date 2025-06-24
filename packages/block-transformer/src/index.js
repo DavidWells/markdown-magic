@@ -1,8 +1,8 @@
 const { parseBlocks } = require('comment-block-parser')
 
-const OPEN_WORD = 'DOCS:START'
-const CLOSE_WORD = 'DOCS:END'
 const SYNTAX = 'md'
+const OPEN_WORD = 'block'
+const CLOSE_WORD = '/block'
 
 /**
  * Types from comment-block-parser

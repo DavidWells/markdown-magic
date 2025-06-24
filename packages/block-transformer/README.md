@@ -18,15 +18,15 @@ The block transformer allows you to process markdown blocks with custom transfor
 const { blockTransformer } = require('comment-block-transformer')
 
 const text = `
-<!-- DOCS:START example -->
+<!-- block example -->
 Some content to transform
-<!-- DOCS:END -->
+<!-- /block -->
 `
 
 const config = {
   transforms: {
-    example: (api) => {
-      return api.content.toUpperCase()
+    example: ({ content }) => {
+      return content.toUpperCase()
     }
   }
 }
@@ -36,25 +36,45 @@ console.log(result.updatedContents)
 // Output: Content will be transformed to uppercase
 ```
 
+### Transform with Options
+
+You can pass options to your transforms:
+
+```javascript
+const text = `
+<!-- block prefix {"prefix": "NOTE: "} -->
+This will get a prefix
+<!-- /block -->
+`
+
+const config = {
+  transforms: {
+    prefix: ({ content, options }) => {
+      return `${options.prefix || 'PREFIX: '}${content}`
+    }
+  }
+}
+```
+
 ### Multiple Transforms
 
 You can use multiple transforms in the same document:
 
 ```javascript
 const text = `
-<!-- DOCS:START upperCase -->
+<!-- block upperCase -->
 hello world
-<!-- DOCS:END -->
+<!-- /block -->
 
-<!-- DOCS:START reverse -->
+<!-- block reverse -->
 abc def
-<!-- DOCS:END -->
+<!-- /block -->
 `
 
 const config = {
   transforms: {
-    upperCase: (api) => api.content.toUpperCase(),
-    reverse: (api) => api.content.split('').reverse().join('')
+    upperCase: ({ content }) => content.toUpperCase(),
+    reverse: ({ content }) => content.split('').reverse().join('')
   }
 }
 
@@ -155,6 +175,22 @@ const config = {
 }
 ```
 
+### Custom Regex Patterns
+
+You can provide custom regex patterns for parsing:
+
+```javascript
+const config = {
+  customPatterns: {
+    open: /<!--\s*CUSTOM:START\s+(\w+)(?:\s+(\{.*?\}))?\s*-->/g,
+    close: /<!--\s*CUSTOM:END\s*-->/g
+  },
+  transforms: {
+    test: (api) => api.content.toUpperCase()
+  }
+}
+```
+
 ## API Reference
 
 ### blockTransformer(inputText, config)
@@ -176,8 +212,8 @@ Configuration object for processing contents.
 
 ```typescript
 interface ProcessContentConfig {
-  open?: string                    // Opening delimiter (default: 'DOCS:START')
-  close?: string                   // Closing delimiter (default: 'DOCS:END')
+  open?: string                    // Opening delimiter (default: 'block')
+  close?: string                   // Closing delimiter (default: '/block')
   syntax?: string                  // Syntax type (default: 'md')
   transforms?: TransformerPlugins  // Transform functions
   beforeMiddleware?: Middleware[]  // Middleware functions applied before transforms
@@ -185,6 +221,7 @@ interface ProcessContentConfig {
   removeComments?: boolean         // Remove comments from output (default: false)
   srcPath?: string                 // Source file path
   outputPath?: string              // Output file path
+  customPatterns?: CustomPatterns  // Custom regex patterns for open and close tags
 }
 ```
 
@@ -243,8 +280,28 @@ interface BlockTransformerResult {
   missingTransforms: any[]    // Array of transforms that were not found
   originalContents: string    // Original input text
   updatedContents: string     // Transformed output text
+  patterns?: object           // Regex patterns used for parsing
 }
 ```
+
+## Development
+
+### Scripts
+
+- `npm test` - Run tests using uvu
+- `npm run build` - Generate TypeScript declarations
+- `npm run types` - Generate TypeScript declarations only
+- `npm run clean` - Clean generated files
+- `npm run publish` - Publish to npm
+- `npm run release:patch` - Release patch version
+- `npm run release:minor` - Release minor version
+- `npm run release:major` - Release major version
+
+### Dependencies
+
+- `comment-block-parser` - Core parsing functionality
+- `typescript` - TypeScript support (dev)
+- `uvu` - Testing framework (dev)
 
 ## Testing
 

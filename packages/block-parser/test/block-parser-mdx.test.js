@@ -7,7 +7,7 @@ const { deepLog } = require('./logs')
 const { normalizeBlocks } = require('./utils')
 
 test('MDX file parse', async () => {
-  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.mdx'), 'utf-8')
+  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.mdx'), 'utf8')
   const blocks = parseBlocks(contents, {
     syntax: 'mdx',
     open: 'GENERATED',

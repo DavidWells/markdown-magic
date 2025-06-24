@@ -7,7 +7,7 @@ const { deepLog } = require('./logs')
 const { normalizeBlocks } = require('./utils')
 
 test('SQL file parse', async () => {
-  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.sql'), 'utf-8')
+  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.sql'), 'utf8')
   const blocks = parseBlocks(contents, {
     syntax: 'sql',
     open: 'GENERATED',

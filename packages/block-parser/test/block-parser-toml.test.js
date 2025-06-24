@@ -7,7 +7,7 @@ const { deepLog } = require('./logs')
 const { normalizeBlocks } = require('./utils')
 
 test('TOML file parse', async () => {
-  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.toml'), 'utf-8')
+  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.toml'), 'utf8')
   const blocks = parseBlocks(contents, {
     syntax: 'toml',
     open: 'GENERATED',

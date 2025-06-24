@@ -19,9 +19,9 @@ const mockCoreTransforms = {
 
 test('should transform markdown blocks', async () => {
   const text = `
-<!-- DOCS:START test -->
+<!-- block test -->
 Some content
-<!-- DOCS:END -->
+<!-- /block -->
   `
   /** @type {ProcessContentConfig} */
   const config = {
@@ -40,9 +40,9 @@ Some content
 
 test('should handle missing transforms', async () => {
   const text = `
-<!-- DOCS:START foobar -->
+<!-- block foobar -->
 This will be transformed to uppercase
-<!-- DOCS:END -->
+<!-- /block -->
   `
   /** @type {ProcessContentConfig} */
   const config = {
@@ -56,9 +56,9 @@ This will be transformed to uppercase
 
 test('should apply middleware', async () => {
   const text = `
-<!-- DOCS:START foobar -->
+<!-- block foobar -->
 Some content
-<!-- DOCS:END -->
+<!-- /block -->
   `
   const beforeMiddleware = [{
     name: 'test',
@@ -101,17 +101,17 @@ Some content
 
 test('should handle multiple plugins', async () => {
   const text = `
-<!-- DOCS:START upperCase -->
+<!-- block upperCase -->
 hello world
-<!-- DOCS:END -->
+<!-- /block -->
 
-<!-- DOCS:START reverse -->
+<!-- block reverse -->
 abc def
-<!-- DOCS:END -->
+<!-- /block -->
 
-<!-- DOCS:START addPrefix -->
+<!-- block addPrefix -->
 content here
-<!-- DOCS:END -->
+<!-- /block -->
   `
   /** @type {ProcessContentConfig} */
   const config = {
@@ -138,9 +138,9 @@ content here
 
 test('should handle multiple before middlewares', async () => {
   const text = `
-<!-- DOCS:START test -->
+<!-- block test -->
 hello world
-<!-- DOCS:END -->
+<!-- /block -->
   `
   const beforeMiddleware = [
     {
@@ -179,9 +179,9 @@ hello world
 
 test('should handle multiple after middlewares', async () => {
   const text = `
-<!-- DOCS:START test -->
+<!-- block test -->
 hello world
-<!-- DOCS:END -->
+<!-- /block -->
   `
   const afterMiddleware = [
     {
@@ -220,9 +220,9 @@ hello world
 
 test('should handle both before and after middlewares together', async () => {
   const text = `
-<!-- DOCS:START test -->
+<!-- block test -->
 content
-<!-- DOCS:END -->
+<!-- /block -->
   `
   const beforeMiddleware = [
     {
@@ -258,12 +258,12 @@ content
 
 test('should handle multiple plugins with core transforms', async () => {
   const text = `
-<!-- DOCS:START upperCase -->
+<!-- block upperCase -->
 hello world
-<!-- DOCS:END -->
+<!-- /block -->
 
-<!-- DOCS:START TOC -->
-<!-- DOCS:END -->
+<!-- block TOC -->
+<!-- /block -->
   `
   /** @type {ProcessContentConfig} */
   const config = {
@@ -284,13 +284,13 @@ hello world
 
 test('should apply middlewares to multiple blocks independently', async () => {
   const text = `
-<!-- DOCS:START block1 -->
+<!-- block block1 -->
 first block
-<!-- DOCS:END -->
+<!-- /block -->
 
-<!-- DOCS:START block2 -->
+<!-- block block2 -->
 second block
-<!-- DOCS:END -->
+<!-- /block -->
   `
   const beforeMiddleware = [
     {
