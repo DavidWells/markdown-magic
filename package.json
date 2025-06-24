@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "pnpm -r test",
+    "types": "pnpm -r types",
     "build": "pnpm -r build",
     "clean": "pnpm -r clean"
   },

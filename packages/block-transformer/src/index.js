@@ -68,6 +68,7 @@ const SYNTAX = 'md'
  * @property {boolean} [removeComments=false] - Remove comments from the processed contents.
  * @property {string} [srcPath] - The source path.
  * @property {string} [outputPath] - The output path.
+ * @property {import('comment-block-parser').CustomPatterns} [customPatterns] - Custom regex patterns for open and close tags.
  */
 
 /**
@@ -81,6 +82,7 @@ const SYNTAX = 'md'
  * @property {Array<any>} missingTransforms - Array of transforms that were not found
  * @property {string} originalContents - Original input text
  * @property {string} updatedContents - Transformed output text
+ * @property {Object} [patterns] - Regex patterns used for parsing
  */
 
 /**
@@ -101,7 +103,8 @@ async function blockTransformer(inputText, config) {
     transforms = {},
     beforeMiddleware = [],
     afterMiddleware = [],
-    removeComments = false
+    removeComments = false,
+    customPatterns
   } = opts
 
   let foundBlocks = {}
@@ -110,6 +113,7 @@ async function blockTransformer(inputText, config) {
       syntax,
       open,
       close,
+      customPatterns
     })
   } catch (e) {
     const errMsg = (srcPath) ? `in ${srcPath}` : inputText
@@ -128,7 +132,7 @@ async function blockTransformer(inputText, config) {
       return Object.assign({ transform }, block)
     })
 
-  console.log('blocksWithTransforms', blocksWithTransforms)
+  // console.log('blocksWithTransforms', blocksWithTransforms)
 
   const regexInfo = {
     blocks: foundBlocks.pattern,
@@ -265,6 +269,7 @@ async function blockTransformer(inputText, config) {
     missingTransforms,
     originalContents: inputText,
     updatedContents,
+    patterns: regexInfo,
   }
 }
 
@@ -379,7 +384,6 @@ function indentString(str, count) {
  */
 function trimString(str) {
   if (!str) return str
-  console.log('trimString', str)
   return str.trim()
 }
 

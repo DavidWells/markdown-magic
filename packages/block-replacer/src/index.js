@@ -4,26 +4,32 @@ const isValidFile = require('is-valid-path')
 const { blockTransformer } = require('comment-block-transformer')
 
 /**
- * Options for processing files with comment block replacements
- * @typedef {Object} ProcessFileOptions
- * @property {string} [content] - File content as string (mutually exclusive with srcPath)
- * @property {string} [srcPath] - Source file path (mutually exclusive with content)  
- * @property {string} [syntax] - File syntax type (e.g., 'md', 'js', 'html')
- * @property {string} [outputPath] - Output file path for processed content
- * @property {boolean} [dryRun=false] - If true, process but don't write files
- * @property {Object} [patterns] - Comment patterns with openPattern and closePattern
- * @property {string} [patterns.openPattern] - Opening comment pattern regex
- * @property {string} [patterns.closePattern] - Closing comment pattern regex
- * @property {Object} [output={}] - Output configuration
- * @property {string} [output.directory] - Output directory path
- * @property {string} [outputDir] - Legacy output directory option
- * @property {boolean} [applyTransformsToSource=false] - Whether to apply transforms to source file
- * @property {Object} [transforms={}] - Transform functions to apply to blocks
- * @property {Array} [beforeMiddleware=[]] - Middleware to run before transforms
- * @property {Array} [afterMiddleware=[]] - Middleware to run after transforms
- * @property {boolean} [removeComments=false] - Whether to remove comment blocks from output
- * @property {string} [open] - Opening delimiter for comment blocks
- * @property {string} [close] - Closing delimiter for comment blocks
+ * @typedef {import('comment-block-transformer').ProcessContentConfig} ProcessContentConfig
+ */
+
+/**
+ * @typedef {import('comment-block-transformer').ProcessContentResult} ProcessContentResult
+ */
+
+/**
+ * Extended configuration for processing files with additional file-specific options
+ * @typedef {ProcessContentConfig & {
+ *   content?: string
+ *   srcPath?: string
+ *   outputPath?: string
+ *   dryRun?: boolean
+ *   patterns?: {
+ *     openPattern?: RegExp
+ *     closePattern?: RegExp
+ *   }
+ *   output?: {
+ *     directory?: string
+ *   }
+ *   outputDir?: string
+ *   applyTransformsToSource?: boolean
+ *   open?: string
+ *   close?: string
+ * }} ProcessFileOptions
  */
 
 /**
@@ -69,7 +75,7 @@ async function readFile(filePath, encoding = 'utf8') {
 /**
  * Process a file with comment block replacements using configured transforms
  * @param {ProcessFileOptions} [opts={}] - Processing options
- * @returns {Promise<ProcessFileResult>} Result object with processed content and metadata
+ * @returns {Promise<ProcessContentResult>} Result object with processed content and metadata
  */
 async function processFile(opts = {}) {
   const { content, syntax, outputPath, dryRun, patterns, output = {}, applyTransformsToSource } = opts
@@ -77,11 +83,11 @@ async function processFile(opts = {}) {
 
   let srcPath = opts.srcPath
   if (srcPath && content) {
-    throw new Error(`Can't set both "srcPath" & "content"`) 
+    throw new Error(`Can't set both "srcPath" & "content"`)
   }
   let fileContents
   if (content) {
-    const isFile = isValidFile(content)
+    const isFile = isValidFile(content) && content.indexOf('\n') === -1
     srcPath = (isFile) ? content : undefined
     fileContents = (!isFile) ? content : undefined
   }
@@ -92,7 +98,10 @@ async function processFile(opts = {}) {
   
   let syntaxType = syntax
   if (srcPath && !syntaxType) {
-    syntaxType = path.extname(srcPath).replace(/^\./, '')
+    const ext = path.extname(srcPath).replace(/^\./, '')
+    if (ext === 'js') syntaxType = 'js'
+    else if (ext === 'md') syntaxType = 'md'
+    else syntaxType = ext || 'md'
   }
 
   const result = await blockTransformer(fileContents, {
@@ -102,22 +111,22 @@ async function processFile(opts = {}) {
     syntax: syntaxType,
   })
 
+  // console.log('resultFromBlockTransformer', result)
+
   if (dryRun) {
     return result
   }
 
-  /* If it's changed or its a new file to write */
-  if (result.isChanged || result.isNewPath) {
+  if (outputPath && (result.isChanged || result.isNewPath)) {
     let cleanContents = result.updatedContents
-    if (result.stripComments && patterns.openPattern && patterns.closePattern) {
-      cleanContents = result.updatedContents.replace(patterns.openPattern, '').replace(patterns.closePattern, '')
+    if (result.stripComments && result.patterns.openPattern && result.patterns.closePattern) {
+      cleanContents = result.updatedContents.replace(result.patterns.openPattern, '').replace(result.patterns.closePattern, '')
     }
-    if (outputDir || (srcPath !== outputPath)) {
-      await writeFile(outputPath, cleanContents)
-    }
-    if (applyTransformsToSource) {
-      await writeFile(srcPath, result.updatedContents)
-    }
+    await writeFile(outputPath, cleanContents)
+  }
+
+  if (applyTransformsToSource && srcPath && result.isChanged) {
+    await writeFile(srcPath, result.updatedContents)
   }
 
   return result

@@ -4,7 +4,9 @@ const path = require('path')
 const fs = require('fs').promises
 const { processFile } = require('../src')
 
-/** @typedef {import('../src').ProcessFileOptions} ProcessFileOptions */
+/**
+ * @typedef {import('../src').ProcessFileOptions} ProcessFileOptions
+ */
 
 // Create temporary test files for testing
 const testDir = path.join(__dirname, 'temp')
@@ -22,9 +24,10 @@ async function setup() {
 
 async function cleanup() {
   try {
-    await fs.rmdir(testDir, { recursive: true })
+    // @ts-ignore
+    await fs.rm(testDir, { recursive: true })
   } catch (e) {
-    // Directory might not exist
+    // Directory might not exist or not be empty
   }
 }
 
@@ -109,9 +112,10 @@ test content
   }
 
   const result = await processFile(options)
-  
-  assert.is(result.isChanged, true)
-  assert.is(result.isNewPath, true)
+
+  console.log('result', result)
+  assert.is(result.isChanged, true, 'isChanged')
+  assert.is(result.isNewPath, true, 'isNewPath')
   
   // Check output file was created
   const outputContent = await fs.readFile(outputFile, 'utf8')
@@ -146,9 +150,9 @@ source content
 test('should detect syntax from file extension', async () => {
   const jsFile = path.join(testDir, 'test.js')
   const content = `
-// DOCS:START uppercase
+/* DOCS:START uppercase */
 const test = 'hello world'
-// DOCS:END
+/* DOCS:END */
   `
   
   await fs.writeFile(jsFile, content)
@@ -165,7 +169,7 @@ const test = 'hello world'
   const result = await processFile(options)
   
   assert.is(result.isChanged, true)
-  assert.ok(result.updatedContents.includes('CONST TEST = \\'HELLO WORLD\\''))
+  assert.ok(result.updatedContents.includes(`CONST TEST = 'HELLO WORLD'`))
 })
 
 test('should handle missing transforms', async () => {
@@ -200,7 +204,7 @@ test('should handle both srcPath and content error', async () => {
     await processFile(options)
     assert.unreachable('Should have thrown an error')
   } catch (error) {
-    assert.ok(error.message.includes('Can\\'t set both "srcPath" & "content"'))
+    assert.ok(error.message.includes('Can\'t set both "srcPath" & "content"'))
   }
 })
 
@@ -233,11 +237,11 @@ directory test
   assert.ok(outputContent.includes('DIRECTORY TEST'))
 })
 
-test('should handle strip comments with patterns', async () => {
+test('Custom patterns', async () => {
   const content = `
-<!-- DOCS:START uppercase -->
+TotallyCustom uppercase
 content with comments
-<!-- DOCS:END -->
+BlockHere
   `
   
   /** @type {ProcessFileOptions} */
@@ -245,14 +249,20 @@ content with comments
     content,
     outputPath: outputFile,
     removeComments: true,
-    patterns: {
-      openPattern: /<!-- DOCS:START .* -->/g,
-      closePattern: /<!-- DOCS:END -->/g
+    customPatterns: {
+      openPattern: /TotallyCustom (.*)/g,
+      closePattern: /BlockHere/g,
     },
-    transforms: mockTransforms
+    transforms: Object.assign({}, mockTransforms, {
+      custom: (api) => {
+        return api.content.toUpperCase()
+      }
+    })
   }
 
   const result = await processFile(options)
+
+  console.log('result', result)
   
   assert.is(result.stripComments, true)
   assert.is(result.isNewPath, true)
