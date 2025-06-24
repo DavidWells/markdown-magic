@@ -1,13 +1,29 @@
 const { syntaxMap } = require('./syntax')
 
+/**
+ * Split string into lines
+ * @param {string} str - Input string
+ * @returns {string[]} Array of lines
+ */
 function getLines(str = '') {
   return str.split(/\r\n|\r|\n/)
 }
 
+/**
+ * Get line count from string
+ * @param {string} str - Input string
+ * @returns {number} Number of lines
+ */
 function getLineCount(str = '') {
   return getLines(str).length
 }
 
+/**
+ * Get row and column position from character index
+ * @param {string} input - Input string
+ * @param {number} indexToFind - Character index to find
+ * @returns {{row: number, col: number}} Row and column position
+ */
 function getRowAndColumnFromCharPos(input, indexToFind) {
   const preChunk = input.substr(0, indexToFind);
   const row = preChunk.split('\n').length - 1
@@ -16,23 +32,50 @@ function getRowAndColumnFromCharPos(input, indexToFind) {
   return { row, col }
 };
 
+/**
+ * Get word count from string
+ * @param {string} str - Input string
+ * @returns {number} Word count
+ */
 function getWordCount(str = '') {
   return str.trim().split(/\s+/).length
 }
 
+/**
+ * Get first character from string
+ * @param {string} str - Input string
+ * @returns {string} First character
+ */
 function getFirstCharacter(str) {
   return str.charAt(0)
 }
 
+/**
+ * Get last character from string
+ * @param {string} str - Input string
+ * @returns {string} Last character
+ */
 function getLastCharacter(str) {
   return str.substr(-1)
 }
 
+/**
+ * Get leading spaces from text
+ * @param {string} text - Input text
+ * @returns {string} Leading spaces
+ */
 function getLeadingSpaces(text) {
   const matches = text.match(/^\s*/)
   return (matches && matches[0]) ? matches[0] : ''
 }
 
+/**
+ * Get text between character positions
+ * @param {string} text - Input text
+ * @param {number} start - Start position
+ * @param {number} end - End position
+ * @returns {string} Text between positions
+ */
 function getTextBetweenChars(text, start, end) {
   return text.slice(start, end)
 }
@@ -56,6 +99,14 @@ function getTextBetweenWords(s, prefix, suffix) {
   return s
 }
 
+/**
+ * Replace text between character positions
+ * @param {string} str - Input string
+ * @param {number} start - Start position
+ * @param {number} end - End position
+ * @param {string} newStr - Replacement string
+ * @returns {string} Modified string
+ */
 function replaceTextBetweenChars(str = '', start, end, newStr) {
   return str.substring(0, start) + newStr + str.substring(end)
 }
@@ -82,17 +133,33 @@ function getTextBetweenLines(content, startLine, endLine) {
   }
 }
 
+/**
+ * Check if string is uppercase
+ * @param {string} str - Input string
+ * @returns {boolean} True if uppercase
+ */
 function isUpperCase(str) {
   return str === str.toUpperCase()
 }
 
 // https://github.com/jamiebuilds/min-indent/blob/master/index.js
+/**
+ * Find minimum indentation in string
+ * @param {string} string - Input string
+ * @returns {number} Minimum indentation level
+ */
 function findMinIndent(string) {
 	const match = string.match(/^[ \t]*(?=\S)/gm)
 	if (!match) return 0
 	return match.reduce((r, a) => Math.min(r, a.length), Infinity)
 }
 
+/**
+ * Strip indentation from string
+ * @param {string} string - Input string
+ * @param {number} [indentation] - Indentation level to strip
+ * @returns {string} String with indentation stripped
+ */
 function stripIndent(string, indentation) {
   const indent = typeof indentation !== 'undefined' ? indentation : findMinIndent(string);
 	if (indent === 0) {
@@ -105,7 +172,7 @@ function stripIndent(string, indentation) {
 /**
  * Trim leading & trailing spaces/line breaks in code and keeps the indentation of the first non-empty line
  * @param {string|number} str 
- * @returns string
+ * @returns {string}
  */
  function trimString(str = '') {
   let content = (typeof str === 'number') ? str.toString() : str
@@ -113,6 +180,15 @@ function stripIndent(string, indentation) {
   return content.replace(/^(?:[\t ]*(?:\r?\n|\r))+|\s+$/g, '')
 }
 
+/**
+ * Add indentation to string
+ * @param {string} string - Input string
+ * @param {number} [count=1] - Number of indentations to add
+ * @param {object} [options={}] - Options for indentation
+ * @param {string} [options.indent=' '] - Character(s) to use for indentation
+ * @param {boolean} [options.includeEmptyLines=false] - Whether to indent empty lines
+ * @returns {string} Indented string
+ */
 function indentString(string, count = 1, options = {}) {
 	const {
 		indent = ' ',
@@ -130,8 +206,8 @@ function indentString(string, count = 1, options = {}) {
 /**
  * Removes the indentation of multiline strings
  * @link https://github.com/victornpb/tiny-dedent/
- * @param  {string} str A template literal string
- * @return {string} A string without the indentation
+ * @param {string} str - A template literal string
+ * @returns {string} A string without the indentation
  */
 function dedentString(str) {
   str = str.replace(/^[ \t]*\r?\n/, ''); // remove leading blank line
@@ -180,7 +256,7 @@ function stripCommentBlockOld(str, syntax = 'md') {
 /**
  * Strip out comment blocks
  * @param {string} str 
- * @param {typeof import('../types')['syntaxType']} syntax 
+ * @param {import('../types').SyntaxType} syntax 
  * @returns {string} clean comment-less string
  */
 function stripComments(str, syntax = 'md') {
@@ -298,33 +374,48 @@ function convertCommentSyntax(str, { from, to }) {
 }
 
 /**
- * capitalize first letter
- * @param {string} str 
- * @returns 
+ * Capitalize first letter
+ * @param {string} str - Input string
+ * @returns {string} String with first letter capitalized
  */
 function capitalizeFirstLetter(str) {
   return capitalize(str.charAt(0)) + str.slice(1)
 }
 
 /**
- * capitalize string
- * @param {string} str 
- * @returns 
+ * Capitalize string
+ * @param {string} str - Input string
+ * @returns {string} Capitalized string
  */
 function capitalize(str = '') {
   return str.toUpperCase()
 }
 
+/**
+ * Convert string to camelCase
+ * @param {string} str - Input string
+ * @returns {string} camelCase string
+ */
 function camelCase(str = '') {
   return str.replace(/[-_ ](\w)/g, (_, c) => c.toUpperCase())
 }
 
+/**
+ * Convert string to kebab-case
+ * @param {string} str - Input string
+ * @returns {string} kebab-case string
+ */
 function kebabCase(str = '') {
   return str.replace(/\B([A-Z])/g, '-$1').toLowerCase()
 }
 
 const smallWords = /^(a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|the|to|vs?\.?|via)$/i;
 
+/**
+ * Convert string to Title Case
+ * @param {string} str - Input string
+ * @returns {string} Title Case string
+ */
 function toTitleCase(str = '') {
 	return str.replace(/[A-Za-z0-9\u00C0-\u00FF]+[^\s-]*/g, (match, index, title) => {
 		if (index > 0

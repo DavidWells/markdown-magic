@@ -46,14 +46,18 @@ const defaultOptions = {
   failOnMissingRemote: true,
 }
 
-/**!
+/**
  * Allowed file syntaxes
  * @typedef {'md' | 'js' | 'yml' | 'yaml'} SyntaxType
  */
 
-/**!
+/**
  * Path to file, files or Glob string or Glob Array
  * @typedef {string|Array<string>} FilePathsOrGlobs
+ */
+
+/**
+ * @typedef {import('comment-block-replacer').ProcessFileOptions} ProcessFileOptions
  */
 
 /**
@@ -130,7 +134,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   const {
     transforms,
     // open,
-    /** lol @type {OutputConfig} */
+    /** @type {OutputConfig} */
     output = {},
     outputFlatten = false,
     useGitGlob = false, 

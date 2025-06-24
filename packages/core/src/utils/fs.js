@@ -9,10 +9,21 @@ const { readdir, stat, readFile } = fs
 
 const IS_HIDDEN_FILE = /(^|[\\\/])\.[^\\\/\.]/g
 
+/**
+ * Check if value is a RegExp
+ * @param {any} thing - Value to check
+ * @returns {boolean} True if value is RegExp
+ */
 function isRegex(thing) {
   return (thing instanceof RegExp)
 }
 
+/**
+ * Write file with directory creation if needed
+ * @param {string} filePath - File path to write to
+ * @param {string} content - Content to write
+ * @returns {Promise<void>}
+ */
 async function writeFile(filePath, content) {
   try {
     await fs.writeFile(filePath, content)
@@ -69,6 +80,12 @@ async function escalade(start, callback) {
 
 // }
 
+/**
+ * Convert absolute path to relative path
+ * @param {string} file - Absolute file path
+ * @param {string} cwd - Current working directory
+ * @returns {string} Relative path
+ */
 function convertToRelativePath(file, cwd) {
   return file.replace(cwd, '').replace(/^\//, '')
 }
@@ -165,6 +182,11 @@ function depth(string) {
   return path.normalize(string).split(path.sep).length - 1;
 }
 
+/**
+ * Check if path is local (not remote)
+ * @param {string} filePath - File path to check
+ * @returns {boolean} True if path is local
+ */
 function isLocalPath(filePath) {
   if (filePath.startsWith('github.com/') || filePath.startsWith('raw.githubusercontent.com/')) return false
   return _isLocalPath(filePath)
