@@ -19,7 +19,7 @@ const sectionToc = require('./sectionToc')
 
 module.exports = async function TOC(api) {
   // console.log("TOC API", api)
-  const { currentFileContent, srcPath, getBlockDetails } = api
+  const { currentContent, srcPath, getBlockDetails } = api
   /** @type {ToCTransformOptions} */
   const options = api.options || {}
   // console.log("TOC OPTIONS", options)
@@ -34,7 +34,7 @@ module.exports = async function TOC(api) {
   }
 
   opts.firsth1 = (opts.firsth1 || opts.firstH1) ? true : false
-  let contents = currentFileContent
+  let contents = currentContent
   // console.log('contents', contents)
 
   let collapseText = opts.collapseText

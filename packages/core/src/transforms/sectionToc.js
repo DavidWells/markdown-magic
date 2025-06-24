@@ -5,15 +5,15 @@ const { readFile } = require('../utils/fs')
 const details = require('../utils/details')
 
 module.exports = async function sectionToc(api) {
-  const { options, currentFileContent, originalFileContent, srcPath, getBlockDetails } = api
+  const { options, currentContent, originalContent, srcPath, getBlockDetails } = api
   const opts = options || {}
   let { collapseText, collapse } = opts
   /* Sub table of contents */
-  const originalBlock = getBlockDetails(originalFileContent)
-  const closestHeading = findClosestParentHeading(originalFileContent, originalBlock.block.start)
+  const originalBlock = getBlockDetails(originalContent)
+  const closestHeading = findClosestParentHeading(originalContent, originalBlock.block.start)
   // console.log('closestHeading', closestHeading)
   
-  const subToc = await generateToc(currentFileContent, {
+  const subToc = await generateToc(currentContent, {
     ...opts,
     normalizeLevels: true,
     // Set sub table of contents

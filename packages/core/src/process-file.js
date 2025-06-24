@@ -1,7 +1,7 @@
 const path = require('path')
 const isValidFile = require('is-valid-path')
 const { readFile, writeFile } = require('./utils/fs')
-const { processContents } = require('./process-contents')
+const { blockTransformer } = require('comment-block-transformer')
 
 async function processFile(opts = {}) {
   const { content, syntax, outputPath, dryRun, patterns, output = {}, applyTransformsToSource } = opts
@@ -28,7 +28,7 @@ async function processFile(opts = {}) {
   }
   // console.log('processFile order', srcPath)
 
-  const result = await processContents(fileContents, {
+  const result = await blockTransformer(fileContents, {
     ...opts,
     outputPath,
     srcPath,

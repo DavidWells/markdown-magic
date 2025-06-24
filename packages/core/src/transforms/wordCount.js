@@ -1,5 +1,6 @@
 const { getWordCount } = require('../utils/text')
 
-module.exports = function wordCount({ currentFileContent }) {
-  return getWordCount(currentFileContent)
+module.exports = function wordCount(api) {
+  const { currentContent } = api
+  return getWordCount(currentContent)
 }

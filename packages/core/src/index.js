@@ -16,7 +16,7 @@ const { onlyUnique, getCodeLocation, pluralize } = require('./utils')
 const { readFile, resolveOutputPath, resolveFlatPath } = require('./utils/fs')
 const stringBreak = require('./utils/string-break')
 const { processFile } = require('./process-file')
-const { processContents } = require('./process-contents')
+const { blockTransformer } = require('comment-block-transformer')
 const { parseMarkdown } = require('@davidwells/md-utils')
 const { success, error, info, convertHrtime, deepLog } = require('./utils/logs')
 const { OPEN_WORD, CLOSE_WORD, DEFAULT_GLOB_PATTERN } = require('./defaults')
@@ -63,7 +63,7 @@ const defaultOptions = {
  * 
  * @typedef {object} MarkdownMagicOptions
  * @property {FilePathsOrGlobs} [files] - Files to process.
- * @property {Array} [transforms = defaultTransforms] - Custom commands to transform block contents, see transforms & custom transforms sections below.
+ * @property {Object} [transforms = defaultTransforms] - Custom commands to transform block contents, see transforms & custom transforms sections below.
  * @property {OutputConfig} [output] - Output configuration
  * @property {SyntaxType} [syntax = 'md'] - Syntax to parse
  * @property {string} [open = 'doc-gen'] - Opening match word
@@ -763,7 +763,7 @@ const stringUtils = {
 module.exports = {
   markdownMagic,
   parseMarkdown,
-  processContents,
+  blockTransformer,
   processFile,
   stringUtils
 }

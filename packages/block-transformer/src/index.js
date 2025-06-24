@@ -206,7 +206,16 @@ async function blockTransformer(inputText, config) {
       missingTransforms.push(afterContent)
     }
 
-    const newContent = afterContent.content.value
+    let newContent = afterContent.content.value
+    /* handle different cases of typeof newContent. @TODO: make this an option */
+    if (typeof newContent === 'number') {
+      newContent = String(newContent)
+    } else if (Array.isArray(newContent)) {
+      newContent = JSON.stringify(newContent, null, 2)
+    } else if (typeof newContent === 'object') {
+      newContent = JSON.stringify(newContent, null, 2)
+    }
+
     const formattedNewContent = (options.noTrim) ? newContent : trimString(newContent)
     const fix = removeConflictingComments(formattedNewContent, COMMENT_OPEN_REGEX, COMMENT_CLOSE_REGEX)
 
@@ -370,6 +379,7 @@ function indentString(str, count) {
  */
 function trimString(str) {
   if (!str) return str
+  console.log('trimString', str)
   return str.trim()
 }
 

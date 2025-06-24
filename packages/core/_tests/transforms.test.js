@@ -170,7 +170,7 @@ test('Verify single line comments remain inline', async () => {
   }
   const result = await markdownMagic(filePath, config)
   const newFilePath = getNewFile(result)
-  const newContent = fs.readFileSync(newFilePath, 'utf8')
+  const newContent = fs.readFileSync(newFilePath, 'utf8') || ''
   assert.equal(newContent.match(/inlinecontent/gim).length, 2)
   assert.equal(newContent.match(/other-content/gim).length, 1)
 })
