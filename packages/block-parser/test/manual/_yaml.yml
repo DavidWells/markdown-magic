@@ -1,0 +1,36 @@
+name: Test Workflow
+description: A simple test workflow for testing purposes
+version: 1.0.0
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run tests
+        run: npm test
+
+      ## block remove ##
+        - name: Run tests two
+          run: npm test two
+      ## /block ##
+
+    ## block x ##
+        - name: Run tests two
+          run: npm test two
+      ## /block ##
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Build project
+        run: npm run build
