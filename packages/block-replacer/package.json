@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "test": "uvu test",
+    "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
     "build": "pnpm run types",
     "types": "tsc --emitDeclarationOnly --outDir types",
     "clean": "rimraf types",
