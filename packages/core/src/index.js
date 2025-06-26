@@ -15,7 +15,7 @@ const { getSyntaxInfo } = require('./utils/syntax')
 const { onlyUnique, getCodeLocation, pluralize } = require('./utils')
 const { readFile, resolveOutputPath, resolveFlatPath } = require('./utils/fs')
 const stringBreak = require('./utils/string-break')
-const { processFile } = require('./process-file')
+const { processFile } = require('comment-block-replacer')
 const { blockTransformer } = require('comment-block-transformer')
 const { parseMarkdown } = require('@davidwells/md-utils')
 const { success, error, info, convertHrtime, deepLog } = require('./utils/logs')
@@ -46,14 +46,18 @@ const defaultOptions = {
   failOnMissingRemote: true,
 }
 
-/**!
+/**
  * Allowed file syntaxes
  * @typedef {'md' | 'js' | 'yml' | 'yaml'} SyntaxType
  */
 
-/**!
+/**
  * Path to file, files or Glob string or Glob Array
  * @typedef {string|Array<string>} FilePathsOrGlobs
+ */
+
+/**
+ * @typedef {import('comment-block-replacer').ProcessFileOptions} ProcessFileOptions
  */
 
 /**
@@ -130,7 +134,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   const {
     transforms,
     // open,
-    /** lol @type {OutputConfig} */
+    /** @type {OutputConfig} */
     output = {},
     outputFlatten = false,
     useGitGlob = false, 
@@ -497,8 +501,8 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
       const issues = item.missingTransforms.map((trn) => {
         // logger('trn', trn)
         // const rowData = getRowAndColumnFromCharPos(item.updatedContents, trn.open.start)
-        const location = `${item.srcPath}:${trn.block.lines[0]}:0`
-        const message = `Transform "${trn.transform}" at line ${trn.block.lines[0]} does not exist. → ${location}`
+        const location = `${item.srcPath}:${trn.lines[0]}:0`
+        const message = `Transform "${trn.transform}" at line ${trn.lines[0]} does not exist. → ${location}`
         return {
           message,
           location
@@ -535,11 +539,11 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     planTotal = planTotal + transformsToRun.length
     // logger(`Found ${transformsToRun.length} transforms in ${item.srcPath}`)
     transformsToRun.forEach((trn) => {
-      const line = trn.block.lines[0]
+      const line = trn.lines[0]
       const location = getCodeLocation(item.srcPath, line)
       const planData = `      - "${trn.transform}" at line ${line} → ${location}`
       planMsg += `\n${planData}`
-      // logger(` - "${trn.transform}" at line ${trn.block.lines[0]}`)
+      // logger(` - "${trn.transform}" at line ${trn.lines[0]}`)
     })
     const newLine = plan.length !== i + 1 ? '\n' : ''
     return `${planMsg}${newLine}`

@@ -1,11 +1,13 @@
 const { parse } = require('oparser')
 const { getSyntaxInfo } = require('./syntax')
-const { getTextBetweenChars, findMinIndent } = require('./text')
+const { getTextBetweenChars, findMinIndent, dedentString } = require('./text')
 // Alt parser https://github.com/LesterLyu/fast-formula-parser/blob/master/grammar/lexing.js
 
 const SYNTAX = 'md'
 const OPEN_WORD = 'doc-gen'
 const CLOSE_WORD = 'end-doc-gen'
+
+const LEADING_INDENT_REGEX = /^[\r\n]*(\s*)/
 
 const defaultOptions = {
   syntax: SYNTAX,
@@ -13,34 +15,48 @@ const defaultOptions = {
   close: CLOSE_WORD,
 }
 
+
+
 /**
- * @typedef {Object} BlockPosition
- * @property {string} value - The raw text value
+ * Details about the open tag
+ * @typedef {Object} OpenBlock
  * @property {number} start - Start position in the file
  * @property {number} end - End position in the file
+ * @property {string} match - The matched open tag text
+ * @property {string} value - The open tag value
+ * @property {number} indent - Leading indent of the open tag
  */
 
 /**
- * @typedef {Object} BlockContent
- * @property {string} value - The content between open and close tags
+ * @typedef {Object} InnerContent
  * @property {number} start - Start position in the file
  * @property {number} end - End position in the file
- * @property {string} indentation - Minimum indentation of the content
+ * @property {number} indent - Minimum indent of the content
+ * @property {string} match - The matched content text
+ * @property {string} value - The dedented content value
+ */
+
+/**
+ * Details about the close tag
+ * @typedef {Object} CloseBlock
+ * @property {number} start - Start position in the file
+ * @property {number} end - End position in the file
+ * @property {string} match - The matched close tag text
+ * @property {string} value - The close tag value
+ * @property {number} indent - Leading indent of the close tag
  */
 
 /**
  * @typedef {Object} BlockDetails
- * @property {string} indentation - Final indentation to use
- * @property {number[]} lines - Array of [startLine, endLine]
  * @property {number} start - Start position in the file
  * @property {number} end - End position in the file
- * @property {string} rawArgs - Raw arguments string
- * @property {string} rawContent - Raw content between tags
- * @property {string} value - The full block value
+ * @property {number} indent - Final indent to use
+ * @property {string} match - The matched full block text
+ * @property {string} value - The dedented full block value
  */
 
 /**
- * @typedef {Object} BlockContext
+ * @typedef {Object} Context
  * @property {boolean} isMultiline - Whether the block spans multiple lines
  * @property {boolean} [isLegacy] - Whether using legacy syntax
  */
@@ -48,21 +64,24 @@ const defaultOptions = {
 /**
  * Details about the matched comment block
  * @typedef {Object} BlockData
- * @property {number} index - Block index in the file
  * @property {string} type - Transform type
- * @property {Object} options - Parsed options object
- * @property {BlockContext} context - Block context information
- * @property {BlockPosition} open - Open tag information
- * @property {BlockContent} content - Content information
- * @property {BlockPosition} close - Close tag information
+ * @property {number} index - Block index in the file
+ * @property {number[]} lines - Array of exactly 2 numbers: [startLine, endLine]
+ * @property {number[]} position - Array of exactly 2 numbers: [startPosition, endPosition]
+ * @property {Record<string, string|number|boolean|Object>} options - Parsed options object
+ * @property {string} optionsStr - Raw options string
+ * @property {Context} context - Block context information
+ * @property {OpenBlock} open - Open tag information
+ * @property {InnerContent} content - Content information
+ * @property {CloseBlock} close - Close tag information
  * @property {BlockDetails} block - Full block information
  */
 
 /**
  * @typedef {Object} ParseBlocksResult
  * @property {RegExp} pattern - The regex pattern used
- * @property {RegExp} COMMENT_OPEN_REGEX - Regex for open comments
- * @property {RegExp} COMMENT_CLOSE_REGEX - Regex for close comments
+ * @property {RegExp} openPattern - Regex for open comments
+ * @property {RegExp} closePattern - Regex for close comments
  * @property {BlockData[]} blocks - Array of parsed blocks
  */
 
@@ -181,36 +200,42 @@ Details:
       const openMatch = block.match(patterns.openPattern)
       const closeMatch = block.match(patterns.closePattern)
       newBlocks.push({
-        index: blockIndex,
         type: transformType,
+        index: blockIndex,
+        lines: [1, 1],
+        position: [0, 0],
         options,
+        optionsStr: '',
         context: {
           isMultiline: innerText.indexOf('\n') > -1,
         },
         open: {
-          value: openMatch ? openMatch[0] : '',
           start: 0,
           end: 0,
+          match: openMatch ? openMatch[0] : '',
+          value: openMatch ? openMatch[0] : '',
+          indent: 0,
         },
         content: {
-          value: innerText,
           start: 0,
           end: 0,
-          indentation: '',
+          indent: 0,
+          match: innerText,
+          value: innerText,
         },
         close: {
-          value: closeMatch ? closeMatch[0] : '',
           start: 0,
           end: 0,
+          match: closeMatch ? closeMatch[0] : '',
+          value: closeMatch ? closeMatch[0] : '',
+          indent: 0,
         },
         block: {
-          value: block,
-          indentation: '',
-          lines: [1, 1],
           start: 0,
           end: 0,
-          rawArgs: '',
-          rawContent: innerText,
+          indent: 0,
+          match: block,
+          value: block,
         },
       })
       continue
@@ -235,32 +260,32 @@ Details:
     console.log('spaces', `"${spaces}"`)
     /** */
     const isMultiline = block.indexOf('\n') > -1
-    const indentation = spaces || ''
-    // console.log('indentation', `"${indentation}"`)
-    let context = {
-      isMultiline,
-    }
+    const indent = spaces || ''
+    // console.log('indent', `"${indent}"`)
+
     // console.log('newMatches', newMatches)
     // This is necessary to avoid infinite loops
     if (newMatches.index === newerRegex.lastIndex) {
       newerRegex.lastIndex++
     }
-    const openValue = indentation + openTag 
-    const openStart = newMatches.index + indentation.length
+    const openValue = indent + openTag 
+    const openStart = newMatches.index + indent.length
     const openEnd = openStart + openTag.length
 
-
     const closeEnd = newerRegex.lastIndex
-    // const finIndentation = (lineOpen === lineClose) ? '' : indentation
+    // const finIndentation = (lineOpen === lineClose) ? '' : indent
 
     const lineOpen = contents.substr(0, openStart).split('\n').length
     const lineClose = contents.substr(0, closeEnd).split('\n').length
 
-    const contentStart = openStart + openTag.length // + indentation.length// - shift //+ indentation.length
+    const contentStart = openStart + openTag.length // + indent.length// - shift //+ indent.length
     const contentEnd = contentStart + content.length // + finIndentation.length // + shift
-    /* If single line comment block, remove indentation */
-    const finIndentation = (lineOpen === lineClose) ? '' : indentation
+    /* If single line comment block, remove indent */
+    const finIndentation = (lineOpen === lineClose) ? 0 : indent.length
     
+    let context = {
+      isMultiline,
+    }
     /* If old syntax XYZ?foo | XYZ:foo */
     if (paramString.match(/^:|^\?/)) {
       paramString = paramString.split(')')[0]
@@ -281,41 +306,54 @@ Details:
 
     // context.hasNoBlankLine = content.indexOf('\n') === -1
 
+    const rawContent = getTextBetweenChars(contents, contentStart, contentEnd)
+    const dedentResult = dedentString(rawContent, { preserveEmptyLines: false })
+    const blockDedentResult = dedentString(block, { preserveEmptyLines: false })
+    // console.log('minIndent', minIndent)
+    // console.log('other', findMinIndent(content))
+
     const blockData = {
-      index: blockIndex,
       type: transformType,
+      index: blockIndex,
+      lines: [lineOpen, lineClose],
+      position: [ openStart, closeEnd ],
       options,
+      optionsStr: paramString,
+      /* details about the block */
       context,
       /* Open Tag */
       open: {
-        value: openValue,
         start: openStart,
-        end: openEnd
+        end: openEnd,
+        match: openValue,
+        value: openTag,
+        indent: (!context.isMultiline) ? 0 : findLeadingIndent(openValue),
       },
       /* Inner Content */
       content: {
-        value: content,
         start: contentStart,
         end: contentEnd,
-        indentation: findMinIndent(content),
+        indent: dedentResult.minIndent,
+        match: content,
+        value: dedentResult.text,
       },
       /* Close Tag */
       close: {
-        value: closeTag,
         start: contentEnd,
-        end: closeEnd
+        end: closeEnd,
+        match: closeTag,
+        value: closeTag,
+        indent: (!context.isMultiline) ? 0 : findLeadingIndent(closeTag),
       },
       /* Full Block */
       block: {
-        indentation: finIndentation,
-        lines: [lineOpen, lineClose],
         start: openStart,
         end: closeEnd,
-        // position: [ commentMatches.index, regexToUse.lastIndex ],
+        indent: blockDedentResult.minIndent,
+        // position: [ newMatches.index, newerRegex.lastIndex ],
         // rawType: (context.isLegacy) ? type.replace(/^\s?\(/, '') : type,
-        rawArgs: paramString,
-        rawContent: getTextBetweenChars(contents, contentStart, contentEnd),
-        value: block,
+        match: block,
+        value: blockDedentResult.text,
       },
     }
     // console.log('blockData', blockData)
@@ -326,12 +364,16 @@ Details:
     // Close but no single line newPattern: newGetBlockRegex({ openComment, commentClose, start: START, ending: END }),
     // pattern: regexToUse,
     pattern: newerRegex,
-    // COMMENT_OPEN_REGEX: openTagRegex,
-    // COMMENT_CLOSE_REGEX: closeTagRegex,
-    COMMENT_OPEN_REGEX: patterns.openPattern,
-    COMMENT_CLOSE_REGEX: patterns.closePattern,
+    // openPattern: openTagRegex,
+    // closePattern: closeTagRegex,
+    openPattern: patterns.openPattern,
+    closePattern: patterns.closePattern,
     blocks: newBlocks
   }
+}
+
+function findLeadingIndent(str) {
+  return (str.match(LEADING_INDENT_REGEX) || [])[1]?.length || 0
 }
 
 function verifyTagsBalanced(str, open, close) {

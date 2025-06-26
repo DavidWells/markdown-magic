@@ -1,0 +1,2 @@
+- name: New thing
+  run: npm test four

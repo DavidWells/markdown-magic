@@ -36,11 +36,12 @@
     "release:major": "pnpm version major && pnpm publish --no-git-checks"
   },
   "dependencies": {
+    "dedent": "^1.6.0",
     "oparser": "^3.0.22"
   },
   "devDependencies": {
-    "uvu": "^0.5.1",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "uvu": "^0.5.1"
   },
   "engines": {
     "node": ">=14.0.0"

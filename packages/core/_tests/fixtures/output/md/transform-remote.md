@@ -738,6 +738,7 @@ This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmenge
 [npm-link]: http://www.npmjs.com/package/markdown-magic
 [mit]:      http://opensource.org/licenses/MIT
 [author]:   http://github.com/davidwells
+
 <!-- end-doc-gen -->
 
 This is normal text in markdown. Keep it.

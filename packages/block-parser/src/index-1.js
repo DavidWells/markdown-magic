@@ -66,8 +66,8 @@ const defaultOptions = {
 /**
  * @typedef {Object} ParseBlocksResult
  * @property {RegExp} pattern - The regex pattern used
- * @property {RegExp} COMMENT_OPEN_REGEX - Regex for open comments
- * @property {RegExp} COMMENT_CLOSE_REGEX - Regex for close comments
+ * @property {RegExp} openPattern - Regex for open comments
+ * @property {RegExp} closePattern - Regex for close comments
  * @property {BlockData[]} blocks - Array of parsed blocks
  */
 
@@ -257,10 +257,10 @@ Details:
     // Close but no single line newPattern: newGetBlockRegex({ openComment, commentClose, start: START, ending: END }),
     // pattern: regexToUse,
     pattern: newerRegex,
-    // COMMENT_OPEN_REGEX: openTagRegex,
-    // COMMENT_CLOSE_REGEX: closeTagRegex,
-    COMMENT_OPEN_REGEX: patterns.openPattern,
-    COMMENT_CLOSE_REGEX: patterns.closePattern,
+    // openPattern: openTagRegex,
+    // closePattern: closeTagRegex,
+    openPattern: patterns.openPattern,
+    closePattern: patterns.closePattern,
     blocks: newBlocks
   }
 }

@@ -63,11 +63,14 @@ importers:
   packages/core:
     dependencies:
       '@davidwells/md-utils':
-        specifier: 0.0.52
-        version: 0.0.52
+        specifier: 0.0.53
+        version: 0.0.53
       comment-block-parser:
         specifier: ^1.0.0
         version: 1.0.5
+      comment-block-replacer:
+        specifier: workspace:*
+        version: link:../block-replacer
       comment-block-transformer:
         specifier: workspace:*
         version: link:../block-transformer
@@ -192,6 +195,9 @@ packages:
 
   '@davidwells/md-utils@0.0.52':
     resolution: {integrity: sha512-GsL5HlYpLtA4WhYkkYgfZ9zLWxCpOVuHzXXGuVOf7vNZi8m5DQf3GunE4f1Pcg+rsTWuVT+aERmElX8U/4qE9Q==}
+
+  '@davidwells/md-utils@0.0.53':
+    resolution: {integrity: sha512-qAF7lvZ8ZduJQ/9SPfhlYU03/bPdG3g9IQVmfGzPvi0XM5EJPj/8cUMf5bcoIREF1P2nz82LYeFGHTXQ0slJbg==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1108,6 +1114,12 @@ packages:
 snapshots:
 
   '@davidwells/md-utils@0.0.52':
+    dependencies:
+      gray-matter: 4.0.3
+      micro-mdx-parser: 1.1.24
+      oparser: 3.0.22
+
+  '@davidwells/md-utils@0.0.53':
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24

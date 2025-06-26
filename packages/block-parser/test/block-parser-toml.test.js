@@ -20,92 +20,153 @@ test('TOML file parse', async () => {
   
   assert.equal(normalizeBlocks(blocks.blocks), normalizeBlocks([
     {
-      index: 1,
       type: 'a',
+      index: 1,
+      lines: [ 3, 5 ],
+      position: [ 25, 85 ],
       options: {},
+      optionsStr: '',
       context: { isMultiline: true },
-      open: { value: '# GENERATED a #\n', start: 25, end: 41 },
+      open: { 
+        start: 25, 
+        end: 41, 
+        match: '# GENERATED a #\n', 
+        value: '# GENERATED a #\n',
+        indent: 0
+      },
       content: {
-        value: '# This is a comment inside',
         start: 41,
         end: 67,
-        indentation: 0
+        indent: 0,
+        match: '# This is a comment inside',
+        value: '# This is a comment inside'
       },
-      close: { value: '\n# END-GENERATED #', start: 67, end: 85 },
+      close: { 
+        start: 67, 
+        end: 85, 
+        match: '\n# END-GENERATED #', 
+        value: '\n# END-GENERATED #',
+        indent: 0
+      },
       block: {
-        indentation: '',
-        lines: [ 3, 5 ],
         start: 25,
         end: 85,
-        rawArgs: '',
-        rawContent: '# This is a comment inside',
+        indent: 0,
+        match: '# GENERATED a #\n# This is a comment inside\n# END-GENERATED #',
         value: '# GENERATED a #\n# This is a comment inside\n# END-GENERATED #'
       }
     },
     {
-      index: 2,
       type: 'b',
+      index: 2,
+      lines: [ 7, 9 ],
+      position: [ 87, 144 ],
       options: {},
+      optionsStr: '',
       context: { isMultiline: true },
-      open: { value: '# GENERATED b #\n', start: 87, end: 103 },
+      open: { 
+        start: 87, 
+        end: 103, 
+        match: '# GENERATED b #\n', 
+        value: '# GENERATED b #\n',
+        indent: 0
+      },
       content: {
-        value: '# Another comment block',
         start: 103,
         end: 126,
-        indentation: 0
+        indent: 0,
+        match: '# Another comment block',
+        value: '# Another comment block'
       },
-      close: { value: '\n# END-GENERATED #', start: 126, end: 144 },
+      close: { 
+        start: 126, 
+        end: 144, 
+        match: '\n# END-GENERATED #', 
+        value: '\n# END-GENERATED #',
+        indent: 0
+      },
       block: {
-        indentation: '',
-        lines: [ 7, 9 ],
         start: 87,
         end: 144,
-        rawArgs: '',
-        rawContent: '# Another comment block',
+        indent: 0,
+        match: '# GENERATED b #\n# Another comment block\n# END-GENERATED #',
         value: '# GENERATED b #\n# Another comment block\n# END-GENERATED #'
       }
     },
     {
-      index: 3,
       type: 'c',
+      index: 3,
+      lines: [ 11, 14 ],
+      position: [ 146, 207 ],
       options: {},
+      optionsStr: '',
       context: { isMultiline: true },
-      open: { value: '# GENERATED c #\n', start: 146, end: 162 },
+      open: { 
+        start: 146, 
+        end: 162, 
+        match: '# GENERATED c #\n', 
+        value: '# GENERATED c #\n',
+        indent: 0
+      },
       content: {
-        value: '# Multiline\n# comment block',
         start: 162,
         end: 189,
-        indentation: 0
+        indent: 0,
+        match: '# Multiline\n# comment block',
+        value: '# Multiline\n# comment block'
       },
-      close: { value: '\n# END-GENERATED #', start: 189, end: 207 },
+      close: { 
+        start: 189, 
+        end: 207, 
+        match: '\n# END-GENERATED #', 
+        value: '\n# END-GENERATED #',
+        indent: 0
+      },
       block: {
-        indentation: '',
-        lines: [ 11, 14 ],
         start: 146,
         end: 207,
-        rawArgs: '',
-        rawContent: '# Multiline\n# comment block',
+        indent: 0,
+        match: '# GENERATED c #\n# Multiline\n# comment block\n# END-GENERATED #',
         value: '# GENERATED c #\n# Multiline\n# comment block\n# END-GENERATED #'
       }
     },
     {
-      index: 4,
       type: 'MyCodeGen',
+      index: 4,
+      lines: [ 16, 19 ],
+      position: [ 210, 286 ],
       options: { foo: 'bar' },
+      optionsStr: "foo='bar'",
       context: { isMultiline: true },
       open: {
-        value: "# GENERATED MyCodeGen foo='bar' #\n",
         start: 210,
-        end: 244
+        end: 244,
+        match: "# GENERATED MyCodeGen foo='bar' #\n",
+        value: "# GENERATED MyCodeGen foo='bar' #\n",
+        indent: 0
       },
       content: {
-        value: '# Comment\nvalue = "test"',
+        start: 244,
+        end: 268,
+        indent: 0,
+        match: '# Comment\nvalue = "test"',
+        value: '# Comment\nvalue = "test"'
       },
-      close: { value: '\n# END-GENERATED #', start: 268, end: 286 },
+      close: { 
+        start: 268, 
+        end: 286, 
+        match: '\n# END-GENERATED #', 
+        value: '\n# END-GENERATED #',
+        indent: 0
+      },
       block: {
-        indentation: '',
-        rawArgs: "foo='bar'",
-        rawContent: '# Comment\nvalue = "test"',
+        start: 210,
+        end: 286,
+        indent: 0,
+        match: "# GENERATED MyCodeGen foo='bar' #\n" +
+          '# Comment\n' +
+          'value = "test"\n' +
+          '# END-GENERATED #',
         value: "# GENERATED MyCodeGen foo='bar' #\n" +
           '# Comment\n' +
           'value = "test"\n' +

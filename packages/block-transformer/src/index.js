@@ -121,7 +121,7 @@ async function blockTransformer(inputText, config) {
   }
 
 
-  const { COMMENT_OPEN_REGEX, COMMENT_CLOSE_REGEX } = foundBlocks
+  const { openPattern, closePattern } = foundBlocks
 
 
   const blocksWithTransforms = foundBlocks.blocks
@@ -136,8 +136,8 @@ async function blockTransformer(inputText, config) {
 
   const regexInfo = {
     blocks: foundBlocks.pattern,
-    open: COMMENT_OPEN_REGEX,
-    close: COMMENT_CLOSE_REGEX,
+    open: openPattern,
+    close: closePattern,
   }
 
   const transformsToRun = sortTransforms(blocksWithTransforms, transforms)
@@ -211,6 +211,8 @@ async function blockTransformer(inputText, config) {
     }
 
     let newContent = afterContent.content.value
+
+    // console.log("afterContent.content.rawValue", afterContent.content.rawValue)
     /* handle different cases of typeof newContent. @TODO: make this an option */
     if (typeof newContent === 'number') {
       newContent = String(newContent)
@@ -220,14 +222,28 @@ async function blockTransformer(inputText, config) {
       newContent = JSON.stringify(newContent, null, 2)
     }
 
-    const formattedNewContent = (options.noTrim) ? newContent : trimString(newContent)
-    const fix = removeConflictingComments(formattedNewContent, COMMENT_OPEN_REGEX, COMMENT_CLOSE_REGEX)
+    // console.log('options', options)
+    // console.log('newContent', `"${newContent}"`)
+
+    const formattedNewContent = (options.noTrim) ? newContent : newContent
+    // const formattedNewContent = newContent//.trim()
+    // console.log('formattedNewContent', `"${formattedNewContent}"`)
+    const fix = removeConflictingComments(formattedNewContent, openPattern, closePattern)
+
+    // console.log('fix', `"${fix}"`)
 
     let preserveIndent = 0
-    if (match.content.indentation) {
-      preserveIndent = match.content.indentation.length
+    // console.log('match.content.indent', match.content.indent)
+    if (match.content.indent) {
+      preserveIndent = match.content.indent
+      // console.log('preserveIndent', preserveIndent)
     } else if (preserveIndent === 0) {
-      preserveIndent = block.indentation.length
+      preserveIndent = block.indent
+    }
+
+    // Don't apply indentation for single-line content when original was also single-line
+    if (!context.isMultiline && !block.match.includes('\n')) {
+      preserveIndent = 0
     }
 
     let addTrailingNewline = ''
@@ -259,6 +275,9 @@ async function blockTransformer(inputText, config) {
 
   const stripComments = isNewPath && removeComments
 
+
+  // console.log('inputText', inputText)
+  // console.log('updatedContents', updatedContents) 
   return {
     isChanged: inputText !== updatedContents,
     isNewPath,
@@ -300,7 +319,7 @@ function getDetails({
   }
 
   if (srcPath) {
-    const location = getCodeLocation(srcPath, foundBlock.block.lines[0])
+    const location = getCodeLocation(srcPath, foundBlock.lines[0])
     foundBlock.sourceLocation = location
   }
   return foundBlock
@@ -387,10 +406,30 @@ function trimString(str) {
   return str.trim()
 }
 
+/**
+ * Trim leading and trailing lines from a string
+ * @param {string} str - The string to trim
+ * @returns {string} The string with leading and trailing lines removed
+ */
+function trimLeadingAndTrailing(str) {
+  if (!str) return str
+  return str.replace(/^\s*\n+/, '').replace(/\n+\s*$/, '')
+}
+
 function getCodeLocation(srcPath, line, column = '0') {
   return `${srcPath}:${line}:${column}`
 }
 
+if (require.main === module) {
+  const yaml = `
+  - name: Run tests two
+    run: npm test two
+  `
+
+  // console.log(indentString(yaml, 4))
+}
+
 module.exports = {
-  blockTransformer
+  blockTransformer,
+  indentString,
 } 

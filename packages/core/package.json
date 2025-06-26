@@ -8,6 +8,7 @@
     "md-magic": "./cli.js",
     "mdm": "./cli.js"
   },
+  "types": "types/index.d.ts",
   "files": [
     "README.md",
     "package.json",
@@ -16,8 +17,7 @@
     "cli.js"
   ],
   "scripts": {
-    "types": "tsc",
-    "emit-types": "tsc --noEmit false --emitDeclarationOnly true",
+    "types": "tsc --emitDeclarationOnly --outDir types",
     "docs": "node examples/generate-readme.js",
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
@@ -34,9 +34,10 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
-    "@davidwells/md-utils": "0.0.52",
+    "@davidwells/md-utils": "0.0.53",
+    "comment-block-parser": "workspace:*",
+    "comment-block-replacer": "workspace:*",
     "comment-block-transformer": "workspace:*",
-    "comment-block-parser": "^1.0.0",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
