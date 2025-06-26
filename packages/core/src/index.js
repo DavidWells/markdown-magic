@@ -501,8 +501,8 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
       const issues = item.missingTransforms.map((trn) => {
         // logger('trn', trn)
         // const rowData = getRowAndColumnFromCharPos(item.updatedContents, trn.open.start)
-        const location = `${item.srcPath}:${trn.block.lines[0]}:0`
-        const message = `Transform "${trn.transform}" at line ${trn.block.lines[0]} does not exist. → ${location}`
+        const location = `${item.srcPath}:${trn.lines[0]}:0`
+        const message = `Transform "${trn.transform}" at line ${trn.lines[0]} does not exist. → ${location}`
         return {
           message,
           location
@@ -539,11 +539,11 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     planTotal = planTotal + transformsToRun.length
     // logger(`Found ${transformsToRun.length} transforms in ${item.srcPath}`)
     transformsToRun.forEach((trn) => {
-      const line = trn.block.lines[0]
+      const line = trn.lines[0]
       const location = getCodeLocation(item.srcPath, line)
       const planData = `      - "${trn.transform}" at line ${line} → ${location}`
       planMsg += `\n${planData}`
-      // logger(` - "${trn.transform}" at line ${trn.block.lines[0]}`)
+      // logger(` - "${trn.transform}" at line ${trn.lines[0]}`)
     })
     const newLine = plan.length !== i + 1 ? '\n' : ''
     return `${planMsg}${newLine}`

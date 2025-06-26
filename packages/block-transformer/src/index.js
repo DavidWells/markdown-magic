@@ -121,7 +121,7 @@ async function blockTransformer(inputText, config) {
   }
 
 
-  const { COMMENT_OPEN_REGEX, COMMENT_CLOSE_REGEX } = foundBlocks
+  const { openPattern, closePattern } = foundBlocks
 
 
   const blocksWithTransforms = foundBlocks.blocks
@@ -136,8 +136,8 @@ async function blockTransformer(inputText, config) {
 
   const regexInfo = {
     blocks: foundBlocks.pattern,
-    open: COMMENT_OPEN_REGEX,
-    close: COMMENT_CLOSE_REGEX,
+    open: openPattern,
+    close: closePattern,
   }
 
   const transformsToRun = sortTransforms(blocksWithTransforms, transforms)
@@ -228,17 +228,22 @@ async function blockTransformer(inputText, config) {
     const formattedNewContent = (options.noTrim) ? newContent : newContent
     // const formattedNewContent = newContent//.trim()
     // console.log('formattedNewContent', `"${formattedNewContent}"`)
-    const fix = removeConflictingComments(formattedNewContent, COMMENT_OPEN_REGEX, COMMENT_CLOSE_REGEX)
+    const fix = removeConflictingComments(formattedNewContent, openPattern, closePattern)
 
     // console.log('fix', `"${fix}"`)
 
     let preserveIndent = 0
-    // console.log('match.content.indentation', match.content.indentation)
-    if (match.content.indentation) {
-      preserveIndent = (typeof match.content.indentation === 'number') ? match.content.indentation : match.content.indentation.length
+    // console.log('match.content.indent', match.content.indent)
+    if (match.content.indent) {
+      preserveIndent = match.content.indent
       // console.log('preserveIndent', preserveIndent)
     } else if (preserveIndent === 0) {
-      preserveIndent = block.indentation.length
+      preserveIndent = block.indent
+    }
+
+    // Don't apply indentation for single-line content when original was also single-line
+    if (!context.isMultiline && !block.match.includes('\n')) {
+      preserveIndent = 0
     }
 
     let addTrailingNewline = ''
@@ -314,7 +319,7 @@ function getDetails({
   }
 
   if (srcPath) {
-    const location = getCodeLocation(srcPath, foundBlock.block.lines[0])
+    const location = getCodeLocation(srcPath, foundBlock.lines[0])
     foundBlock.sourceLocation = location
   }
   return foundBlock

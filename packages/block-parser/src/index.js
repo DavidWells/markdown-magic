@@ -327,7 +327,7 @@ Details:
         end: openEnd,
         match: openValue,
         value: openTag,
-        indent: findLeadingIndent(openValue),
+        indent: (!context.isMultiline) ? 0 : findLeadingIndent(openValue),
       },
       /* Inner Content */
       content: {
@@ -343,7 +343,7 @@ Details:
         end: closeEnd,
         match: closeTag,
         value: closeTag,
-        indent: findLeadingIndent(closeTag),
+        indent: (!context.isMultiline) ? 0 : findLeadingIndent(closeTag),
       },
       /* Full Block */
       block: {
