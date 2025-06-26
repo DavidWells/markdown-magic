@@ -409,54 +409,82 @@ test('Parse md blocks', () => {
   /** */
   assert.equal(parsedValue.blocks,  [
     {
-      index: 1,
       type: 'TOC',
+      index: 1,
+      lines: [ 4, 6 ],
+      position: [ 12, 85 ],
       options: { foo: { rad: 'orange' } },
+      optionsStr: "foo={{ rad: 'orange' }}",
       context: { isMultiline: true },
       open: {
-        value: "<!-- DOCS:START(TOC) foo={{ rad: 'orange' }} ------>\n",
         start: 12,
-        end: 65
+        end: 65,
+        match: "<!-- DOCS:START(TOC) foo={{ rad: 'orange' }} ------>\n",
+        value: "<!-- DOCS:START(TOC) foo={{ rad: 'orange' }} ------>\n",
+        indent: 0
       },
-      content: { value: 'ok', rawValue: 'ok', start: 65, end: 67, indentation: 0 },
-      close: { value: '\n<!-- DOCS:END -->', start: 67, end: 85 },
+      content: { 
+        start: 65, 
+        end: 67, 
+        indent: 0,
+        match: 'ok',
+        value: 'ok'
+      },
+      close: { 
+        start: 67, 
+        end: 85, 
+        match: '\n<!-- DOCS:END -->', 
+        value: '\n<!-- DOCS:END -->',
+        indent: 0
+      },
       block: {
-        indentation: 0,
-        lines: [ 4, 6 ],
         start: 12,
         end: 85,
-        rawArgs: "foo={{ rad: 'orange' }}",
-        rawContent: 'ok',
+        indent: 0,
+        match: "<!-- DOCS:START(TOC) foo={{ rad: 'orange' }} ------>\n" +
+          'ok\n' +
+          '<!-- DOCS:END -->',
         value: "<!-- DOCS:START(TOC) foo={{ rad: 'orange' }} ------>\n" +
           'ok\n' +
           '<!-- DOCS:END -->'
       }
     },
     {
-      index: 2,
       type: 'CODE',
+      index: 2,
+      lines: [ 8, 10 ],
+      position: [ 87, 260 ],
       options: { src: './relative/path/to/code.js', lines: '22-44' },
+      optionsStr: 'src=./relative/path/to/code.js&lines=22-44',
       context: { isMultiline: true, isLegacy: true },
       open: {
-        value: '<!-- DOCS:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->\n',
         start: 87,
-        end: 157
+        end: 157,
+        match: '<!-- DOCS:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->\n',
+        value: '<!-- DOCS:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->\n',
+        indent: 0
       },
       content: {
-        value: 'This content will be dynamically replaced with code from the file lines 22 through 44',
-        rawValue: 'This content will be dynamically replaced with code from the file lines 22 through 44',
         start: 157,
         end: 242,
-        indentation: 0
+        indent: 0,
+        match: 'This content will be dynamically replaced with code from the file lines 22 through 44',
+        value: 'This content will be dynamically replaced with code from the file lines 22 through 44'
       },
-      close: { value: '\n<!-- DOCS:END -->', start: 242, end: 260 },
+      close: { 
+        start: 242, 
+        end: 260, 
+        match: '\n<!-- DOCS:END -->', 
+        value: '\n<!-- DOCS:END -->',
+        indent: 0
+      },
       block: {
-        indentation: 0,
-        lines: [ 8, 10 ],
         start: 87,
         end: 260,
-        rawArgs: 'src=./relative/path/to/code.js&lines=22-44',
-        rawContent: 'This content will be dynamically replaced with code from the file lines 22 through 44',
+        indent: 0,
+        match: '<!-- DOCS:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->\n' +
+          'This content will be dynamically replaced with code from the file lines 22 through 44\n' +
+          '<!-- DOCS:END -->',
         value: '<!-- DOCS:START (CODE:src=./relative/path/to/code.js&lines=22-44) -->\n' +
           'This content will be dynamically replaced with code from the file lines 22 through 44\n' +
           '<!-- DOCS:END -->'

@@ -5,134 +5,203 @@ const assert = require('uvu/assert')
 const { parseBlocks } = require('../src/index')
 const { deepLog } = require('./logs')
 
-test('JS file parse', async () => {
-  const contents = await fs.readFile(path.join(__dirname, './fixtures/simple.js'), 'utf8')
-  const blocks = parseBlocks(contents, {
+test('JS file parse',async () => {
+  const contents = await fs.readFile(path.join(__dirname,'./fixtures/simple.js'),'utf8')
+  const blocks = parseBlocks(contents,{
     syntax: 'js',
     open: 'GENERATED',
     close: 'END-GENERATED',
   })
   //*
-  // deepLog(blocks.blocks)
+  deepLog(blocks.blocks)
   /** */
-  assert.equal(blocks.blocks, [
+  assert.equal(blocks.blocks,[
   {
-    index: 1,
     type: 'a',
+    index: 1,
+    lines: [ 7,9 ],
+    position: [ 96,154 ],
     options: {},
+    optionsStr: '',
     context: { isMultiline: true },
-    open: { value: '/* ⛔️ GENERATED a */\n', start: 96, end: 117 },
+    open: { 
+      start: 96,
+      end: 117,
+      match: '/* ⛔️ GENERATED a */\n',
+      value: '/* ⛔️ GENERATED a */\n',
+      indent: 0
+    },
     content: {
-      value: '// comment inside',
-      rawValue: '// comment inside',
       start: 117,
       end: 134,
-      indentation: 0
+      indent: 0,
+      match: '// comment inside',
+      value: '// comment inside'
     },
-    close: { value: '\n/* END-GENERATED */', start: 134, end: 154 },
+    close: { 
+      start: 134,
+      end: 154,
+      match: '\n/* END-GENERATED */',
+      value: '\n/* END-GENERATED */',
+      indent: 0
+    },
     block: {
-      indentation: 0,
-      lines: [ 7, 9 ],
       start: 96,
       end: 154,
-      rawArgs: '',
-      rawContent: '// comment inside',
+      indent: 0,
+      match: '/* ⛔️ GENERATED a */\n// comment inside\n/* END-GENERATED */',
       value: '/* ⛔️ GENERATED a */\n// comment inside\n/* END-GENERATED */'
     }
   },
   {
-    index: 2,
     type: 'b',
+    index: 2,
+    lines: [ 11,13 ],
+    position: [ 156,214 ],
     options: {},
+    optionsStr: '',
     context: { isMultiline: true },
-    open: { value: '/* GENERATED b */\n', start: 156, end: 174 },
+    open: { 
+      start: 156,
+      end: 174,
+      match: '/* GENERATED b */\n',
+      value: '/* GENERATED b */\n',
+      indent: 0
+    },
     content: {
-      value: '/* comment inside */',
-      rawValue: '/* comment inside */',
       start: 174,
       end: 194,
-      indentation: 0
+      indent: 0,
+      match: '/* comment inside */',
+      value: '/* comment inside */'
     },
-    close: { value: '\n/* END-GENERATED */', start: 194, end: 214 },
+    close: { 
+      start: 194,
+      end: 214,
+      match: '\n/* END-GENERATED */',
+      value: '\n/* END-GENERATED */',
+      indent: 0
+    },
     block: {
-      indentation: 0,
-      lines: [ 11, 13 ],
       start: 156,
       end: 214,
-      rawArgs: '',
-      rawContent: '/* comment inside */',
+      indent: 0,
+      match: '/* GENERATED b */\n/* comment inside */\n/* END-GENERATED */',
       value: '/* GENERATED b */\n/* comment inside */\n/* END-GENERATED */'
     }
   },
   {
-    index: 3,
     type: 'c',
+    index: 3,
+    lines: [ 15,19 ],
+    position: [ 216,278 ],
     options: {},
+    optionsStr: '',
     context: { isMultiline: true },
-    open: { value: '/* GENERATED c */\n', start: 216, end: 234 },
+    open: { 
+      start: 216,
+      end: 234,
+      match: '/* GENERATED c */\n',
+      value: '/* GENERATED c */\n',
+      indent: 0
+    },
     content: {
-      value: '/* \n  comment inside \n*/',
-      rawValue: '/* \n  comment inside \n*/',
       start: 234,
       end: 258,
-      indentation: 0
+      indent: 0,
+      match: '/* \n  comment inside \n*/',
+      value: '/* \n  comment inside \n*/'
     },
-    close: { value: '\n/* END-GENERATED */', start: 258, end: 278 },
+    close: { 
+      start: 258,
+      end: 278,
+      match: '\n/* END-GENERATED */',
+      value: '\n/* END-GENERATED */',
+      indent: 0
+    },
     block: {
-      indentation: 0,
-      lines: [ 15, 19 ],
       start: 216,
       end: 278,
-      rawArgs: '',
-      rawContent: '/* \n  comment inside \n*/',
+      indent: 0,
+      match: '/* GENERATED c */\n/* \n  comment inside \n*/\n/* END-GENERATED */',
       value: '/* GENERATED c */\n/* \n  comment inside \n*/\n/* END-GENERATED */'
     }
   },
   {
-    index: 4,
     type: 'd',
+    index: 4,
+    lines: [ 21,25 ],
+    position: [ 280,344 ],
     options: {},
+    optionsStr: '',
     context: { isMultiline: true },
-    open: { value: '/* GENERATED d */\n', start: 280, end: 298 },
+    open: { 
+      start: 280,
+      end: 298,
+      match: '/* GENERATED d */\n',
+      value: '/* GENERATED d */\n',
+      indent: 0
+    },
     content: {
-      value: '/**\n * comment inside \n */',
-      rawValue: '/**\n * comment inside \n */',
       start: 298,
       end: 324,
-      indentation: 0
+      indent: 0,
+      match: '/**\n * comment inside \n */',
+      value: '/**\n * comment inside \n */'
     },
-    close: { value: '\n/* END-GENERATED */', start: 324, end: 344 },
+    close: { 
+      start: 324,
+      end: 344,
+      match: '\n/* END-GENERATED */',
+      value: '\n/* END-GENERATED */',
+      indent: 0
+    },
     block: {
-      indentation: 0,
-      lines: [ 21, 25 ],
       start: 280,
       end: 344,
-      rawArgs: '',
-      rawContent: '/**\n * comment inside \n */',
+      indent: 0,
+      match: '/* GENERATED d */\n/**\n * comment inside \n */\n/* END-GENERATED */',
       value: '/* GENERATED d */\n/**\n * comment inside \n */\n/* END-GENERATED */'
     }
   },
   {
-    index: 5,
     type: 'e',
+    index: 5,
+    lines: [ 27,31 ],
+    position: [ 346,438 ],
     options: {},
+    optionsStr: '',
     context: { isMultiline: true },
-    open: { value: '/* GENERATED e */\n', start: 346, end: 364 },
+    open: { 
+      start: 346,
+      end: 364,
+      match: '/* GENERATED e */\n',
+      value: '/* GENERATED e */\n',
+      indent: 0
+    },
     content: {
-      value: '/****************\n comment inside \n******************/',
-      rawValue: '/****************\n comment inside \n******************/',
       start: 364,
       end: 418,
-      indentation: 0
+      indent: 0,
+      match: '/****************\n comment inside \n******************/',
+      value: '/****************\n comment inside \n******************/'
     },
-    close: { value: '\n/* END-GENERATED */', start: 418, end: 438 },
+    close: { 
+      start: 418,
+      end: 438,
+      match: '\n/* END-GENERATED */',
+      value: '\n/* END-GENERATED */',
+      indent: 0
+    },
     block: {
-      indentation: 0,
-      lines: [ 27, 31 ],
       start: 346,
       end: 438,
-      rawArgs: '',
-      rawContent: '/****************\n comment inside \n******************/',
+      indent: 0,
+      match: '/* GENERATED e */\n' +
+        '/****************\n' +
+        ' comment inside \n' +
+        '******************/\n' +
+        '/* END-GENERATED */',
       value: '/* GENERATED e */\n' +
         '/****************\n' +
         ' comment inside \n' +
@@ -141,30 +210,42 @@ test('JS file parse', async () => {
     }
   },
   {
-    index: 6,
     type: 'MyCodeGen',
+    index: 6,
+    lines: [ 35,38 ],
+    position: [ 455,546 ],
     options: { yay: 'nice' },
+    optionsStr: "yay='nice'",
     context: { isMultiline: true },
     open: {
-      value: "/* GENERATED MyCodeGen yay='nice' */\n",
       start: 455,
-      end: 492
+      end: 492,
+      match: "/* GENERATED MyCodeGen yay='nice' */\n",
+      value: "/* GENERATED MyCodeGen yay='nice' */\n",
+      indent: 0
     },
     content: {
-      value: "/* Awesome */\nconsole.log('noooo')",
-      rawValue: "/* Awesome */\nconsole.log('noooo')",
       start: 492,
       end: 526,
-      indentation: 0
+      indent: 0,
+      match: "/* Awesome */\nconsole.log('noooo')",
+      value: "/* Awesome */\nconsole.log('noooo')"
     },
-    close: { value: '\n/* END-GENERATED */', start: 526, end: 546 },
+    close: { 
+      start: 526,
+      end: 546,
+      match: '\n/* END-GENERATED */',
+      value: '\n/* END-GENERATED */',
+      indent: 0
+    },
     block: {
-      indentation: 0,
-      lines: [ 35, 38 ],
       start: 455,
       end: 546,
-      rawArgs: "yay='nice'",
-      rawContent: "/* Awesome */\nconsole.log('noooo')",
+      indent: 0,
+      match: "/* GENERATED MyCodeGen yay='nice' */\n" +
+        '/* Awesome */\n' +
+        "console.log('noooo')\n" +
+        '/* END-GENERATED */',
       value: "/* GENERATED MyCodeGen yay='nice' */\n" +
         '/* Awesome */\n' +
         "console.log('noooo')\n" +

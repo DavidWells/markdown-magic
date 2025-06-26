@@ -6,8 +6,8 @@ function normalizeBlocks(blocks) {
     openValue: block.open.value,
     contentValue: block.content.value,
     closeValue: block.close.value,
-    rawArgs: block.block.rawArgs,
-    rawContent: block.block.rawContent,
+    rawArgs: block.optionsStr,
+    rawContent: block.content.match,
     blockValue: block.block.value
   }))
 }

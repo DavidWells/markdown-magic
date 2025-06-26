@@ -2,6 +2,15 @@ function getTextBetweenChars(text, start, end) {
   return text.slice(start, end)
 }
 
+function getBlockText(originalText, block = {}) {
+  return getBlockTextByPosition(originalText, block.start, block.end, block.indent)
+}
+
+function getBlockTextByPosition(text, start, end, indent) {
+  return ' '.repeat(indent) + getTextBetweenChars(text, start, end)
+}
+
+
 // https://github.com/jamiebuilds/min-indent/blob/master/index.js
 function findMinIndent(string) {
 	const match = string.match(/^[ \t]*(?=\S)/gm)
@@ -26,9 +35,13 @@ function dedentStringBasic(str) {
 /**
  * Removes the indentation of multiline strings
  * @param {string} text - A template literal string
+ * @param {Object} [options] - Options for dedent
+ * @param {boolean} [options.preserveEmptyLines=false] - Whether to preserve leading/trailing empty lines
  * @returns {{ minIndent: number, text: string }} A string without the indentation
  */
-function dedentString(text) {
+function dedentString(text, options = {}) {
+  const { preserveEmptyLines = false } = options
+  
   if (!text) return { minIndent: 0, text: '' }
   const lines = text.split('\n')
   let minIndent = null
@@ -50,11 +63,14 @@ function dedentString(text) {
     result += line.slice(toRemove) + '\n'
   }
   result = result.slice(0, -1) // Remove trailing newline
-  const cleanResult = result.replace(/^[\r\n]+|[\r\n]+$/g, '')
+  
+  // Only trim empty lines if preserveEmptyLines is false
+  const cleanResult = preserveEmptyLines ? result : result.replace(/^[\r\n]+|[\r\n]+$/g, '')
   return { minIndent, text: cleanResult }
 }
 
 module.exports = {
+  getBlockText,
   getTextBetweenChars,
   findMinIndent,
   dedentString,
