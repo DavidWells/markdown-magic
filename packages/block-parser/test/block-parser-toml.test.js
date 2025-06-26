@@ -33,7 +33,7 @@ test('TOML file parse', async () => {
       },
       close: { value: '\n# END-GENERATED #', start: 67, end: 85 },
       block: {
-        indentation: '',
+        indentation: 0,
         lines: [ 3, 5 ],
         start: 25,
         end: 85,
@@ -56,7 +56,7 @@ test('TOML file parse', async () => {
       },
       close: { value: '\n# END-GENERATED #', start: 126, end: 144 },
       block: {
-        indentation: '',
+        indentation: 0,
         lines: [ 7, 9 ],
         start: 87,
         end: 144,
@@ -79,7 +79,7 @@ test('TOML file parse', async () => {
       },
       close: { value: '\n# END-GENERATED #', start: 189, end: 207 },
       block: {
-        indentation: '',
+        indentation: 0,
         lines: [ 11, 14 ],
         start: 146,
         end: 207,
@@ -103,7 +103,7 @@ test('TOML file parse', async () => {
       },
       close: { value: '\n# END-GENERATED #', start: 268, end: 286 },
       block: {
-        indentation: '',
+        indentation: 0,
         rawArgs: "foo='bar'",
         rawContent: '# Comment\nvalue = "test"',
         value: "# GENERATED MyCodeGen foo='bar' #\n" +

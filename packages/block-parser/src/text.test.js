@@ -1,5 +1,6 @@
 const { test } = require('uvu')
 const assert = require('uvu/assert')
+const { dedentString } = require('./text.js')
 
 function dedentInlineManual(text) {
   if (!text) return { minIndent: 0, text: '' }
@@ -25,12 +26,6 @@ function dedentInlineManual(text) {
   result = result.slice(0, -1) // Remove trailing newline
   const cleanResult = result.replace(/^[\r\n]+|[\r\n]+$/g, '')
   return { minIndent, text: cleanResult }
-}
-
-function dedentString(string) {
-  const result = dedentInlineManual(string)
-  return result.text
-  // return dedent`${string}`
 }
 
 function dedentInline(text) {
@@ -75,8 +70,8 @@ test('dedentString - basic functionality', () => {
 `hello
 world`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - removes leading blank line', () => {
@@ -88,8 +83,8 @@ test('dedentString - removes leading blank line', () => {
 `hello
 world`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - removes trailing blank line', () => {
@@ -101,8 +96,8 @@ test('dedentString - removes trailing blank line', () => {
 `hello
 world`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles no indentation', () => {
@@ -113,8 +108,8 @@ world`
 `hello
 world`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles mixed indentation', () => {
@@ -137,9 +132,9 @@ world
   })
   
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
+  console.log('result', `"${result.text}"`)
   console.log('expected', `"${expected}"`)
-  assert.is(result, expected)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles tabs', () => {
@@ -150,8 +145,8 @@ test('dedentString - handles tabs', () => {
   const expected = `hello
 world`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles comment block case', () => {
@@ -164,8 +159,8 @@ test('dedentString - handles comment block case', () => {
   comment inside 
 */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles multiline comment with odd spacing', () => {
@@ -181,32 +176,32 @@ test('dedentString - handles multiline comment with odd spacing', () => {
   with more content
 */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles empty string', () => {
   const input = ''
   const expected = ''
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles single line', () => {
   const input = '    hello'
   const expected = 'hello'
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles single line with no indentation', () => {
   const input = 'hello'
   const expected = 'hello'
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentString - handles complex comment structure', () => {
@@ -227,8 +222,8 @@ test('dedentString - handles complex comment structure', () => {
     */
     /* END-GENERATED */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 
@@ -242,8 +237,8 @@ test('JS test', () => {
   comment inside 
 */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 
@@ -259,8 +254,8 @@ test('JS test 2', () => {
   comment inside 
 */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 
@@ -276,8 +271,8 @@ test('JS test 3', () => {
  * comment inside 
  */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('JS test 4', () => {
@@ -292,8 +287,8 @@ test('JS test 4', () => {
  * comment inside 
  */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('JS test 5', () => {
@@ -309,8 +304,8 @@ test('JS test 5', () => {
        * comment inside 
        */`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('Yaml test', () => {
@@ -327,8 +322,8 @@ test('Yaml test', () => {
   run: npm test two
 ## /block ##`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('Yaml test 2 has new line', () => {
@@ -347,8 +342,8 @@ test('Yaml test 2 has new line', () => {
 
 ## /block ##`
   const result = dedentString(input)
-  console.log('result', `"${result}"`)
-  assert.is(result, expected)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test('dedentInline - returns minIndent and text', () => {
@@ -436,6 +431,74 @@ world
   console.log('expected', `"${expected}"`)
   assert.is(result.text, expected)
   assert.is(result.minIndent, 2)
+})
+
+test('dedentString - preserves leading empty lines when option is true', () => {
+  const input = 
+`
+
+    hello
+    world`
+  const expected = 
+`
+
+hello
+world`
+  const result = dedentString(input, { preserveEmptyLines: true })
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
+})
+
+test('dedentString - preserves trailing empty lines when option is true', () => {
+  const input = 
+`    hello
+    world
+
+  `
+  const expected = 
+`hello
+world
+
+`
+  const result = dedentString(input, { preserveEmptyLines: true })
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
+})
+
+test('dedentString - preserves both leading and trailing empty lines when option is true', () => {
+  const input = 
+`
+
+    hello
+    world
+
+  `
+  const expected = 
+`
+
+hello
+world
+
+`
+  const result = dedentString(input, { preserveEmptyLines: true })
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
+})
+
+test('dedentString - backward compatibility - strips empty lines by default', () => {
+  const input = 
+`
+
+    hello
+    world
+
+  `
+  const expected = 
+`hello
+world`
+  const result = dedentString(input)
+  console.log('result', `"${result.text}"`)
+  assert.is(result.text, expected)
 })
 
 test.run()

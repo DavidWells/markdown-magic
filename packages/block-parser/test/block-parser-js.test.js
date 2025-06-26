@@ -31,7 +31,7 @@ test('JS file parse', async () => {
     },
     close: { value: '\n/* END-GENERATED */', start: 134, end: 154 },
     block: {
-      indentation: '',
+      indentation: 0,
       lines: [ 7, 9 ],
       start: 96,
       end: 154,
@@ -55,7 +55,7 @@ test('JS file parse', async () => {
     },
     close: { value: '\n/* END-GENERATED */', start: 194, end: 214 },
     block: {
-      indentation: '',
+      indentation: 0,
       lines: [ 11, 13 ],
       start: 156,
       end: 214,
@@ -79,7 +79,7 @@ test('JS file parse', async () => {
     },
     close: { value: '\n/* END-GENERATED */', start: 258, end: 278 },
     block: {
-      indentation: '',
+      indentation: 0,
       lines: [ 15, 19 ],
       start: 216,
       end: 278,
@@ -103,7 +103,7 @@ test('JS file parse', async () => {
     },
     close: { value: '\n/* END-GENERATED */', start: 324, end: 344 },
     block: {
-      indentation: '',
+      indentation: 0,
       lines: [ 21, 25 ],
       start: 280,
       end: 344,
@@ -127,7 +127,7 @@ test('JS file parse', async () => {
     },
     close: { value: '\n/* END-GENERATED */', start: 418, end: 438 },
     block: {
-      indentation: '',
+      indentation: 0,
       lines: [ 27, 31 ],
       start: 346,
       end: 438,
@@ -159,7 +159,7 @@ test('JS file parse', async () => {
     },
     close: { value: '\n/* END-GENERATED */', start: 526, end: 546 },
     block: {
-      indentation: '',
+      indentation: 0,
       lines: [ 35, 38 ],
       start: 455,
       end: 546,

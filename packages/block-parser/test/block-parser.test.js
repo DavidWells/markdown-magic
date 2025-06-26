@@ -421,7 +421,7 @@ test('Parse md blocks', () => {
       content: { value: 'ok', rawValue: 'ok', start: 65, end: 67, indentation: 0 },
       close: { value: '\n<!-- DOCS:END -->', start: 67, end: 85 },
       block: {
-        indentation: '',
+        indentation: 0,
         lines: [ 4, 6 ],
         start: 12,
         end: 85,
@@ -451,7 +451,7 @@ test('Parse md blocks', () => {
       },
       close: { value: '\n<!-- DOCS:END -->', start: 242, end: 260 },
       block: {
-        indentation: '',
+        indentation: 0,
         lines: [ 8, 10 ],
         start: 87,
         end: 260,

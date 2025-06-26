@@ -1,6 +1,6 @@
 const { parse } = require('oparser')
 const { getSyntaxInfo } = require('./syntax')
-const { getTextBetweenChars, findMinIndent } = require('./text')
+const { getTextBetweenChars, findMinIndent, dedentString } = require('./text')
 // Alt parser https://github.com/LesterLyu/fast-formula-parser/blob/master/grammar/lexing.js
 
 const SYNTAX = 'md'
@@ -14,23 +14,35 @@ const defaultOptions = {
 }
 
 /**
- * @typedef {Object} BlockPosition
+ * @typedef {Object} BoundaryDetails
  * @property {string} value - The raw text value
  * @property {number} start - Start position in the file
  * @property {number} end - End position in the file
  */
 
+
 /**
- * @typedef {Object} BlockContent
+ * Details about the open tag
+ * @typedef {BoundaryDetails} OpenBlock
+ */
+
+/**
+ * @typedef {Object} InnerContent
  * @property {string} value - The content between open and close tags
+ * @property {string} rawValue - The raw content between open and close tags (with original indentation)
  * @property {number} start - Start position in the file
  * @property {number} end - End position in the file
- * @property {string} indentation - Minimum indentation of the content
+ * @property {number} indentation - Minimum indentation of the content
+ */
+
+/**
+ * Details about the close tag
+ * @typedef {BoundaryDetails} CloseBlock
  */
 
 /**
  * @typedef {Object} BlockDetails
- * @property {string} indentation - Final indentation to use
+ * @property {number} indentation - Final indentation to use
  * @property {number[]} lines - Array of [startLine, endLine]
  * @property {number} start - Start position in the file
  * @property {number} end - End position in the file
@@ -40,7 +52,7 @@ const defaultOptions = {
  */
 
 /**
- * @typedef {Object} BlockContext
+ * @typedef {Object} Context
  * @property {boolean} isMultiline - Whether the block spans multiple lines
  * @property {boolean} [isLegacy] - Whether using legacy syntax
  */
@@ -50,11 +62,11 @@ const defaultOptions = {
  * @typedef {Object} BlockData
  * @property {number} index - Block index in the file
  * @property {string} type - Transform type
- * @property {Object} options - Parsed options object
- * @property {BlockContext} context - Block context information
- * @property {BlockPosition} open - Open tag information
- * @property {BlockContent} content - Content information
- * @property {BlockPosition} close - Close tag information
+ * @property {Record<string, string|number|boolean|Object>} options - Parsed options object
+ * @property {Context} context - Block context information
+ * @property {OpenBlock} open - Open tag information
+ * @property {InnerContent} content - Content information
+ * @property {CloseBlock} close - Close tag information
  * @property {BlockDetails} block - Full block information
  */
 
@@ -194,9 +206,10 @@ Details:
         },
         content: {
           value: innerText,
+          rawValue: innerText,
           start: 0,
           end: 0,
-          indentation: '',
+          indentation: 0,
         },
         close: {
           value: closeMatch ? closeMatch[0] : '',
@@ -205,7 +218,7 @@ Details:
         },
         block: {
           value: block,
-          indentation: '',
+          indentation: 0,
           lines: [1, 1],
           start: 0,
           end: 0,
@@ -259,7 +272,7 @@ Details:
     const contentStart = openStart + openTag.length // + indentation.length// - shift //+ indentation.length
     const contentEnd = contentStart + content.length // + finIndentation.length // + shift
     /* If single line comment block, remove indentation */
-    const finIndentation = (lineOpen === lineClose) ? '' : indentation
+    const finIndentation = (lineOpen === lineClose) ? 0 : indentation.length
     
     /* If old syntax XYZ?foo | XYZ:foo */
     if (paramString.match(/^:|^\?/)) {
@@ -281,6 +294,12 @@ Details:
 
     // context.hasNoBlankLine = content.indexOf('\n') === -1
 
+    const rawContent = getTextBetweenChars(contents, contentStart, contentEnd)
+    const dedentResult = dedentString(rawContent, { preserveEmptyLines: true })
+
+    // console.log('minIndent', minIndent)
+    // console.log('other', findMinIndent(content))
+
     const blockData = {
       index: blockIndex,
       type: transformType,
@@ -294,10 +313,11 @@ Details:
       },
       /* Inner Content */
       content: {
-        value: content,
+        value: dedentResult.text,
+        rawValue: content,
         start: contentStart,
         end: contentEnd,
-        indentation: findMinIndent(content),
+        indentation: dedentResult.minIndent,
       },
       /* Close Tag */
       close: {
@@ -314,7 +334,7 @@ Details:
         // position: [ commentMatches.index, regexToUse.lastIndex ],
         // rawType: (context.isLegacy) ? type.replace(/^\s?\(/, '') : type,
         rawArgs: paramString,
-        rawContent: getTextBetweenChars(contents, contentStart, contentEnd),
+        rawContent: rawContent,
         value: block,
       },
     }
