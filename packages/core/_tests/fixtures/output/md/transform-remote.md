@@ -160,14 +160,14 @@ md-magic
 CLI usage example with options
 
 ```bash
-md-magic --path '**/*.md' --config ./config.file.js
+md-magic --file '**/*.md' --config ./config.file.js
 ```
 
 In NPM scripts, `npm run docs` would run the markdown magic and parse all the `.md` files in the directory.
 
 ```json
 "scripts": {
-  "docs": "md-magic --path '**/*.md'"
+  "docs": "md-magic --file '**/*.md'"
 },
 ```
 

@@ -47,7 +47,7 @@ jobs:
         run: npm test two
       ## /include ##
 
-      ## include js src="_test.js" ##
+      ## include js src="_run.js" ##
       - name: Run tests two
         run: npm test two
       ## /include ##
