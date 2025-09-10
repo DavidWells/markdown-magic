@@ -1,6 +1,19 @@
 name: Claude Code
 
 on:
+  # Manual/programmatic trigger
+  workflow_dispatch:
+    inputs:
+      trigger_text:
+        description: 'Text to trigger Claude with (optional)'
+        required: true
+        type: string
+        default: '@claude'
+      actor:
+        description: 'Actor to trigger Claude'
+        required: true
+        type: string
+        default: 'david'
   # PR related events
   pull_request_target:
     types: [opened, synchronize, reopened]
@@ -8,7 +21,6 @@ on:
     types: [created]
   pull_request_review:
     types: [submitted]
-    
   # Issue related events (added)
   issues:
     types: [opened, assigned]
@@ -21,9 +33,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  claude:
-    # Security-focused conditional execution (full support for Issues and PRs)
+  setup:
+    # Security-focused conditional execution (full support for Issues, PRs, and manual dispatch)
     if: |
+      (
+        github.event_name == 'workflow_dispatch' &&
+        github.event.inputs.trigger_text != '' &&
+        github.event.inputs.actor != ''
+      ) ||
       (
         github.event_name == 'pull_request_target' &&
         (
@@ -69,8 +86,353 @@ jobs:
       )
     
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    
+    timeout-minutes: 2
+    permissions:
+      # 📁 Content management (highest permissions)
+      contents: write
+      pull-requests: write
+      issues: write
+      discussions: write
+      # 🔧 Development & CI/CD management
+      actions: write
+      checks: write
+      statuses: write
+      pages: write
+      deployments: write
+      # 📦 Package & security management
+      packages: write
+      security-events: write
+      # 🎯 Project management
+      repository-projects: write
+      # 🆔 Authentication & token management
+      id-token: write
+    # Outputs
+    outputs:
+      should-continue: ${{ steps.should-continue.outputs.should-continue }}
+      issue-number: ${{ steps.context-info.outputs.issue-number }}
+      pr-number: ${{ steps.context-info.outputs.pr-number }}
+      head-ref: ${{ steps.context-info.outputs.head-ref }}
+      base-ref: ${{ steps.context-info.outputs.base-ref }}
+      head-sha: ${{ steps.context-info.outputs.head-sha }}
+      is-pr: ${{ steps.context-info.outputs.is-pr }}
+      trigger-text: ${{ steps.context-info.outputs.trigger-text }}
+      has-linked-pr: ${{ steps.context-info.outputs.has-linked-pr }}
+      status-comment-id: ${{ steps.find_comment.outputs.comment-id || steps.create_comment.outputs.comment-id }}
+    ######################
+    # Setup steps
+    ######################
+    steps:
+      # Verify user permissions from dispatch
+      - name: Check dispatch permissions
+        id: check_membership
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const allowedUsersInput = '${{ secrets.ALLOWED_USERS }}'
+            
+            // Skip if no allowed users configured
+            if (!allowedUsersInput || allowedUsersInput.trim() === '') {
+              console.log('No allowed users configured in secrets, allowing all')
+              core.setOutput('is_member', true)
+              return
+            }
+            
+            // Parse the allowed users (comma-separated)
+            const allowedUsers = allowedUsersInput.split(',').map(u => u.trim()).filter(u => u)
+            
+            if (allowedUsers.length === 0) {
+              console.log('Empty allowed users list, allowing all')
+              core.setOutput('is_member', true)
+              return
+            }
+            
+            let actor
+            if (context.eventName === 'issue_comment') {
+              actor = context.payload.comment.user.login
+            } else if (context.eventName === 'pull_request_review_comment') {
+              actor = context.payload.comment.user.login
+            } else if (context.eventName === 'pull_request_review') {
+              actor = context.payload.review.user.login
+            } else if (context.eventName === 'issues') {
+              actor = context.payload.issue.user.login
+            }
+            
+            console.log(`Checking permissions for user: ${actor}`)
+            console.log(`Allowed users: ${allowedUsers.join(', ')}`)
+            
+            if (allowedUsers.includes(actor)) {
+              console.log(`User ${actor} is in the allowed list`)
+              core.setOutput('is_member', true)
+              return
+            }
+            
+            // Get organization name from context
+            const orgName = context.repo.owner
+            console.log(`Organization: ${orgName}`)
+            
+            // Fallback: Check if user has repository permissions
+            try {
+              const collaboration = await github.rest.repos.getCollaboratorPermissionLevel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                username: actor
+              })
+              
+              const permission = collaboration.data.permission
+              console.log(`User ${actor} has permission level: ${permission}`)
+              
+              // Allow if user has push access or higher (write, maintain, admin)
+              const allowed = ['write', 'maintain', 'admin'].includes(permission)
+              
+              if (allowed) {
+                core.setOutput('is_member', true)
+              } else {
+                core.setFailed(`User ${actor} does not have permission to run this workflow`)
+                return
+              }
+            } catch (error) {
+              console.log(`Error checking permissions: ${error.message}`)
+              
+              // Final fallback: Check if user is a public member of the organization
+              try {
+                const membership = await github.rest.orgs.getMembershipForUser({
+                  org: orgName,
+                  username: actor
+                })
+                
+                const allowed = membership.data.state === 'active'
+                
+                if (allowed) {
+                  core.setOutput('is_member', true)
+                } else {
+                  core.setFailed(`User ${actor} does not have permission to run this workflow`)
+                  return
+                }
+              } catch (membershipError) {
+                console.log(`Error checking organization membership: ${membershipError.message}`)
+                core.setFailed(`User ${actor} does not have permission to run this workflow`)
+                return
+              }
+            }
+      # Collect information from the event
+      - name: Get Context Information
+        id: context-info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let issueNumber, prNumber, headRef, baseRef, headSha
+            let triggerText = ''
+            let hasLinkedPR = false
+            let isPR = false
+
+            if (context.eventName === 'workflow_dispatch') {
+              console.log('Workflow dispatch event')
+              console.log(context.payload)
+              triggerText = context.payload.inputs.trigger_text
+              // Automatically add @claude to the trigger text if it's not already there
+              if (!triggerText.includes('@claude')) {
+                triggerText = '@claude ' + triggerText
+              }
+              console.log(`Workflow dispatch #${issueNumber}: ${triggerText}`)
+
+            } else if (context.eventName === 'pull_request_target') {
+              // When a PR is created or updated
+              isPR = true
+              issueNumber = context.payload.pull_request.number
+              prNumber = context.payload.pull_request.number
+              headRef = context.payload.pull_request.head.ref
+              baseRef = context.payload.pull_request.base.ref
+              headSha = context.payload.pull_request.head.sha
+              triggerText = context.payload.pull_request.body
+              
+              console.log(`PR #${prNumber}: ${baseRef} <- ${headRef} (${headSha})`)
+              
+            } else if (context.eventName === 'issues') {
+              // When an Issue is created or assigned
+              isPR = false
+              issueNumber = context.payload.issue.number
+              triggerText = `${context.payload.issue.title} ${context.payload.issue.body}`
+              
+              console.log(`Issue #${issueNumber} created`)
+              
+            } else if (context.eventName === 'issue_comment') {
+              // Issue/PR comment
+              issueNumber = context.payload.issue.number
+              triggerText = context.payload.comment.body
+              
+              if (context.payload.issue.pull_request) {
+                // Comment on a PR
+                isPR = true
+                try {
+                  const pr = await github.rest.pulls.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: issueNumber
+                  })
+                  prNumber = issueNumber
+                  headRef = pr.data.head.ref
+                  baseRef = pr.data.base.ref
+                  headSha = pr.data.head.sha
+                  
+                  console.log(`PR Comment #${prNumber}: ${baseRef} <- ${headRef}`)
+                } catch (error) {
+                  console.error('Error fetching PR info:', error)
+                  // In case of error, treat as a regular Issue
+                  isPR = false
+                }
+              } else {
+                // Regular Issue comment - check for existing linked PRs
+                isPR = false
+                
+                try {
+                  // Get timeline events to find linked pull requests
+                  const { data: timeline } = await github.rest.issues.listEventsForTimeline({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    per_page: 100,
+                    headers: {
+                      accept: 'application/vnd.github.mockingbird-preview+json'
+                    }
+                  })
+
+                  console.log(`Timeline: ${JSON.stringify(timeline, null, 2)}`)
+
+                  const linkedPRs = timeline
+                    // filter out event.event is not cross-referenced
+                    .filter(event => event.event === 'cross-referenced')
+                    // filter out event.source?.issue?.pull_request is null
+                    .filter(event => event.source?.issue?.pull_request?.url)
+                    // return url and pr name, and the issue number and the body and the actor
+                    .map(event => ({
+                      issueNumber: event.source?.issue?.number,
+                      actor: event.actor?.login,
+                      url: event.source?.issue?.pull_request?.url,
+                      title: event.source?.issue?.title,
+                      body: event.source?.issue?.body,
+                    }))
+
+                  hasLinkedPR = linkedPRs.length > 0
+                  console.log(`Linked PRs:`, linkedPRs)
+                  console.log(`Issue Comment #${issueNumber}, already has linked PR: ${hasLinkedPR}`)
+                  
+                } catch (error) {
+                  console.error('Error checking for linked PRs:', error)
+                }
+              }
+              
+            } else if (context.eventName === 'pull_request_review_comment' || context.eventName === 'pull_request_review') {
+              // PR review related
+              isPR = true
+              issueNumber = context.payload.pull_request.number
+              prNumber = context.payload.pull_request.number
+              headRef = context.payload.pull_request.head.ref
+              baseRef = context.payload.pull_request.base.ref
+              headSha = context.payload.pull_request.head.sha
+              
+              if (context.eventName === 'pull_request_review_comment') {
+                triggerText = context.payload.comment.body
+              } else {
+                triggerText = context.payload.review.body
+              }
+              
+              console.log(`PR Review #${prNumber}: ${baseRef} <- ${headRef}`)
+            }
+            
+            // Set outputs
+            core.setOutput('issue-number', issueNumber)
+            core.setOutput('pr-number', prNumber || '')
+            core.setOutput('head-ref', headRef || '')
+            core.setOutput('base-ref', baseRef || '')
+            core.setOutput('head-sha', headSha || '')
+            core.setOutput('is-pr', isPR)
+            core.setOutput('trigger-text', triggerText)
+            core.setOutput('has-linked-pr', hasLinkedPR)
+            
+            console.log(`Final Context:`)
+            console.log(`Event: ${context.eventName}`)
+            console.log(`Issue #${issueNumber}`)
+            console.log(`isPR: ${isPR}`)
+            console.log(`Trigger Text: ${triggerText}`)
+            console.log(`Already has linked PR: ${hasLinkedPR}`)
+
+      - name: Validate Environment
+        run: |
+          echo "🔍 Runtime Environment Information"
+          echo "=================================="
+          echo "Event: ${{ github.event_name }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Issue Number: ${{ steps.context-info.outputs.issue-number }}"
+          echo "Is PR: ${{ steps.context-info.outputs.is-pr }}"
+          echo "PR Number: ${{ steps.context-info.outputs.pr-number }}"
+          echo "Head Ref: ${{ steps.context-info.outputs.head-ref }}"
+          echo "Base Ref: ${{ steps.context-info.outputs.base-ref }}"
+          echo "Head SHA: ${{ steps.context-info.outputs.head-sha }}"
+          echo "Has Linked PR: ${{ steps.context-info.outputs.has-linked-pr }}"
+          echo "=================================="
+          
+          # Check for secrets
+          if [ -z "${{ secrets.CLAUDE_CREDS_API_KEY }}" ]; then
+            echo "::error::CLAUDE_CREDS_API_KEY is not set"
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.CLAUDE_CREDS_API }}" ]; then
+            echo "::error::CLAUDE_CREDS_API is not set"
+            exit 1
+          fi
+          
+          echo "✅ Environment validation complete"
+
+      - name: Exit early if Issue already has linked PR
+        id: should-continue
+        run: |
+          IS_PR="${{ steps.context-info.outputs.is-pr }}"
+          HAS_LINKED_PR="${{ steps.context-info.outputs.has-linked-pr }}"
+          
+          if [[ "$IS_PR" == "false" && "$HAS_LINKED_PR" == "true" ]]; then
+            echo "Issue already has linked PR. Will skip remaining steps."
+            echo "should-continue=false" >> $GITHUB_OUTPUT
+          else
+            echo "No linked PRs found or this is a PR. Continuing."
+            echo "should-continue=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Debug issue number
+        if: github.event_name != 'workflow_dispatch'
+        run: echo "The issue number is ${{ steps.context-info.outputs.issue-number }}"
+
+      # Only add comment if it doesn't exist
+      - name: Find existing status comment
+        if: steps.should-continue.outputs.should-continue == 'true' && github.event_name != 'workflow_dispatch'
+        uses: peter-evans/find-comment@v3
+        id: find_comment # We'll check the output of this step
+        with:
+          issue-number: ${{ steps.context-info.outputs.issue-number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- claude-run-status -->'
+
+      - name: Create initial "in-progress" comment if it doesn't exist
+        # This step ONLY runs if the 'find-comment' step found nothing
+        if: steps.should-continue.outputs.should-continue == 'true' && steps.find_comment.outputs.comment-id == '' && github.event_name != 'workflow_dispatch'
+        uses: peter-evans/create-or-update-comment@v4
+        id: create_comment
+        with:
+          issue-number: ${{ steps.context-info.outputs.issue-number }}
+          body: |
+            Claude Code is running... ⏳
+            <!-- claude-run-status -->
+  #########################################################
+  # Claude Code
+  #########################################################
+  claude:
+    needs: setup
+    # Security-focused conditional execution (full support for Issues and PRs)
+    if: needs.setup.outputs.should-continue == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       # 📁 Content management (highest permissions)
       contents: write
@@ -96,93 +458,13 @@ jobs:
       id-token: write
 
     steps:
-      - name: Get Context Information
-        id: context-info
-        uses: actions/github-script@v7
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
-          script: |
-            let issueNumber, prNumber, headRef, baseRef, headSha, isPR = false;
-            let triggerText = '';
-            
-            if (context.eventName === 'pull_request_target') {
-              // When a PR is created or updated
-              isPR = true;
-              issueNumber = context.payload.pull_request.number;
-              prNumber = context.payload.pull_request.number;
-              headRef = context.payload.pull_request.head.ref;
-              baseRef = context.payload.pull_request.base.ref;
-              headSha = context.payload.pull_request.head.sha;
-              triggerText = context.payload.pull_request.body;
-              
-              console.log(`PR #${prNumber}: ${baseRef} <- ${headRef} (${headSha})`);
-              
-            } else if (context.eventName === 'issues') {
-              // When an Issue is created or assigned
-              isPR = false;
-              issueNumber = context.payload.issue.number;
-              triggerText = `${context.payload.issue.title} ${context.payload.issue.body}`;
-              
-              console.log(`Issue #${issueNumber} created`);
-              
-            } else if (context.eventName === 'issue_comment') {
-              // Issue/PR comment
-              issueNumber = context.payload.issue.number;
-              triggerText = context.payload.comment.body;
-              
-              if (context.payload.issue.pull_request) {
-                // Comment on a PR
-                isPR = true;
-                try {
-                  const pr = await github.rest.pulls.get({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: issueNumber
-                  });
-                  prNumber = issueNumber;
-                  headRef = pr.data.head.ref;
-                  baseRef = pr.data.base.ref;
-                  headSha = pr.data.head.sha;
-                  
-                  console.log(`PR Comment #${prNumber}: ${baseRef} <- ${headRef}`);
-                } catch (error) {
-                  console.error('Error fetching PR info:', error);
-                  // In case of error, treat as a regular Issue
-                  isPR = false;
-                }
-              } else {
-                // Regular Issue comment
-                isPR = false;
-                console.log(`Issue Comment #${issueNumber}`);
-              }
-              
-            } else if (context.eventName === 'pull_request_review_comment' || context.eventName === 'pull_request_review') {
-              // PR review related
-              isPR = true;
-              issueNumber = context.payload.pull_request.number;
-              prNumber = context.payload.pull_request.number;
-              headRef = context.payload.pull_request.head.ref;
-              baseRef = context.payload.pull_request.base.ref;
-              headSha = context.payload.pull_request.head.sha;
-              
-              if (context.eventName === 'pull_request_review_comment') {
-                triggerText = context.payload.comment.body;
-              } else {
-                triggerText = context.payload.review.body;
-              }
-              
-              console.log(`PR Review #${prNumber}: ${baseRef} <- ${headRef}`);
-            }
-            
-            // Set outputs
-            core.setOutput('issue-number', issueNumber);
-            core.setOutput('pr-number', prNumber || '');
-            core.setOutput('head-ref', headRef || '');
-            core.setOutput('base-ref', baseRef || '');
-            core.setOutput('head-sha', headSha || '');
-            core.setOutput('is-pr', isPR);
-            core.setOutput('trigger-text', triggerText);
-            
-            console.log(`Final Context: Issue #${issueNumber}, isPR: ${isPR}, Event: ${context.eventName}`);
+          # Checkout the feature branch for PRs, or the default branch for Issues
+          ref: ${{ needs.setup.outputs.head-sha || github.ref }}
+          fetch-depth: ${{ needs.setup.outputs.is-pr == 'true' && 0 || 1 }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate Environment
         run: |
@@ -191,46 +473,27 @@ jobs:
           echo "Event: ${{ github.event_name }}"
           echo "Actor: ${{ github.actor }}"
           echo "Repository: ${{ github.repository }}"
-          echo "Issue Number: ${{ steps.context-info.outputs.issue-number }}"
-          echo "Is PR: ${{ steps.context-info.outputs.is-pr }}"
-          echo "PR Number: ${{ steps.context-info.outputs.pr-number }}"
-          echo "Head Ref: ${{ steps.context-info.outputs.head-ref }}"
-          echo "Base Ref: ${{ steps.context-info.outputs.base-ref }}"
-          echo "Head SHA: ${{ steps.context-info.outputs.head-sha }}"
+          echo "Issue Number: ${{ needs.setup.outputs.issue-number }}"
+          echo "Is PR: ${{ needs.setup.outputs.is-pr }}"
+          echo "PR Number: ${{ needs.setup.outputs.pr-number }}"
+          echo "Head Ref: ${{ needs.setup.outputs.head-ref }}"
+          echo "Base Ref: ${{ needs.setup.outputs.base-ref }}"
+          echo "Head SHA: ${{ needs.setup.outputs.head-sha }}"
+          echo "Has Linked PR: ${{ needs.setup.outputs.has-linked-pr }}"
+          echo "Trigger Text: ${{ needs.setup.outputs.trigger-text }}"
           echo "=================================="
-          
-          # Check for secrets
-          if [ -z "${{ secrets.CLAUDE_CREDS_API_KEY }}" ]; then
-            echo "::error::CLAUDE_CREDS_API_KEY is not set"
-            exit 1
-          fi
-
-          if [ -z "${{ secrets.CLAUDE_CREDS_API }}" ]; then
-            echo "::error::CLAUDE_CREDS_API is not set"
-            exit 1
-          fi
-          
-          echo "✅ Environment validation complete"
-
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          # Checkout the feature branch for PRs, or the default branch for Issues
-          ref: ${{ steps.context-info.outputs.head-sha || github.ref }}
-          fetch-depth: ${{ steps.context-info.outputs.is-pr == 'true' && 0 || 1 }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+      
       - name: Fetch Base Branch (PR only)
-        if: steps.context-info.outputs.is-pr == 'true' && steps.context-info.outputs.base-ref
+        if: needs.setup.outputs.is-pr == 'true' && needs.setup.outputs.base-ref
         run: |
-          echo "📥 Fetching base branch: ${{ steps.context-info.outputs.base-ref }}"
-          git fetch origin ${{ steps.context-info.outputs.base-ref }}:${{ steps.context-info.outputs.base-ref }}
+          echo "📥 Fetching base branch: ${{ needs.setup.outputs.base-ref }}"
+          git fetch origin ${{ needs.setup.outputs.base-ref }}:${{ needs.setup.outputs.base-ref }}
           
           echo "📋 Changed files:"
-          git diff --name-only origin/${{ steps.context-info.outputs.base-ref }}..HEAD || echo "Failed to get diff"
+          git diff --name-only origin/${{ needs.setup.outputs.base-ref }}..HEAD || echo "Failed to get diff"
           
           echo "📊 Change statistics:"
-          git diff --stat origin/${{ steps.context-info.outputs.base-ref }}..HEAD || echo "Failed to get stats"
+          git diff --stat origin/${{ needs.setup.outputs.base-ref }}..HEAD || echo "Failed to get stats"
 
       - name: Get Project Information
         id: project-info
@@ -304,15 +567,20 @@ jobs:
           
       - name: Run Claude Code
         id: claude
-        uses: davidwells/claude-code-action@main
-        timeout-minutes: 10
+        uses: anthropics/claude-code-action@main
+        timeout-minutes: 20
         continue-on-error: true
         with:
-          use_oauth: true
-          claude_access_token: ${{ steps.setup-env.outputs.access-token }}
-          claude_refresh_token: ${{ steps.setup-env.outputs.refresh-token }}
-          claude_expires_at: ${{ steps.setup-env.outputs.expires-at }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
+          # If the workflow is triggered by a workflow_dispatch event, use the agent mode, otherwise use the tag mode
+          mode: ${{ github.event_name == 'workflow_dispatch' && 'agent' || 'tag' }}
+          # direct prompt from workflow_dispatch event
+          direct_prompt: ${{ github.event_name == 'workflow_dispatch' && needs.setup.outputs.trigger-text || '' }}
+          # This is an optional setting that allows Claude to read CI results on PRs
+          additional_permissions: |
+            actions: read
           # claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
           # claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
           # claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
@@ -329,14 +597,14 @@ jobs:
             Bash(rm -rf /)
         env:
           # Pass context information to Claude Code
-          GITHUB_CONTEXT_TYPE: ${{ steps.context-info.outputs.is-pr == 'true' && 'PR' || 'ISSUE' }}
-          ISSUE_NUMBER: ${{ steps.context-info.outputs.issue-number }}
-          PR_NUMBER: ${{ steps.context-info.outputs.pr-number }}
-          BASE_BRANCH: ${{ steps.context-info.outputs.base-ref }}
-          HEAD_BRANCH: ${{ steps.context-info.outputs.head-ref }}
-          HEAD_SHA: ${{ steps.context-info.outputs.head-sha }}
+          GITHUB_CONTEXT_TYPE: ${{ needs.setup.outputs.is-pr == 'true' && 'PR' || 'ISSUE' }}
+          ISSUE_NUMBER: ${{ needs.setup.outputs.issue-number }}
+          PR_NUMBER: ${{ needs.setup.outputs.pr-number }}
+          BASE_BRANCH: ${{ needs.setup.outputs.base-ref }}
+          HEAD_BRANCH: ${{ needs.setup.outputs.head-ref }}
+          HEAD_SHA: ${{ needs.setup.outputs.head-sha }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          TRIGGER_TEXT: ${{ steps.context-info.outputs.trigger-text }}
+          TRIGGER_TEXT: ${{ needs.setup.outputs.trigger-text }}
           PROJECT_TYPE: ${{ steps.project-info.outputs.project-type }}
           PROJECT_FRAMEWORK: ${{ steps.project-info.outputs.framework }}
           TOTAL_FILES: ${{ steps.project-info.outputs.total-files }}
@@ -374,14 +642,14 @@ jobs:
 
       - name: Run Advanced Repository Management
         id: advanced-management
-        if: steps.claude.outcome == 'success' && steps.context-info.outputs.issue-number
+        if: steps.claude.outcome == 'success' && needs.setup.outputs.issue-number
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = ${{ steps.context-info.outputs.issue-number }};
-            const isPR = '${{ steps.context-info.outputs.is-pr }}' === 'true';
-            const triggerText = (${{ toJSON(steps.context-info.outputs.trigger-text) }} || '').toLowerCase();
+            const issueNumber = ${{ needs.setup.outputs.issue-number }};
+            const isPR = '${{ needs.setup.outputs.is-pr }}' === 'true';
+            const triggerText = (${{ toJSON(needs.setup.outputs.trigger-text) }} || '').toLowerCase();
             const framework = '${{ steps.project-info.outputs.framework }}';
             const hashSymbol = String.fromCharCode(35);
             
@@ -652,107 +920,324 @@ jobs:
               core.setOutput('management-error', error.message);
               core.setOutput('management-success', 'false');
             }
-      - name: Check for Changes
+
+      - name: Check for Changes and Prepare for PR
         id: check-changes
-        if: steps.claude.outcome == 'success' && steps.context-info.outputs.is-pr == 'false'
+        if: steps.claude.outcome == 'success' && needs.setup.outputs.is-pr == 'false' && steps.claude.outputs.branch_name
         run: |
-          echo "🔍 Checking for changes after Claude Code execution"
+          set -e # Exit immediately if a command exits with a non-zero status.
+
+          BRANCH_NAME="${{ steps.claude.outputs.branch_name }}"
+          DEFAULT_BRANCH="origin/${{ github.event.repository.default_branch }}"
+
+          echo "--- 1. Checking if remote branch '${BRANCH_NAME}' exists ---"
+          # Use `git ls-remote` to check for the branch's existence. It exits with 0 if it exists, 2 if not.
+          if ! git ls-remote --exit-code --heads origin "${BRANCH_NAME}" >/dev/null 2>&1; then
+            echo "✅ Remote branch '${BRANCH_NAME}' not found. This indicates no code changes were committed."
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+            echo "branch-exists=false" >> $GITHUB_OUTPUT
+            # Exit successfully as this is an expected outcome.
+            exit 0
+          fi
           
-          # Git configuration
-          git config --global user.name "Claude Code Bot"
-          git config --global user.email "claude-code-bot@github.com"
+          echo "✅ Remote branch found. Proceeding with original fetch and reset logic."
+          echo "branch-exists=true" >> $GITHUB_OUTPUT
+
+          echo "--- 2. DEBUG: Initial Git State ---"
+          echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Current commit: $(git log -1 --pretty=%h)"
+          echo "Workspace status:"
+          git status -s
+          echo "-----------------------------------"
+
+          echo "🚀 3. Fetching the specific branch pushed by Claude: '${BRANCH_NAME}'..."
+          git fetch origin "+refs/heads/${BRANCH_NAME}:refs/remotes/origin/${BRANCH_NAME}"
+
+          echo "--- 4. DEBUG: After Fetch ---"
+          echo "Remote commit for '${BRANCH_NAME}' is: $(git log origin/${BRANCH_NAME} -1 --pretty=%h)"
+          echo "-----------------------------"
           
-          # Check for modified files
-          if git diff --quiet && git diff --cached --quiet; then
-            echo "No changes: Skipping branch creation"
+          echo "🔄 5. Forcibly resetting local branch to match the fetched remote state..."
+          git checkout "${BRANCH_NAME}"
+          git reset --hard "origin/${BRANCH_NAME}"
+
+          echo "--- 6. DEBUG: After Resetting Local Branch ---"
+          echo "Current branch is now: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Current commit is now: $(git log -1 --pretty=%h)"
+          echo "Workspace status is now:"
+          git status -s
+          echo "---------------------------------------------"
+
+          BRANCH_RANGE="${DEFAULT_BRANCH}...${BRANCH_NAME}"
+          
+          echo "🔍 7. Checking for changes in range: ${BRANCH_RANGE}..."
+          
+          # Use the exit code of 'git diff --quiet' to check for changes.
+          if git diff --quiet $BRANCH_RANGE; then
+            echo "✅ No changes detected between branches. Setting has-changes=false."
             echo "has-changes=false" >> $GITHUB_OUTPUT
           else
-            echo "Changes detected: Proceeding with branch creation"
+            echo "📝 Changes detected. Setting has-changes=true."
             echo "has-changes=true" >> $GITHUB_OUTPUT
             
-            # List of changed files
-            echo "📄 Changed files:"
-            git diff --name-only
-            git diff --cached --name-only
+            echo "---"
+            echo "📄 Changed files (compared to default branch):"
+            git diff --name-only $BRANCH_RANGE
             
-            # Change statistics
+            echo "---"
             echo "📊 Change statistics:"
-            git diff --stat
-            git diff --cached --stat
+            git diff --stat $BRANCH_RANGE
           fi
-
-      - name: Create Pull Request
+    #########################################################
+    # IF we have changes, create or update a pull request
+    #########################################################
+      - name: Create or Update Pull Request
         id: auto-pr
-        if: steps.claude.outcome == 'success' && steps.context-info.outputs.is-pr == 'false' && steps.claude.outputs.CLAUDE_BRANCH
+        # The 'if' condition is now correctly chained.
+        if: |
+          steps.claude.outcome == 'success' 
+          && needs.setup.outputs.is-pr == 'false'
+          && steps.claude.outputs.branch_name 
+          && steps.check-changes.outputs.has-changes == 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = ${{ steps.context-info.outputs.issue-number }};
-            const branchName = '${{ steps.claude.outputs.CLAUDE_BRANCH }}';
-            const defaultBranch = '${{ github.event.repository.default_branch }}';
+            const issueNumber = ${{ needs.setup.outputs.issue-number }}
+            const branchName = '${{ steps.claude.outputs.branch_name }}'
+            const defaultBranch = '${{ github.event.repository.default_branch }}'
+            const owner = context.repo.owner
+            const repo = context.repo.repo
 
-            console.log(`Attempting to create PR for branch: ${branchName}`);
-            
             try {
-              const { data: issue } = await github.rest.issues.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: issueNumber
-              });
+              // 1. Check for an existing PR for this branch
+              console.log(`Checking for existing PRs for branch: ${branchName}`)
               
-              const prTitle = `🤖 Claude Code: ${issue.title}`;
-              const prBody = `## 🤖 Automated fix by Claude Code
+              let existingPr = null
+              try {
+                const { data: pulls } = await github.rest.pulls.list({
+                  owner,
+                  repo,
+                  head: `${owner}:${branchName}`,
+                  state: 'open',
+                  per_page: 1
+                })
+                existingPr = pulls.length > 0 ? pulls[0] : null
+              } catch (error) {
+                existingPr = null
+              }
+
+              let pr
+
+              if (existingPr) {
+                // 2. If PR exists, use it
+                pr = existingPr
+                console.log(`✅ Found existing PR: #${pr.number}. No new PR will be created.`)
+                
+                // Optional: Post a comment to the existing PR to notify of the update
+                const updateComment = `🔄 **Claude Code has updated this branch** with new changes.\n\n[View the latest workflow run](https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }})`
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: pr.number,
+                  body: updateComment,
+                })
+
+              } else {
+                // 3. If no PR exists, create one
+                console.log(`No existing PR found. Attempting to create a new PR for branch: ${branchName}`)
+                
+                const { data: issue } = await github.rest.issues.get({
+                  owner,
+                  repo,
+                  issue_number: issueNumber
+                })
+
+                // Get the last issue comment by claude on issueNumber
+                const { data: comments } = await github.rest.issues.listComments({
+                  owner,
+                  repo,
+                  issue_number: issueNumber
+                })
+                const claudeComment = comments.find(c => c.user.login === 'claude[bot]' && c.body.includes('Claude'))
+                const claudeCommentBody = claudeComment ? claudeComment.body.replace(/\[Create PR ➔\]\([^)]+\)/, '') : ''
+                
+                const prTitle = `🤖 Claude Code: ${issue.title}`
+                const prBody = `## 🤖 Automated fix by Claude Code
 
             **Related Issue:** #${issueNumber}
             **Executed by:** @${{ github.actor }}
 
-            ### ✅ Next Steps
-            1. Review the changes in this PR.
-            2. Confirm that all tests pass.
-            3. Merge if everything looks good.
+            ---
+
+            ${claudeCommentBody}
 
             **If additional fixes are needed:** Mention \`@ claude\` in a comment on this PR.
 
-            resolves #${issueNumber}
+            *resolves #${issueNumber}*
 
             ---
-            *Automated PR by [Claude Code Workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})*
-            `;
+            *Automated PR by [Claude Code Action - Run #${{ github.run_id }}](https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }})*
+            `
 
-              const { data: pr } = await github.rest.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: prTitle,
-                head: branchName,
-                base: defaultBranch,
-                body: prBody,
-                draft: false
-              });
+                const { data: newPr } = await github.rest.pulls.create({
+                  owner,
+                  repo,
+                  title: prTitle,
+                  head: branchName,
+                  base: defaultBranch,
+                  body: prBody,
+                  draft: false
+                })
+
+                pr = newPr
+                console.log(`🎉 PR created successfully: #${pr.number}`)
+
+                // Add first comment to the PR for sticky comment
+                const stickyComment = `
+              **ℹ️ Action Run:** https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }}
               
-              console.log(`🎉 PR created successfully: #${pr.number}`);
+              <!-- claude-run-status -->
+              `
+
+                /* Add sticky comment to the PR for other data */
+                await github.rest.issues.createComment({
+                  issue_number: pr.number,
+                  owner,
+                  repo,
+                  body: stickyComment,
+                  author: 'github-actions[bot]'
+                })
+              }
               
-              core.setOutput('pr-number', pr.number);
-              core.setOutput('pr-url', pr.html_url);
-              
+              // 4. Set outputs with the PR info (whether new or existing)
+              core.setOutput('pr-number', pr.number)
+              core.setOutput('pr-url', pr.html_url)
+              core.setOutput('branch-name', branchName)
+
+              // Ping our webhook - PR creation successful
+              try {
+                const webhookUrl = '${{ secrets.CLAUDE_CODE_NOTIFICATIONS_URL }}';
+                const webhookToken = '${{ secrets.CLAUDE_CODE_NOTIFICATIONS_KEY }}';
+                
+                const jobId = `claude-${context.repo.owner}-${context.repo.repo}-${issueNumber}-${Date.now()}`;
+                const actionUrl = `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
+                
+                const webhookData = {
+                  jobId: jobId,
+                  status: 'completed',
+                  repository: `${context.repo.owner}/${context.repo.repo}`,
+                  url: actionUrl,
+                  branch: branchName || context.payload.repository?.default_branch || 'main',
+                  commit: '${{ github.sha }}',
+                  results: {
+                    prCreated: true,
+                    prNumber: pr.number,
+                    prUrl: pr.html_url,
+                    issueNumber: issueNumber,
+                    actor: '${{ github.actor }}',
+                    event: '${{ github.event_name }}',
+                    framework: '${{ steps.project-info.outputs.framework }}',
+                    totalFiles: '${{ steps.project-info.outputs.total-files }}',
+                    hasChanges: '${{ steps.check-changes.outputs.has-changes }}',
+                    managementSuccess: '${{ steps.advanced-management.outputs.management-success }}'
+                  }
+                };
+                
+                console.log('🔔 Sending webhook notification (PR created)...');
+                console.log('Webhook URL:', webhookUrl);
+                console.log('Job ID:', jobId);
+                
+                const response = await fetch(`${webhookUrl}/job-complete`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${webhookToken}`
+                  },
+                  body: JSON.stringify(webhookData)
+                });
+                
+                if (response.ok) {
+                  console.log('✅ Webhook notification sent successfully');
+                } else {
+                  console.warn(`⚠️ Webhook notification failed: ${response.status} ${response.statusText}`);
+                }
+              } catch (error) {
+                console.warn('⚠️ Webhook notification error:', error.message);
+              }
+
             } catch (error) {
-              console.error('❌ PR creation error:', error);
-              core.setOutput('error', error.message);
+              console.error('❌ PR creation/update error:', error)
+              core.setOutput('error', error.message)
               
+              const failureComment = `❌ **Automatic PR creation failed**\n\n**Error:** \`${error.message}\`\n\n**Solution**: A branch named \`${branchName}\` was created with the changes. Please create a PR from it manually or rerun the job.\n**Details**: [Actions run log](${{ github.server_url }}/${owner}/${repo}/actions/runs/${{ github.run_id }})`
               await github.rest.issues.createComment({
                 issue_number: issueNumber,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `❌ **Automatic PR creation failed**\n\n**Error:** \`${error.message}\`\n\n**Solution**: A branch named \`${branchName}\` was created with the changes. Please create a PR from it manually or rerun the job.\n**Details**: [Actions run log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
-              });
+                owner,
+                repo,
+                body: failureComment
+              })
+
+              // Ping our webhook - PR creation failed
+              try {
+                const webhookUrl = '${{ secrets.CLAUDE_CODE_NOTIFICATIONS_URL }}';
+                const webhookToken = '${{ secrets.CLAUDE_CODE_NOTIFICATIONS_KEY }}';
+                
+                const jobId = `claude-${context.repo.owner}-${context.repo.repo}-${issueNumber}-${Date.now()}`;
+                const actionUrl = `https://github.com/${owner}/${repo}/issues/${issueNumber}`;
+                
+                const webhookData = {
+                  jobId: jobId,
+                  status: 'failed',
+                  repository: `${context.repo.owner}/${context.repo.repo}`,
+                  url: actionUrl,
+                  branch: branchName || context.payload.repository?.default_branch || 'main',
+                  commit: '${{ github.sha }}',
+                  results: {
+                    prCreated: false,
+                    prNumber: null,
+                    prUrl: null,
+                    issueNumber: issueNumber,
+                    actor: '${{ github.actor }}',
+                    event: '${{ github.event_name }}',
+                    framework: '${{ steps.project-info.outputs.framework }}',
+                    totalFiles: '${{ steps.project-info.outputs.total-files }}',
+                    hasChanges: '${{ steps.check-changes.outputs.has-changes }}',
+                    managementSuccess: '${{ steps.advanced-management.outputs.management-success }}',
+                    error: error.message
+                  }
+                };
+                
+                console.log('🔔 Sending webhook notification (PR creation failed)...');
+                console.log('Webhook URL:', webhookUrl);
+                console.log('Job ID:', jobId);
+                
+                const response = await fetch(`${webhookUrl}/job-complete`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${webhookToken}`
+                  },
+                  body: JSON.stringify(webhookData)
+                });
+                
+                if (response.ok) {
+                  console.log('✅ Webhook notification sent successfully');
+                } else {
+                  console.warn(`⚠️ Webhook notification failed: ${response.status} ${response.statusText}`);
+                }
+              } catch (webhookError) {
+                console.warn('⚠️ Webhook notification error:', webhookError.message);
+              }
             }
 
       - name: Notify on Success
-        if: steps.claude.outcome == 'success' && steps.context-info.outputs.issue-number
+        if: steps.claude.outcome == 'success' && needs.setup.outputs.issue-number
+        id: generate_success_comment
         uses: actions/github-script@v7
         with:
           script: |
-            const isPR = '${{ steps.context-info.outputs.is-pr }}' === 'true';
+            const isPR = '${{ needs.setup.outputs.is-pr }}' === 'true';
             const contextType = isPR ? 'Pull Request' : 'Issue';
             const eventName = '${{ github.event_name }}';
             const framework = '${{ steps.project-info.outputs.framework }}' || 'Unknown';
@@ -763,7 +1248,9 @@ jobs:
             const branchName = '${{ steps.auto-pr.outputs.branch-name }}';
             const managementSuccess = '${{ steps.advanced-management.outputs.management-success }}' === 'true';
             const managementResults = '${{ steps.advanced-management.outputs.management-results }}';
-            
+            const owner = context.repo.owner
+            const repo = context.repo.repo
+
             const eventIcons = {
               'pull_request_target': '🔀',
               'issue_comment': '💬',
@@ -774,22 +1261,28 @@ jobs:
             const icon = eventIcons[eventName] || '🤖';
             const hashSymbol = '#';
             
-            let message = `${icon} **Claude Code execution complete**\n\n`;
+            let message = `${icon} **Claude Code execution complete** ✅\n\n`;
             
             // Result of automatic PR creation
+            let prMessage = '';
             if (!isPR && hasChanges && autoPrNumber) {
               message += `🎉 **Automatic PR created successfully!**\n`;
               message += `- PR: [${hashSymbol}${autoPrNumber}](${autoPrUrl})\n`;
               message += `- Branch: \`${branchName}\`\n`;
               message += `- Next step: Review PR → Merge\n\n`;
+              prMessage = `https://github.com/${owner}/${repo}/pull/${autoPrNumber}/files`
             } else if (!isPR && !hasChanges) {
               message += `ℹ️ **Analysis only** (no code changes)\n\n`;
             }
             
             // Execution info (compact version)
-            message += `**📊 Execution Info:** ${contextType} ${hashSymbol}${${{ steps.context-info.outputs.issue-number }}} | ${framework} (${totalFiles} files) | @${{ github.actor }}\n`;
+            message += `**📊 Execution Info:** ${contextType} ${hashSymbol}${${{ needs.setup.outputs.issue-number }}} | ${framework} (${totalFiles} files) | @${{ github.actor }}\n`;
             if (isPR) {
-              message += `**🌿 Branch:** \`${{ steps.context-info.outputs.head-ref }}\` → \`${{ steps.context-info.outputs.base-ref }}\`\n`;
+              message += `**🌿 Branch:** \`${{ needs.setup.outputs.head-ref }}\` → \`${{ needs.setup.outputs.base-ref }}\`\n`;
+            }
+            message += `**ℹ️ Action Run:** https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }}\n`
+            if (prMessage) {
+              message += `**📝 PR Changes:** [https://github.com/${owner}/${repo}/pull/${autoPrNumber}/files](${prMessage})\n`
             }
             
             // Repository management results (summary)
@@ -800,82 +1293,52 @@ jobs:
                 const hasResults = sections.some(s => results[s] && results[s].length > 0);
                 
                 if (hasResults) {
-                  message += `\n**🚀 Automated management executed:**\n`;
+                  // Check if there are actually any results to show
+                  let hasDisplayableResults = false;
+                  const displayableResults = [];
+                  
                   sections.forEach(section => {
                     if (results[section] && results[section].length > 0) {
                       const summary = results[section].filter(r => r.includes('✅') || r.includes('⚠️')).slice(0, 2);
                       if (summary.length > 0) {
-                        message += `${summary.map(r => `- ${r}`).join('\n')}\n`;
+                        hasDisplayableResults = true;
+                        displayableResults.push(...summary.map(r => `- ${r}`));
                       }
                     }
                   });
+                  
+                  if (hasDisplayableResults) {
+                    message += `\n**🚀 Automated management executed:**\n`;
+                    message += displayableResults.join('\n') + '\n';
+                  }
                 }
               } catch (error) {
                 // Do not display in case of error
               }
             }
+                      
+            // Future action links here
+            // message += `\n---\n`;
             
-            message += `\n---\n`;
-            message += `💡 **Example commands for Claude:**\n\n`;
-            
-            // Main commands by category (concise version)
-            const commands = {
-              '🔍 Analysis & Review': [
-                'Please review the code',
-                'Please perform a security check',
-                'Please suggest performance improvements'
-              ],
-              '🛠️ Tasks & Implementation': [
-                'Please add test cases',
-                'Please fix this issue and create a PR',
-                'Please suggest refactoring'
-              ],
-              '📚 Management & Operations': [
-                'Please create a release',
-                'Please check security alerts',
-                'Please optimize the workflow'
-              ]
-            };
-            
-            if (isPR) {
-              commands['🔀 PR Specific'] = [
-                'Please perform a final check before merging',
-                'Please check for breaking changes'
-              ];
-            } else {
-              commands['📋 Issue Specific'] = [
-                'Please investigate the root cause of this issue',
-                'Please propose multiple solutions'
-              ];
-            }
-            
-            Object.entries(commands).forEach(([category, cmds]) => {
-              message += `**${category}:**\n`;
-              cmds.forEach(cmd => message += `- \`claude ${cmd}\`\n`);
-              message += `\n`;
-            });
-            
-            message += `🔄 **Rerun**: You can run again anytime with \`claude [your instructions]\``;
-            
-            await github.rest.issues.createComment({
-              issue_number: ${{ steps.context-info.outputs.issue-number }},
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            });
+            message += `\n<!-- claude-run-status -->`;
+
+            // Set as output steps.generate_success_comment.outputs.result
+            // return message;
+            core.setOutput('comment-body', message)
 
       - name: Notify on Failure
-        if: steps.claude.outcome == 'failure' && steps.context-info.outputs.issue-number
+        if: steps.claude.outcome == 'failure' && needs.setup.outputs.issue-number
+        id: generate_error_comment
         uses: actions/github-script@v7
         with:
           script: |
-            const isPR = '${{ steps.context-info.outputs.is-pr }}' === 'true';
+            const isPR = '${{ needs.setup.outputs.is-pr }}' === 'true';
             const contextType = isPR ? 'Pull Request' : 'Issue';
             const managementError = '${{ steps.advanced-management.outputs.management-error }}';
             const hashSymbol = '#';
             
             let message = `❌ **Claude Code execution failed**\n\n`;
-            message += `An error occurred while processing ${contextType} ${hashSymbol}${{ steps.context-info.outputs.issue-number }}.\n\n`;
+            message += `An error occurred while processing ${contextType} ${hashSymbol}${{ needs.setup.outputs.issue-number }}.\n\n`;
             
             // Error info (compact version)
             message += `**📊 Error Info:** ${contextType} | \`${{ github.event_name }}\` | @${{ github.actor }}\n`;
@@ -912,22 +1375,38 @@ jobs:
             message += `---\n`;
             message += `🔄 **Rerun**: Please try again with \`claude [specific instructions]\`\n`;
             message += `📞 **Support**: If the problem persists, please contact an administrator`;
-            
-            await github.rest.issues.createComment({
-              issue_number: ${{ steps.context-info.outputs.issue-number }},
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: message
-            });
+
+            message += `\n<!-- claude-run-status -->`;
+
+            // Set as output steps.generate_error_comment.outputs.result
+            // return message;
+            core.setOutput('comment-body', message)
+
+      # Update the sticky comment with the success or error message
+      - name: Post or Update Sticky Comment
+        if: |
+          always() 
+          && (steps.generate_success_comment.outputs.comment-body || steps.generate_error_comment.outputs.comment-body)
+          && needs.setup.outputs.status-comment-id
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ needs.setup.outputs.issue-number }}
+          # Pass the ID found in the previous step to ensure we UPDATE
+          comment-id: ${{ needs.setup.outputs.status-comment-id }}
+          # The body comes from your script
+          body: |
+            ${{ steps.generate_success_comment.outputs.comment-body || steps.generate_error_comment.outputs.comment-body }}
+          # Use 'replace' to overwrite the old "in-progress" message
+          edit-mode: replace
 
       - name: Output Execution Log
         if: always()
         run: |
           echo "📊 ===== Execution Summary ====="
           echo "Status: ${{ steps.claude.outcome }}"
-          echo "Context Type: ${{ steps.context-info.outputs.is-pr == 'true' && 'PR' || 'Issue' }}"
-          echo "Issue/PR: '#${{ steps.context-info.outputs.issue-number }}'"
-          echo "Branch: ${{ steps.context-info.outputs.head-ref || 'default' }}"
+          echo "Context Type: ${{ needs.setup.outputs.is-pr == 'true' && 'PR' || 'Issue' }}"
+          echo "Issue/PR: '#${{ needs.setup.outputs.issue-number }}'"
+          echo "Branch: ${{ needs.setup.outputs.head-ref || 'default' }}"
           echo "Actor: ${{ github.actor }}"
           echo "Event: ${{ github.event_name }}"
           echo "Project: ${{ steps.project-info.outputs.framework || 'Unknown' }}"
