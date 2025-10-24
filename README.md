@@ -74,9 +74,9 @@ Use comment blocks in your markdown
 
 **Example:**
 ```md
-<!-- doc-gen remote url=http://url-to-raw-md-file.md -->
+<!-- docs remote url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 Then run `markdown-magic` via it's CLI or programmatically.
@@ -138,9 +138,9 @@ There are various syntax options. Choose your favorite.
 `openWord transformName [opts]`
 
 ```md
-<!-- doc-gen transformName optionOne='hello' optionTwo='there' -->
+<!-- docs transformName optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Curly braces
@@ -148,9 +148,9 @@ content to be replaced
 `openWord {transformName} [opts]`
 
 ```md
-<!-- doc-gen {transformName} optionOne='hello' optionTwo='there' -->
+<!-- docs {transformName} optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Square brackets
@@ -158,9 +158,9 @@ content to be replaced
 `openWord [transformName] [opts]`
 
 ```md
-<!-- doc-gen [transformName] optionOne='hello' optionTwo='there' -->
+<!-- docs [transformName] optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Parentheses
@@ -168,9 +168,9 @@ content to be replaced
 `openWord (transformName) [opts]`
 
 ```md
-<!-- doc-gen (transformName) optionOne='hello' optionTwo='there' -->
+<!-- docs (transformName) optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Functions
@@ -178,12 +178,12 @@ content to be replaced
 `openWord transformName([opts])`
 
 ```md
-<!-- doc-gen transformName(
+<!-- docs transformName(
   foo='bar'
   baz=['qux', 'quux']
 ) -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
@@ -225,8 +225,8 @@ Below is the main config for `markdown-magic`
 | `transforms` (optional) | `Array` | Custom commands to transform block contents, see transforms & custom transforms sections below. Default: `defaultTransforms` |
 | `output` (optional) | `OutputConfig` | Output configuration. |
 | `syntax` (optional) | `SyntaxType` | Syntax to parse. Default: `md` |
-| `open` (optional) | `string` | Opening match word. Default: `doc-gen` |
-| `close` (optional) | `string` | Closing match word. If not defined will be same as opening word. Default: `end-doc-gen` |
+| `open` (optional) | `string` | Opening match word. Default: `docs` |
+| `close` (optional) | `string` | Closing match word. If not defined will be same as opening word. Default: `/docs` |
 | `cwd` (optional) | `string` | Current working directory. Default process.cwd(). Default: `process.cwd() ` |
 | `outputFlatten` (optional) | `boolean` | Flatten files that are output. |
 | `useGitGlob` (optional) | `boolean` | Use git glob for LARGE file directories. |
@@ -277,12 +277,12 @@ Generate table of contents from markdown file
 
 **Example:**
 ```md
-<!-- doc-gen TOC -->
+<!-- docs TOC -->
 toc will be generated here
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
-Default `matchWord` is `doc-gen`
+Default `matchWord` is `docs`
 
 ---
 
@@ -303,18 +303,18 @@ Get code from file or URL and put in markdown
 
 **Example:**
 ```md
-<!-- doc-gen CODE src="./relative/path/to/code.js" -->
+<!-- docs CODE src="./relative/path/to/code.js" -->
 This content will be dynamically replaced with code from the file
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ```md
- <!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
+ <!-- docs CODE src="./relative/path/to/code.js" lines=22-44 -->
  This content will be dynamically replaced with code from the file lines 22 through 44
- <!-- end-doc-gen -->
+ <!-- /docs -->
  ```
 
-Default `matchWord` is `doc-gen`
+Default `matchWord` is `docs`
 
 ---
 
@@ -332,12 +332,12 @@ Get local file contents.
 
 **Example:**
 ```md
-<!-- doc-gen FILE src=./path/to/file -->
+<!-- docs FILE src=./path/to/file -->
 This content will be dynamically replaced from the local file
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
-Default `matchWord` is `doc-gen`
+Default `matchWord` is `docs`
 
 ---
 
@@ -355,12 +355,12 @@ Get any remote Data and put in markdown
 
 **Example:**
 ```md
-<!-- doc-gen REMOTE url=http://url-to-raw-md-file.md -->
+<!-- docs REMOTE url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
-Default `matchWord` is `doc-gen`
+Default `matchWord` is `docs`
 
 ---
 
@@ -383,9 +383,9 @@ Generate a file tree table of contents
 
 **Example:**
 ```md
-<!-- doc-gen fileTree src="./src" maxDepth=2 -->
+<!-- docs fileTree src="./src" maxDepth=2 -->
 file tree will be generated here
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 **Example Output (tree format):**
@@ -427,7 +427,7 @@ file tree will be generated here
     └── package.json (552 B)
 ```
 
-Default `matchWord` is `doc-gen`
+Default `matchWord` is `docs`
 
 ---
 
@@ -448,12 +448,12 @@ Generate installation instructions in a markdown table format
 
 **Example:**
 ```md
-<!-- doc-gen install -->
+<!-- docs install -->
 Installation instructions will be generated here
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
-Default `matchWord` is `doc-gen`
+Default `matchWord` is `docs`
 
 ---
 
@@ -471,7 +471,7 @@ The face symbol 👉 <!-- MD-MAGIC-EXAMPLE:START (INLINE_EXAMPLE) -->**⊂◉‿
 
 **Example:**
 ```md
-<!-- doc-gen (FILE:src=./path/to/file) -->xyz<!-- end-doc-gen -->
+<!-- docs (FILE:src=./path/to/file) -->xyz<!-- /docs -->
 ```
 
 ## Legacy v1 & v2 plugins

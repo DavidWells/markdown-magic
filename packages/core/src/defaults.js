@@ -1,7 +1,7 @@
 
 const SYNTAX = 'md'
-const OPEN_WORD = 'doc-gen'
-const CLOSE_WORD = 'end-doc-gen'
+const OPEN_WORD = 'docs'
+const CLOSE_WORD = '/docs'
 const DEFAULT_GLOB_PATTERN = '**/**.md'
 
 module.exports = {

@@ -2,18 +2,18 @@
 
 Hi Cool Cool Cool Cool
 
-<!--doc-gen (TOC)-->
+<!-- docs (TOC)-->
 - [Testing](#testing)
 - [Testing Two](#testing-two)
-<!--end-doc-gen-->
+<!-- /docs -->
 
 ## Testing
 
 1. text
 
-<!-- doc-gen {{functionName}} foo={{ rad: 'yellow' }} -->
+<!-- docs {{functionName}} foo={{ rad: 'yellow' }} -->
 xyz
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ## Testing Two
 

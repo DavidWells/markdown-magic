@@ -119,12 +119,12 @@ function renderDependencies(dependency) {
  *
  * **Example:**
  * ```md
- * <!-- doc-gen dependencyTable production=true dev=true -->
+ * <!-- docs dependencyTable production=true dev=true -->
  * Dependency table will be generated here
- * <!-- end-doc-gen -->
+ * <!-- /docs -->
  * ```
  *
- * Default `matchWord` is `doc-gen`
+ * Default `matchWord` is `docs`
  *
  * ---
  * @param {string} content The current content of the comment block

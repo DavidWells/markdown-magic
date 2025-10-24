@@ -57,16 +57,16 @@ function getLastModifiedDateFallback(filePath) {
  *
  * **Example:**
  * ```md
- * <!-- doc-gen lastModified -->
+ * <!-- docs lastModified -->
  * This will be replaced with the last modified date
- * <!-- end-doc-gen -->
+ * <!-- /docs -->
  * ```
  *
  * **Example with custom file:**
  * ```md
- * <!-- doc-gen lastModified file="./other-file.md" -->
+ * <!-- docs lastModified file="./other-file.md" -->
  * This will show the last modified date of other-file.md
- * <!-- end-doc-gen -->
+ * <!-- /docs -->
  * ```
  *
  * ---

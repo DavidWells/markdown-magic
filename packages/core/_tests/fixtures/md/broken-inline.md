@@ -1,10 +1,10 @@
 # Doc title
 
-Hi Cool Cool Cool Cool <!--doc-gen wordCount-->ok<!-- end-doc-gen -->
+Hi Cool Cool Cool Cool <!-- docs wordCount-->ok<!-- /docs -->
 
-<!--doc-gen TOC -->
+<!-- docs TOC -->
 ok
-<!--end-doc-gen-->
+<!-- /docs -->
 
 ## Testing
 

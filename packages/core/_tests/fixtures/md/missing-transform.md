@@ -6,18 +6,18 @@ Hi Cool Cool Cool Cool
 
 1. text
 
-<!-- doc-gen {{fakeThingDoesntExist}} foo={{ rad: 'yellow' }} -->
+<!-- docs {{fakeThingDoesntExist}} foo={{ rad: 'yellow' }} -->
 nice
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ## Testing Two
 
-Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
-Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
+Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool
+Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool
 
-<!-- doc-gen {{yoooooooo}} foo={{ rad: 'yellow' }} -->
+<!-- docs {{yoooooooo}} foo={{ rad: 'yellow' }} -->
 nice
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 

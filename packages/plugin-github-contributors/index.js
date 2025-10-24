@@ -89,21 +89,21 @@ async function getRepositoryFromOrigin() {
  *
  * **Example:**
  * ```md
- * <!-- doc-gen CONTRIBUTORS -->
+ * <!-- docs CONTRIBUTORS -->
  * Contributors table will be generated here
- * <!-- /doc-gen -->
+ * <!-- /docs -->
  * ```
  *
  * ```md
- * <!-- doc-gen CONTRIBUTORS format=list -->
+ * <!-- docs CONTRIBUTORS format=list -->
  * Contributors list will be generated here
- * <!-- /doc-gen -->
+ * <!-- /docs -->
  * ```
  *
  * ```md
- * <!-- doc-gen CONTRIBUTORS repo=owner/reponame format=aligned -->
+ * <!-- docs CONTRIBUTORS repo=owner/reponame format=aligned -->
  * Contributors table will be generated here
- * <!-- /doc-gen -->
+ * <!-- /docs -->
  * ```
  *
  * Default `matchWord` is `CONTRIBUTORS`

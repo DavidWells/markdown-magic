@@ -21,9 +21,9 @@ I'm imagining a world where your code AST is parsed and you can automatically in
 
 One day...
 
-<!-- doc-gen FILE 
+<!-- docs FILE
   src="./x.md"
-  shiftHeaders=-1 
+  shiftHeaders=-1
   removeLeadingH1
 -->
 push notifications are a powerful and free browser feature that is often overlooked by products due to the complexity of service workers and the backend infra required to send notifications.
@@ -171,4 +171,4 @@ In the demo we are utilizing dynamoDB and scan operations to fetch the list of s
 Wrapping up
 
 Here is a link to the GitHub repo that includes the source code to this post.
-<!-- end-doc-gen -->
+<!-- /docs -->
