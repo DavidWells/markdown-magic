@@ -2,7 +2,7 @@
 
 This is normal text in markdown. Keep it.
 
-<!-- doc-gen remote url="https://raw.githubusercontent.com/DavidWells/dom-guard/master/README.md" -->
+<!-- docs remote url="https://raw.githubusercontent.com/DavidWells/dom-guard/master/README.md" -->
 # DOM Guard
 
 Stop scammers from the manipulating DOM. [See demo](https://dom-guard.netlify.app)
@@ -63,9 +63,9 @@ npm run serve
 Please note, there isn't a foolproof solution for stopping social engineering attacks against your users.
 
 Please educate your users on the dangers of these scams & add 2FA etc into your apps.
-<!-- end-doc-gen -->
+<!-- /docs -->
 
-<!-- doc-gen remote url=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md -->
+<!-- docs remote url=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md -->
 # Markdown Magic [![npm-version][npm-badge]][npm-link]
 
 ✨ Add a little magic to your markdown! ✨
@@ -142,7 +142,9 @@ Use comment blocks in your markdown
 
 **Example:**
 ```md
+<!-- doc-gen remote url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
+<!-- end-doc-gen -->
 ```
 
 Then run `markdown-magic` via it's CLI or programmatically.
@@ -204,7 +206,9 @@ There are various syntax options. Choose your favorite.
 `openWord transformName [opts]`
 
 ```md
+<!-- doc-gen transformName optionOne='hello' optionTwo='there' -->
 content to be replaced
+<!-- end-doc-gen -->
 ```
 
 ### Curly braces
@@ -212,7 +216,9 @@ content to be replaced
 `openWord {transformName} [opts]`
 
 ```md
+<!-- doc-gen {transformName} optionOne='hello' optionTwo='there' -->
 content to be replaced
+<!-- end-doc-gen -->
 ```
 
 ### Square brackets
@@ -220,7 +226,9 @@ content to be replaced
 `openWord [transformName] [opts]`
 
 ```md
+<!-- doc-gen [transformName] optionOne='hello' optionTwo='there' -->
 content to be replaced
+<!-- end-doc-gen -->
 ```
 
 ### Parentheses
@@ -228,7 +236,9 @@ content to be replaced
 `openWord (transformName) [opts]`
 
 ```md
+<!-- doc-gen (transformName) optionOne='hello' optionTwo='there' -->
 content to be replaced
+<!-- end-doc-gen -->
 ```
 
 ### Functions
@@ -236,7 +246,12 @@ content to be replaced
 `openWord transformName([opts])`
 
 ```md
+<!-- doc-gen transformName(
+  foo='bar'
+  baz=['qux', 'quux']
+) -->
 content to be replaced
+<!-- end-doc-gen -->
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
@@ -330,7 +345,9 @@ Generate table of contents from markdown file
 
 **Example:**
 ```md
+<!-- doc-gen TOC -->
 toc will be generated here
+<!-- end-doc-gen -->
 ```
 
 Default `matchWord` is `doc-gen`
@@ -354,11 +371,15 @@ Get code from file or URL and put in markdown
 
 **Example:**
 ```md
+<!-- doc-gen CODE src="./relative/path/to/code.js" -->
 This content will be dynamically replaced with code from the file
+<!-- end-doc-gen -->
 ```
 
 ```md
-  This content will be dynamically replaced with code from the file lines 22 through 44
+ <!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
+ This content will be dynamically replaced with code from the file lines 22 through 44
+ <!-- end-doc-gen -->
  ```
 
 Default `matchWord` is `doc-gen`
@@ -379,7 +400,9 @@ Get local file contents.
 
 **Example:**
 ```md
+<!-- doc-gen FILE src=./path/to/file -->
 This content will be dynamically replaced from the local file
+<!-- end-doc-gen -->
 ```
 
 Default `matchWord` is `doc-gen`
@@ -400,7 +423,9 @@ Get any remote Data and put in markdown
 
 **Example:**
 ```md
+<!-- doc-gen REMOTE url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
+<!-- end-doc-gen -->
 ```
 
 Default `matchWord` is `doc-gen`
@@ -426,7 +451,9 @@ Generate a file tree table of contents
 
 **Example:**
 ```md
+<!-- doc-gen fileTree src="./src" maxDepth=2 -->
 file tree will be generated here
+<!-- end-doc-gen -->
 ```
 
 **Example Output (tree format):**
@@ -489,7 +516,9 @@ Generate installation instructions in a markdown table format
 
 **Example:**
 ```md
+<!-- doc-gen install -->
 Installation instructions will be generated here
+<!-- end-doc-gen -->
 ```
 
 Default `matchWord` is `doc-gen`
@@ -510,7 +539,7 @@ The face symbol 👉 <!-- MD-MAGIC-EXAMPLE:START (INLINE_EXAMPLE) -->**⊂◉‿
 
 **Example:**
 ```md
-xyz
+<!-- doc-gen (FILE:src=./path/to/file) -->xyz<!-- end-doc-gen -->
 ```
 
 ## Legacy v1 & v2 plugins
@@ -739,6 +768,6 @@ This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmenge
 [mit]:      http://opensource.org/licenses/MIT
 [author]:   http://github.com/davidwells
 
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 This is normal text in markdown. Keep it.

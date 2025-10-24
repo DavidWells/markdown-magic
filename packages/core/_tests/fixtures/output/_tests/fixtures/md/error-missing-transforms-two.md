@@ -6,18 +6,18 @@ This is an example of a blocks defined but the transform set doesn't exist.
 
 1. text
 
-<!-- doc-gen {{nopeNoTranfroms}} foo={{ rad: 'yellow' }} -->
+<!-- docs {{nopeNoTranfroms}} foo={{ rad: 'yellow' }} -->
 nice
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ## Testing Two
 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 
-<!-- doc-gen {{noooooo}} foo={{ rad: 'yellow' }} -->
+<!-- docs {{noooooo}} foo={{ rad: 'yellow' }} -->
 nice
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
 Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool Cool 
