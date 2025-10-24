@@ -7,9 +7,9 @@ on:
 jobs:
   claude-review:
     uses: 'davidwells/actions/.github/workflows/claude-review.yml@master'
-    guideline_files: |
-      README.md
     with:
+      guideline_files: |
+        README.md
       minimum_changed_lines: 10
     secrets:
       claude_oauth_token: '${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}'
