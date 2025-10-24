@@ -480,7 +480,7 @@ jobs:
           echo "Base Ref: ${{ needs.setup.outputs.base-ref }}"
           echo "Head SHA: ${{ needs.setup.outputs.head-sha }}"
           echo "Has Linked PR: ${{ needs.setup.outputs.has-linked-pr }}"
-          echo "Trigger Text: '${{ needs.setup.outputs.trigger-text }}'"
+          echo "Trigger Text: ’${{ needs.setup.outputs.trigger-text }}’"
           echo "=================================="
       
       - name: Fetch Base Branch (PR only)
@@ -576,7 +576,7 @@ jobs:
           model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # Temp fix for https://github.com/anthropics/claude-code-action/issues/584
-          claude_args: '--model sonnet'          
+          claude_args: '--model sonnet --allowedTools "Bash(git:*),Bash(npm:*)"'          
           # If the workflow is triggered by a workflow_dispatch event, use the agent mode, otherwise use the tag mode
           mode: ${{ github.event_name == 'workflow_dispatch' && 'agent' || 'tag' }}
           # direct prompt from workflow_dispatch event
