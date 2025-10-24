@@ -68,19 +68,20 @@ const defaultOptions = {
  * @typedef {object} MarkdownMagicOptions
  * @property {FilePathsOrGlobs} [files] - Files to process.
  * @property {Object} [transforms = defaultTransforms] - Custom commands to transform block contents, see transforms & custom transforms sections below.
- * @property {OutputConfig} [output] - Output configuration
+ * @property {OutputConfig|string} [output] - Output configuration object or directory path
  * @property {SyntaxType} [syntax = 'md'] - Syntax to parse
- * @property {string} [open = 'doc-gen'] - Opening match word
- * @property {string} [close = 'end-doc-gen'] - Closing match word. If not defined will be same as opening word.
- * @property {string} [cwd = process.cwd() ] - Current working directory. Default process.cwd()
+ * @property {string}  [open = 'doc-gen'] - Opening match word
+ * @property {string}  [close = 'end-doc-gen'] - Closing match word. If not defined will be same as opening word.
+ * @property {string}  [cwd = process.cwd() ] - Current working directory. Default process.cwd()
  * @property {boolean} [outputFlatten] - Flatten files that are output
  * @property {boolean} [useGitGlob] - Use git glob for LARGE file directories
- * @property {boolean} [dryRun = false] - See planned execution of matched blocks
+ * @property {boolean} [dry = false] - See planned execution of matched blocks
  * @property {boolean} [debug = false] - See debug details
  * @property {boolean} [silent = false] - Silence all console output
  * @property {boolean} [applyTransformsToSource = true] - Apply transforms to source file. Default is true.
  * @property {boolean} [failOnMissingTransforms = false] - Fail if transform functions are missing. Default skip blocks.
  * @property {boolean} [failOnMissingRemote = true] - Fail if remote file is missing.
+ * @property {string}  [outputDir] - Deprecated: Use `output` instead. Output directory path.
  */
 
 /**
@@ -144,8 +145,9 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     syntax = 'md',
     silent = false,
   } = opts
-
-  let dryRun = opts.dryRun || opts.dry || opts.plan || false
+  
+  // @ts-ignore
+  let dryRun = opts.dry || opts.dryRun || opts.plan || false
 
   // @ts-ignore 
   const outputDir = output.directory || opts.outputDir

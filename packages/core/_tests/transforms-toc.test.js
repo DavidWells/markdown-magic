@@ -26,7 +26,7 @@ test('TOC transform with maxDepth option', async () => {
   const result = await markdownMagic(filePath, {
     open: 'docs',
     close: '/docs',
-    outputDir: OUTPUT_DIR,
+    output: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })

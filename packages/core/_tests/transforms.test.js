@@ -187,7 +187,7 @@ test('Mixed transforms <!-- AUTO-GENERATED-CONTENT:START wordCount -->', async (
     silent: SILENT
   })
 
-  assert.ok(results, 'Mixed match words dont time out')
+  assert.ok(results, 'Mixed match words don\'t time out')
 })
 
 test('<!-- docs fileTree -->', async () => {
