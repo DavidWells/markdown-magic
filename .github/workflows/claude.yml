@@ -576,7 +576,7 @@ jobs:
           model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # Temp fix for https://github.com/anthropics/claude-code-action/issues/584
-          claude_args: '--model sonnet --allowedTools "Bash(*),Bash(npm:*)"'          
+          claude_args: '--model sonnet --dangerously-skip-permissions'          
           # If the workflow is triggered by a workflow_dispatch event, use the agent mode, otherwise use the tag mode
           mode: ${{ github.event_name == 'workflow_dispatch' && 'agent' || 'tag' }}
           # direct prompt from workflow_dispatch event
