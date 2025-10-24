@@ -70,8 +70,8 @@ const defaultOptions = {
  * @property {Object} [transforms = defaultTransforms] - Custom commands to transform block contents, see transforms & custom transforms sections below.
  * @property {OutputConfig|string} [output] - Output configuration object or directory path
  * @property {SyntaxType} [syntax = 'md'] - Syntax to parse
- * @property {string}  [open = 'doc-gen'] - Opening match word
- * @property {string}  [close = 'end-doc-gen'] - Closing match word. If not defined will be same as opening word.
+ * @property {string}  [open = 'docs'] - Opening match word. Default is 'docs'.
+ * @property {string}  [close = '/docs'] - Closing match word. Default is '/docs'. If not defined will be same as opening word with closing slash added.
  * @property {string}  [cwd = process.cwd() ] - Current working directory. Default process.cwd()
  * @property {boolean} [outputFlatten] - Flatten files that are output
  * @property {boolean} [useGitGlob] - Use git glob for LARGE file directories
