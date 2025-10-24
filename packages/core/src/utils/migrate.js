@@ -79,9 +79,11 @@ async function migrateMarkdownFiles(options = {}) {
           content = content.replace(rule.find, rule.replace);
         } else {
           // For string replacements, replace all occurrences
-          const regex = new RegExp(escapeRegex(rule.find), 'g');
+        } else {
+          // For string replacements, replace all occurrences
+          const escapedFind = escapeRegex(rule.find);
+          const regex = new RegExp(escapedFind, 'g');
           content = content.replace(regex, rule.replace);
-        }
       }
 
       if (content !== originalContent) {
