@@ -7,6 +7,8 @@ on:
 jobs:
   claude-review:
     uses: 'davidwells/actions/.github/workflows/claude-review.yml@master'
+    guideline_files: |
+      README.md
     with:
       minimum_changed_lines: 10
     secrets:
