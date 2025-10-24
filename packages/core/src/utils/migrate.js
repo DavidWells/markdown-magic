@@ -74,16 +74,16 @@ async function migrateMarkdownFiles(options = {}) {
       const originalContent = content;
 
       // Apply all replacement rules
+      // Apply all replacement rules
       for (const rule of replacements) {
         if (rule.find instanceof RegExp) {
           content = content.replace(rule.find, rule.replace);
         } else {
           // For string replacements, replace all occurrences
-        } else {
-          // For string replacements, replace all occurrences
           const escapedFind = escapeRegex(rule.find);
           const regex = new RegExp(escapedFind, 'g');
           content = content.replace(regex, rule.replace);
+        }
       }
 
       if (content !== originalContent) {
