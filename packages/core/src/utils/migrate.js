@@ -5,10 +5,10 @@ const { glob } = require('glob');
 /**
  * Migrate markdown files by applying a set of find-and-replace transformations
  * @param {Object} options - Migration options
- * @param {string} [options.pattern='**/*.md'] - Glob pattern for files to migrate
+ * @param {string} [options.pattern] - Glob pattern for files to migrate. Default is '**.md'.
  * @param {string} [options.cwd=process.cwd()] - Current working directory
- * @param {string[]} [options.ignore=['**/node_modules/**']] - Patterns to ignore
- * @param {Array<{find: RegExp|string, replace: string}>} options.replacements - Array of replacement rules
+ * @param {string[]} [options.ignore] - Patterns to ignore. Default is ['**\/node_modules/**'].
+ * @param {Array<{find: RegExp|string, replace: string}>} [options.replacements] - Array of replacement rules
  * @param {boolean} [options.verbose=true] - Whether to log progress
  * @param {boolean} [options.dryRun=false] - If true, don't write files, just report what would change
  * @returns {Promise<{filesProcessed: number, filesUpdated: number, updatedFiles: string[]}>} Migration results
@@ -27,13 +27,13 @@ const { glob } = require('glob');
  * @example
  * // Dry run to see what would change
  * await migrateMarkdownFiles({
- *   pattern: 'docs/**/*.md',
+ *   pattern: 'docs/**\/*.md',
  *   replacements: [
  *     { find: 'old-word', replace: 'new-word' }
  *   ],
  *   dryRun: true
  * });
- */
+*/
 async function migrateMarkdownFiles(options = {}) {
   const {
     pattern = '**/*.md',
