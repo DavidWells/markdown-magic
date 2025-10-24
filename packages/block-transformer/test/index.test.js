@@ -54,7 +54,6 @@ This will be transformed to uppercase
   assert.is(result.missingTransforms.length, 1)
 })
 
-
 test('should apply middleware', async () => {
   const text = `
 <!-- block foobar -->
