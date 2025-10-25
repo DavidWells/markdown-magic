@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const { glob } = require('glob');
 
 /**
@@ -97,10 +96,8 @@ async function migrateMarkdownFiles(options = {}) {
         }
       }
     } catch (error) {
-    } catch (error) {
       console.error(`Error processing ${file}:`, error.message);
       // Consider tracking errors to return them
-    }
     }
   }
 
