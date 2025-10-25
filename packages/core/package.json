@@ -36,9 +36,9 @@
   },
   "dependencies": {
     "@davidwells/md-utils": "0.0.53",
-    "comment-block-parser": "workspace:*",
-    "comment-block-replacer": "workspace:*",
-    "comment-block-transformer": "workspace:*",
+    "comment-block-parser": "1.1.0",
+    "comment-block-replacer": "0.1.1",
+    "comment-block-transformer": "0.2.0",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
@@ -65,5 +65,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "546a15fac58d28315057449adf122a5ab8575901"
 }

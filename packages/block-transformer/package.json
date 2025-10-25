@@ -15,7 +15,7 @@
     "release:major": "pnpm run build && pnpm version major && pnpm publish"
   },
   "dependencies": {
-    "comment-block-parser": "workspace:*"
+    "comment-block-parser": "1.1.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
@@ -23,5 +23,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "546a15fac58d28315057449adf122a5ab8575901"
 }

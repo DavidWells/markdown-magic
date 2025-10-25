@@ -15,7 +15,7 @@
     "release:major": "pnpm run build && pnpm version major && pnpm publish"
   },
   "dependencies": {
-    "comment-block-transformer": "workspace:*",
+    "comment-block-transformer": "0.2.0",
     "is-valid-path": "^0.1.1"
   },
   "devDependencies": {
@@ -24,5 +24,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "546a15fac58d28315057449adf122a5ab8575901"
 }
