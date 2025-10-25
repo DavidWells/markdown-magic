@@ -127,7 +127,7 @@ function escapeRegex(str) {
  *
  * @example
  * // Migrate from doc-gen to docs syntax
- * const { migrateDocGenToDocs } = require('comment-block-migrate');
+ * const { migrateDocGenToDocs } = require('comment-block-migrator');
  * await migrateDocGenToDocs();
  */
 async function migrateDocGenToDocs(options = {}) {
