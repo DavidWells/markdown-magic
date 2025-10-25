@@ -52,3 +52,13 @@
 
 - https://github.com/EndBug/add-and-commit
 - https://github.com/gautamkrishnar/blog-post-workflow/
+
+
+## Releasing this package
+
+
+```
+pnpm version major  # This bumps 3.7.0 → 4.0.0
+pnpm publish
+git push origin && git push origin --tags
+```

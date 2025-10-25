@@ -21,10 +21,10 @@
     "docs": "node examples/generate-readme.js",
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
-    "publish": "pnpm publish && git push origin && git push origin --tags",
-    "release:patch": "pnpm publish --version patch && git push origin && git push origin --tags",
-    "release:minor": "pnpm publish --version minor && git push origin && git push origin --tags",
-    "release:major": "pnpm publish --version major && git push origin && git push origin --tags"
+    "postpublish": "git push origin && git push origin --tags",
+    "release:patch": "pnpm version patch && pnpm publish",
+    "release:minor": "pnpm version minor && pnpm publish",
+    "release:major": "pnpm version major && pnpm publish"
   },
   "author": "David Wells",
   "license": "MIT",
