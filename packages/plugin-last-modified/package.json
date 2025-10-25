@@ -1,6 +1,6 @@
 {
   "name": "@markdown-magic/last-modified",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Add last modified date from git to markdown files - Plugin for markdown-magic",
   "main": "index.js",
   "scripts": {

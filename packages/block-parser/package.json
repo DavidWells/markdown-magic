@@ -1,6 +1,6 @@
 {
   "name": "comment-block-parser",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "Block parser for markdown-magic - Parse comment blocks in markdown and other files",
   "main": "src/index.js",
   "types": "types/index.d.ts",
