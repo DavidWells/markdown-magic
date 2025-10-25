@@ -2,7 +2,7 @@
   "name": "markdown-magic",
   "version": "4.0.0",
   "description": "Automatically update markdown files with content from external sources",
-  "main": "index.js",
+  "main": "src/index.js",
   "bin": {
     "markdown": "./cli.js",
     "md-magic": "./cli.js",
@@ -14,7 +14,8 @@
     "package.json",
     "package-lock.json",
     "src",
-    "cli.js"
+    "cli.js",
+    "types"
   ],
   "scripts": {
     "types": "tsc --emitDeclarationOnly --outDir types",
@@ -22,9 +23,9 @@
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
     "postpublish": "git push origin && git push origin --tags",
-    "release:patch": "pnpm version patch && pnpm publish",
-    "release:minor": "pnpm version minor && pnpm publish",
-    "release:major": "pnpm version major && pnpm publish"
+    "release:patch": "pnpm version patch --git-tag-version && pnpm publish",
+    "release:minor": "pnpm version minor --git-tag-version && pnpm publish",
+    "release:major": "pnpm version major --git-tag-version && pnpm publish"
   },
   "author": "David Wells",
   "license": "MIT",
