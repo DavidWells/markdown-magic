@@ -12,10 +12,10 @@ const path = require('path')
  * @property {string} [format="tree"] - Output format: "tree" or "list". Default is `"tree"`.
  * @example
    ```md
-   <!-- doc-gen fileTree src="./src" maxDepth=2 -->
+   <!-- docs fileTree src="./src" maxDepth=2 -->
    file tree will be generated here
-   <!-- end-doc-gen -->
-   ``` 
+   <!-- /docs -->
+   ```
  */
 
 /**

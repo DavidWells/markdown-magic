@@ -27,16 +27,16 @@ markdownMagic(['**/*.md'], config)
 
 **Input:**
 ```md
-<!-- doc-gen lastModified -->
+<!-- docs lastModified -->
 This will be replaced with the last modified date
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 **Output:**
 ```md
-<!-- doc-gen lastModified -->
+<!-- docs lastModified -->
 **Last modified:** December 19, 2025
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ## Options
@@ -49,16 +49,16 @@ This will be replaced with the last modified date
 
 ### Custom file
 ```md
-<!-- doc-gen lastModified file="./package.json" -->
+<!-- docs lastModified file="./package.json" -->
 **Last modified:** December 19, 2025
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Custom prefix
 ```md
-<!-- doc-gen lastModified prefix="Updated on:" -->
+<!-- docs lastModified prefix="Updated on:" -->
 Updated on: December 19, 2025
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ## How it works

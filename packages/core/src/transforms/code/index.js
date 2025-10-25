@@ -27,15 +27,15 @@ const RAW_URL_LIKE = /^([A-Za-z0-9_]+)\.([A-Za-z0-9_]*)\/(.*)/
  * @property {boolean} [trimDeadCode] - Remove multi-line comments that start with `//` from the code.
  * @example
    ```md
-   <!-- doc-gen CODE src="./relative/path/to/code.js" -->
+   <!-- docs CODE src="./relative/path/to/code.js" -->
    This content will be dynamically replaced with code from the file
-   <!-- end-doc-gen -->
+   <!-- /docs -->
    ```
-  
+
    ```md
-   <!-- doc-gen CODE src="./relative/path/to/code.js" lines="22-44" -->
+   <!-- docs CODE src="./relative/path/to/code.js" lines="22-44" -->
    This content will be dynamically replaced with code from the file lines 22 through 44
-   <!-- end-doc-gen -->
+   <!-- /docs -->
    ```
  */
 

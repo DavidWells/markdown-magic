@@ -115,8 +115,8 @@ test('<!-- AUTO-GENERATED-CONTENT:START TOC -->', async () => {
   const newFilePath = path.join(OUTPUT_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'doc-gen',
-    close: 'end-doc-gen',
+    open: 'docs',
+    close: '/docs',
     outputDir: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
@@ -138,8 +138,8 @@ test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'doc-gen',
-    close: 'end-doc-gen',
+    open: 'docs',
+    close: '/docs',
     outputDir: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
@@ -187,16 +187,16 @@ test('Mixed transforms <!-- AUTO-GENERATED-CONTENT:START wordCount -->', async (
     silent: SILENT
   })
 
-  assert.ok(results, 'Mixed match words dont time out')
+  assert.ok(results, 'Mixed match words don\'t time out')
 })
 
-test('<!-- doc-gen fileTree -->', async () => {
+test('<!-- docs fileTree -->', async () => {
   const fileName = 'transform-fileTree.md'
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'doc-gen',
-    close: 'end-doc-gen',
+    open: 'docs',
+    close: '/docs',
     outputDir: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT

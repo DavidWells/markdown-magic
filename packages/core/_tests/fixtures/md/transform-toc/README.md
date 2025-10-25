@@ -2,18 +2,18 @@
 
 This file shows how to use the `TOC` and `sectionToc` transforms.
 
-<!-- doc-gen TOC maxDepth=2 -->
+<!-- docs TOC maxDepth=2 -->
 - [Heading 1](#heading-1)
   - [heading 2](#heading-2)
   - [heading 2 2](#heading-2-2)
   - [Subsection one](#subsection-one)
 - [Heading 1 2](#heading-1-2)
   - [one two](#one-two)
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 # Heading 1
 
-<!-- doc-gen TOC sub -->
+<!-- docs TOC sub -->
 <details>
 <summary>Heading 1 contents</summary>
 
@@ -25,7 +25,7 @@ This file shows how to use the `TOC` and `sectionToc` transforms.
     - [four](#four)
 
 </details>
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ## heading 2
 
@@ -35,7 +35,7 @@ This file shows how to use the `TOC` and `sectionToc` transforms.
 
 Nice
 
-<!-- doc-gen sectionToc -->
+<!-- docs sectionToc -->
 <details>
 <summary>Subsection one contents</summary>
 
@@ -44,7 +44,7 @@ Nice
   - [four](#four)
 
 </details>
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ### nice
 

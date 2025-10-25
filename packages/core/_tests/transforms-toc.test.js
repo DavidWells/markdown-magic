@@ -24,22 +24,22 @@ test('TOC transform with maxDepth option', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'doc-gen',
-    close: 'end-doc-gen',
-    outputDir: OUTPUT_DIR,
+    open: 'docs',
+    close: '/docs',
+    output: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
-  
+
   if (DEBUG) {
     console.log('Output content:')
     console.log(newContent)
   }
-  
+
   // Extract the main TOC content
-  const tocMatch = newContent.match(/<!-- doc-gen TOC maxDepth=2 -->([\s\S]*?)<!-- end-doc-gen -->/m)
+  const tocMatch = newContent.match(/<!-- docs TOC maxDepth=2 -->([\s\S]*?)<!-- \/docs -->/m)
   assert.ok(tocMatch, 'TOC with maxDepth=2 was generated')
   const tocContent = tocMatch[1]
   
@@ -62,22 +62,22 @@ test('TOC transform with sub option', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'doc-gen',
-    close: 'end-doc-gen',
+    open: 'docs',
+    close: '/docs',
     outputDir: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
-  
+
   if (DEBUG) {
     console.log('Output content for sub option:')
     console.log(newContent)
   }
-  
+
   // Extract the sub TOC content
-  const tocMatch = newContent.match(/<!-- doc-gen TOC sub -->([\s\S]*?)<!-- end-doc-gen -->/m)
+  const tocMatch = newContent.match(/<!-- docs TOC sub -->([\s\S]*?)<!-- \/docs -->/m)
   assert.ok(tocMatch, 'TOC with sub option was generated')
   const tocContent = tocMatch[1]
   
@@ -92,22 +92,22 @@ test('sectionToc transform', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'doc-gen',
-    close: 'end-doc-gen',
+    open: 'docs',
+    close: '/docs',
     outputDir: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
-  
+
   if (DEBUG) {
     console.log('Output content for sectionToc:')
     console.log(newContent)
   }
-  
+
   // Extract the section TOC content
-  const tocMatch = newContent.match(/<!-- doc-gen sectionToc -->([\s\S]*?)<!-- end-doc-gen -->/m)
+  const tocMatch = newContent.match(/<!-- docs sectionToc -->([\s\S]*?)<!-- \/docs -->/m)
   assert.ok(tocMatch, 'sectionToc was generated')
   const tocContent = tocMatch[1]
   

@@ -37,8 +37,8 @@ test('Throw on missing transforms single file', async () => {
   let error
   try {
     await markdownMagic(filePath, {
-      open: 'doc-gen',
-      close: 'end-doc-gen',
+      open: 'docs',
+      close: '/docs',
       outputDir: OUTPUT_DIR,
       failOnMissingTransforms: true,
       silent: SILENT
@@ -56,8 +56,8 @@ test('Throw on missing transforms multi file', async () => {
   let error
   try {
     await markdownMagic(filePath, {
-      open: 'doc-gen',
-      close: 'end-doc-gen',
+      open: 'docs',
+      close: '/docs',
       outputDir: OUTPUT_DIR,
       failOnMissingTransforms: true,
       silent: SILENT

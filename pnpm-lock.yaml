@@ -18,8 +18,24 @@ importers:
         specifier: ^0.5.1
         version: 0.5.6
 
+  packages/block-migrate:
+    dependencies:
+      glob:
+        specifier: ^10.3.10
+        version: 10.4.5
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      uvu:
+        specifier: ^0.5.1
+        version: 0.5.6
+
   packages/block-parser:
     dependencies:
+      dedent:
+        specifier: ^1.6.0
+        version: 1.7.0
       oparser:
         specifier: ^3.0.22
         version: 3.0.22
@@ -66,8 +82,8 @@ importers:
         specifier: 0.0.53
         version: 0.0.53
       comment-block-parser:
-        specifier: ^1.0.0
-        version: 1.0.5
+        specifier: workspace:*
+        version: link:../block-parser
       comment-block-replacer:
         specifier: workspace:*
         version: link:../block-replacer
@@ -301,10 +317,6 @@ packages:
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
 
-  comment-block-parser@1.0.5:
-    resolution: {integrity: sha512-Ab6TgBvTZpsWP+rVCpcqwTdXYsEMOBhwlCnoiPP92We5dKTcYuGrJFVbY7zpFBuV6NrgA8CmT3meQcbEK6QgRg==}
-    engines: {node: '>=14.0.0'}
-
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
@@ -338,6 +350,14 @@ packages:
   decompress-response@3.3.0:
     resolution: {integrity: sha512-BzRPQuY1ip+qDonAOz42gRm/pg9F768C+npV/4JOsxRC2sq+Rlk+Q4ZCAsOhnIaMrgarILY+RMUIvMmmX1qAEA==}
     engines: {node: '>=4'}
+
+  dedent@1.7.0:
+    resolution: {integrity: sha512-HGFtf8yhuhGhqO07SV79tRp+br4MnbdjeVxotpn1QBl30pcLLCQjX5b2295ll0fv8RKDKsmWYrl05usHM9CewQ==}
+    peerDependencies:
+      babel-plugin-macros: ^3.1.0
+    peerDependenciesMeta:
+      babel-plugin-macros:
+        optional: true
 
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
@@ -1225,10 +1245,6 @@ snapshots:
 
   commander@2.20.3: {}
 
-  comment-block-parser@1.0.5:
-    dependencies:
-      oparser: 3.0.22
-
   concat-map@0.0.1: {}
 
   concat-stream@1.6.2:
@@ -1271,6 +1287,8 @@ snapshots:
   decompress-response@3.3.0:
     dependencies:
       mimic-response: 1.0.1
+
+  dedent@1.7.0: {}
 
   deepmerge@4.3.1: {}
 

@@ -2,7 +2,7 @@
 
 This is normal text in markdown. Keep it.
 
-<!-- doc-gen remote url="https://raw.githubusercontent.com/DavidWells/dom-guard/master/README.md" -->
+<!-- docs remote url="https://raw.githubusercontent.com/DavidWells/dom-guard/master/README.md" -->
 # DOM Guard
 
 Stop scammers from the manipulating DOM. [See demo](https://dom-guard.netlify.app)
@@ -63,9 +63,9 @@ npm run serve
 Please note, there isn't a foolproof solution for stopping social engineering attacks against your users.
 
 Please educate your users on the dangers of these scams & add 2FA etc into your apps.
-<!-- end-doc-gen -->
+<!-- /docs -->
 
-<!-- doc-gen remote url=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md -->
+<!-- docs remote url=https://raw.githubusercontent.com/DavidWells/markdown-magic/master/README.md -->
 # Markdown Magic [![npm-version][npm-badge]][npm-link]
 
 ✨ Add a little magic to your markdown! ✨
@@ -737,6 +737,6 @@ This was inspired by [Kent C Dodds](https://twitter.com/kentcdodds) and [jfmenge
 [npm-link]: http://www.npmjs.com/package/markdown-magic
 [mit]:      http://opensource.org/licenses/MIT
 [author]:   http://github.com/davidwells
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 This is normal text in markdown. Keep it.

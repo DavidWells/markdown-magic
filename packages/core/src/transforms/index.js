@@ -21,12 +21,12 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen TOC -->
+   * <!-- docs TOC -->
    * toc will be generated here
-   * <!-- end-doc-gen -->
+   * <!-- /docs -->
    * ```
    *
-   * Default `matchWord` is `doc-gen`
+   * Default `matchWord` is `docs`
    *
    * ---
    * @param {string} content The current content of the comment block
@@ -48,18 +48,18 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen CODE src="./relative/path/to/code.js" -->
+   * <!-- docs CODE src="./relative/path/to/code.js" -->
    * This content will be dynamically replaced with code from the file
-   * <!-- end-doc-gen -->
+   * <!-- /docs -->
    * ```
    *
    * ```md
-   *  <!-- doc-gen CODE src="./relative/path/to/code.js" lines=22-44 -->
+   *  <!-- docs CODE src="./relative/path/to/code.js" lines=22-44 -->
    *  This content will be dynamically replaced with code from the file lines 22 through 44
-   *  <!-- end-doc-gen -->
+   *  <!-- /docs -->
    *  ```
-   * 
-   * Default `matchWord` is `doc-gen`
+   *
+   * Default `matchWord` is `docs`
    *
    * ---
    * @param {string} content The current content of the comment block
@@ -77,12 +77,12 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen FILE src=./path/to/file -->
+   * <!-- docs FILE src=./path/to/file -->
    * This content will be dynamically replaced from the local file
-   * <!-- end-doc-gen -->
+   * <!-- /docs -->
    * ```
    *
-   * Default `matchWord` is `doc-gen`
+   * Default `matchWord` is `docs`
    *
    * ---
    * @param {string} content The current content of the comment block
@@ -100,12 +100,12 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen REMOTE url=http://url-to-raw-md-file.md -->
+   * <!-- docs REMOTE url=http://url-to-raw-md-file.md -->
    * This content will be dynamically replaced from the remote url
-   * <!-- end-doc-gen -->
+   * <!-- /docs -->
    * ```
    *
-   * Default `matchWord` is `doc-gen`
+   * Default `matchWord` is `docs`
    *
    * ---
    * @param {string} content The current content of the comment block
@@ -128,9 +128,9 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen fileTree src="./src" maxDepth=2 -->
+   * <!-- docs fileTree src="./src" maxDepth=2 -->
    * file tree will be generated here
-   * <!-- end-doc-gen -->
+   * <!-- /docs -->
    * ```
    *
    * **Example Output (tree format):**
@@ -172,7 +172,7 @@ const transforms = {
    *     └── package.json (552 B)
    * ```
    *
-   * Default `matchWord` is `doc-gen`
+   * Default `matchWord` is `docs`
    *
    * ---
    * @param {string} content The current content of the comment block
@@ -193,12 +193,12 @@ const transforms = {
    *
    * **Example:**
    * ```md
-   * <!-- doc-gen install -->
+   * <!-- docs install -->
    * Installation instructions will be generated here
-   * <!-- end-doc-gen -->
+   * <!-- /docs -->
    * ```
    *
-   * Default `matchWord` is `doc-gen`
+   * Default `matchWord` is `docs`
    *
    * ---
    * @param {string} content The current content of the comment block

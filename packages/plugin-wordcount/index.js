@@ -13,9 +13,9 @@ function getWordCount(str = '') {
  *
  * **Example:**
  * ```md
- * <!-- doc-gen wordcount -->
+ * <!-- docs wordcount -->
  * This will be replaced with the total word count
- * <!-- end-doc-gen -->
+ * <!-- /docs -->
  * ```
  *
  * ---

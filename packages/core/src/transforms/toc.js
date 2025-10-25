@@ -11,10 +11,10 @@ const sectionToc = require('./sectionToc')
  * @property {number} [maxDepth=4] - Maximum depth of headings to include in the table of contents. Default is `4`.
  * @example
    ```md
-   <!-- doc-gen (TOC) -->
+   <!-- docs (TOC) -->
    toc will be generated here
-   <!-- end-doc-gen -->
-   ``` 
+   <!-- /docs -->
+   ```
  */
 
 module.exports = async function TOC(api) {

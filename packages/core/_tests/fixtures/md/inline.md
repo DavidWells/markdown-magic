@@ -1,3 +1,3 @@
 # Hi
 
-Word count: <!--doc-gen wordCount -->7<!--end-doc-gen-->
+Word count: <!-- docs wordCount -->7<!-- /docs -->

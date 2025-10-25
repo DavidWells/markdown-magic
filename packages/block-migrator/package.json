@@ -1,0 +1,50 @@
+{
+  "name": "comment-block-migrator",
+  "version": "1.0.0",
+  "description": "Migration utility for markdown-magic - Migrate markdown files with find-and-replace transformations",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "src",
+    "types",
+    "README.md",
+    "package.json"
+  ],
+  "keywords": [
+    "markdown",
+    "migration",
+    "markdown-magic",
+    "syntax-migration",
+    "refactor"
+  ],
+  "author": "David Wells",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DavidWells/markdown-magic",
+    "directory": "packages/block-migrator"
+  },
+  "scripts": {
+    "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
+    "types": "tsc --emitDeclarationOnly --outDir types",
+    "build": "pnpm run types",
+    "clean": "rimraf types",
+    "publish": "git push origin && git push origin --tags",
+    "release:patch": "pnpm version patch && pnpm publish --no-git-checks",
+    "release:minor": "pnpm version minor && pnpm publish --no-git-checks",
+    "release:major": "pnpm version major && pnpm publish --no-git-checks"
+  },
+  "dependencies": {
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "uvu": "^0.5.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -5,8 +5,8 @@ const files = [
 ]
 
 markdownMagic(files, {
-  open: 'doc-gen',
-  close: 'end-doc-gen',
+  open: 'docs',
+  close: '/docs',
 }).then(({ changes }) => {
   console.log('changes', changes)
 })

@@ -2,7 +2,7 @@
 
 ## Basic file tree
 
-<!-- doc-gen fileTree src="../../fixtures" maxDepth=2 -->
+<!-- docs fileTree src="../../fixtures" maxDepth=2 -->
 ```
 └── fixtures/
     ├── js/
@@ -55,11 +55,11 @@
     ├── local-code-file.js
     └── local-code-id.js
 ```
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ## File tree with list format
 
-<!-- doc-gen fileTree src="../../fixtures" maxDepth=2 format="list" -->
+<!-- docs fileTree src="../../fixtures" maxDepth=2 format="list" -->
 - **fixtures/**
   - **js/**
     - simple.js
@@ -110,13 +110,13 @@
   - local-code-file-lines.js
   - local-code-file.js
   - local-code-id.js
-<!-- end-doc-gen -->
+<!-- /docs -->
 
 ## File tree with size
 
-<!-- doc-gen fileTree src="../../fixtures/js" showSize=true -->
+<!-- docs fileTree src="../../fixtures/js" showSize=true -->
 ```
 └── js/
     └── simple.js (552 B)
 ```
-<!-- end-doc-gen -->
+<!-- /docs -->

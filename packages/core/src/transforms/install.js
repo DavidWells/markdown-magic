@@ -11,12 +11,12 @@ const path = require('path')
  *
  * **Example:**
  * ```md
- * <!-- doc-gen INSTALL packageName=my-package -->
+ * <!-- docs INSTALL packageName=my-package -->
  * Installation instructions will be generated here
- * <!-- end-doc-gen -->
+ * <!-- /docs -->
  * ```
  *
- * Default `matchWord` is `doc-gen`
+ * Default `matchWord` is `docs`
  *
  * ---
  * @param {string} content The current content of the comment block
