@@ -7,8 +7,23 @@ env:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+permissions:
+  actions: write
+  contents: read
 jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5
+        with:
+          concurrent_skipping: 'never'
+          skip_after_successful_duplicate: 'true'
   full:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     name: Node.js 20 Full
     runs-on: ubuntu-latest
     steps:
@@ -27,6 +42,8 @@ jobs:
       - name: Run tests
         run: pnpm test
   short:
+    needs: pre_job
+    if: needs.pre_job.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
