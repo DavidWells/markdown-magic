@@ -573,31 +573,33 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
-          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
-          # Temp fix for https://github.com/anthropics/claude-code-action/issues/584
-          claude_args: '--model sonnet --dangerously-skip-permissions'          
+          # GITHUB ACTIONS (Maximum Freedom):
+          settings: |
+            {
+              "permissions": {
+                "allowedTools": [
+                  "Edit", "View", "Replace", "Write", "Create",
+                  "BatchTool", "GlobTool", "GrepTool", "NotebookEditCell",
+                  "Bash(git:*)", "Bash(npm:*)", "Bash(yarn:*)", "Bash(python:*)",
+                  "Bash(docker:*)", "Bash(make:*)", "Bash(cargo:*)", "Bash(go:*)",
+                  "Bash(ls:*)", "Bash(cat:*)", "Bash(echo:*)", "Bash(curl:*)",
+                  "mcp__*"
+                ],
+                "deny": [
+                  "Bash(sudo:*)",
+                  "Bash(rm -rf /)"
+                ]
+              }
+            }
+          claude_args: |
+            --model sonnet
           # If the workflow is triggered by a workflow_dispatch event, use the agent mode, otherwise use the tag mode
           mode: ${{ github.event_name == 'workflow_dispatch' && 'agent' || 'tag' }}
           # direct prompt from workflow_dispatch event
-          direct_prompt: ${{ github.event_name == 'workflow_dispatch' && needs.setup.outputs.trigger-text || '' }}
+          prompt: ${{ github.event_name == 'workflow_dispatch' && needs.setup.outputs.trigger-text || '' }}
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
             actions: read
-          # claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
-          # claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
-          # claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
-          # GITHUB ACTIONS (Maximum Freedom):
-          allowed_tools: |
-            Edit,View,Replace,Write,Create,
-            BatchTool,GlobTool,GrepTool,NotebookEditCell,
-            Bash(git:*),Bash(npm:*),Bash(yarn:*),Bash(python:*),
-            Bash(docker:*),Bash(make:*),Bash(cargo:*),Bash(go:*),
-            Bash(ls:*),Bash(cat:*),Bash(echo:*),Bash(curl:*),
-            mcp__*
-          disallowed_tools: |
-            Bash(sudo:*),
-            Bash(rm -rf /)
         env:
           # Pass context information to Claude Code
           GITHUB_CONTEXT_TYPE: ${{ needs.setup.outputs.is-pr == 'true' && 'PR' || 'ISSUE' }}
