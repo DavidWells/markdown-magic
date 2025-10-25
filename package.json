@@ -21,6 +21,7 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "devDependencies": {
+    "lerna": "^9.0.0",
     "rimraf": "^5.0.0",
     "typescript": "^5.0.2",
     "uvu": "^0.5.1"
