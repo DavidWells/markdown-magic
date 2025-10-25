@@ -74,12 +74,14 @@ async function migrateMarkdownFiles(options = {}) {
       const originalContent = content;
 
       // Apply all replacement rules
+      // Apply all replacement rules
       for (const rule of replacements) {
         if (rule.find instanceof RegExp) {
           content = content.replace(rule.find, rule.replace);
         } else {
           // For string replacements, replace all occurrences
-          const regex = new RegExp(escapeRegex(rule.find), 'g');
+          const escapedFind = escapeRegex(rule.find);
+          const regex = new RegExp(escapedFind, 'g');
           content = content.replace(regex, rule.replace);
         }
       }
@@ -95,7 +97,10 @@ async function migrateMarkdownFiles(options = {}) {
         }
       }
     } catch (error) {
+    } catch (error) {
       console.error(`Error processing ${file}:`, error.message);
+      // Consider tracking errors to return them
+    }
     }
   }
 
