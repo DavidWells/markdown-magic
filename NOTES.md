@@ -56,9 +56,8 @@
 
 ## Releasing this package
 
+Lerna version 9
 
 ```
-pnpm version major  # This bumps 3.7.0 → 4.0.0
-pnpm publish
-git push origin && git push origin --tags
+lerna publish
 ```
