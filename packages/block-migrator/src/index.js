@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { glob } = require('glob');
+const fs = require('fs')
+const { glob } = require('glob')
 
 /**
  * Migrate markdown files by applying a set of find-and-replace transformations
@@ -26,13 +26,13 @@ const { glob } = require('glob');
  * @example
  * // Dry run to see what would change
  * await migrateMarkdownFiles({
- *   pattern: 'docs/**​/*.md',
+ *   pattern: 'docs/**\/*.md',
  *   replacements: [
  *     { find: 'old-word', replace: 'new-word' }
  *   ],
  *   dryRun: true
  * });
-*/
+ */
 async function migrateMarkdownFiles(options = {}) {
   const {
     pattern = '**/*.md',
@@ -40,74 +40,74 @@ async function migrateMarkdownFiles(options = {}) {
     ignore = ['**/node_modules/**'],
     replacements = [],
     verbose = true,
-    dryRun = false
-  } = options;
+    dryRun = false,
+  } = options
 
   if (!replacements || replacements.length === 0) {
-    throw new Error('At least one replacement rule must be provided');
+    throw new Error('At least one replacement rule must be provided')
   }
 
   // Validate replacement rules
   for (const rule of replacements) {
     if (!rule.find || rule.replace === undefined) {
-      throw new Error('Each replacement rule must have "find" and "replace" properties');
+      throw new Error('Each replacement rule must have "find" and "replace" properties')
     }
   }
 
   const files = await glob(pattern, {
     cwd,
     ignore,
-    absolute: true
-  });
+    absolute: true,
+  })
 
   if (verbose) {
-    console.log(`Found ${files.length} markdown files`);
+    console.log(`Found ${files.length} markdown files`)
   }
 
-  let filesUpdated = 0;
-  const updatedFiles = [];
+  let filesUpdated = 0
+  const updatedFiles = []
 
   for (const file of files) {
     try {
-      let content = fs.readFileSync(file, 'utf8');
-      const originalContent = content;
+      let content = fs.readFileSync(file, 'utf8')
+      const originalContent = content
 
       // Apply all replacement rules
       for (const rule of replacements) {
         if (rule.find instanceof RegExp) {
-          content = content.replace(rule.find, rule.replace);
+          content = content.replace(rule.find, rule.replace)
         } else {
           // For string replacements, replace all occurrences
-          const escapedFind = escapeRegex(rule.find);
-          const regex = new RegExp(escapedFind, 'g');
-          content = content.replace(regex, rule.replace);
+          const escapedFind = escapeRegex(rule.find)
+          const regex = new RegExp(escapedFind, 'g')
+          content = content.replace(regex, rule.replace)
         }
       }
 
       if (content !== originalContent) {
         if (!dryRun) {
-          fs.writeFileSync(file, content, 'utf8');
+          fs.writeFileSync(file, content, 'utf8')
         }
-        filesUpdated++;
-        updatedFiles.push(file);
+        filesUpdated++
+        updatedFiles.push(file)
         if (verbose) {
-          console.log(`${dryRun ? '[DRY RUN] Would update' : 'Updated'}: ${file}`);
+          console.log(`${dryRun ? '[DRY RUN] Would update' : 'Updated'}: ${file}`)
         }
       }
     } catch (error) {
-      console.error(`Error processing ${file}:`, error.message);
+      console.error(`Error processing ${file}:`, error.message)
     }
   }
 
   if (verbose) {
-    console.log(`\n${dryRun ? 'Would update' : 'Updated'} ${filesUpdated} of ${files.length} files`);
+    console.log(`\n${dryRun ? 'Would update' : 'Updated'} ${filesUpdated} of ${files.length} files`)
   }
 
   return {
     filesProcessed: files.length,
     filesUpdated,
-    updatedFiles
-  };
+    updatedFiles,
+  }
 }
 
 /**
@@ -117,7 +117,7 @@ async function migrateMarkdownFiles(options = {}) {
  * @returns {string} Escaped string
  */
 function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /**
@@ -135,12 +135,12 @@ async function migrateDocGenToDocs(options = {}) {
     ...options,
     replacements: [
       { find: /<!--\s*doc-gen/g, replace: '<!-- docs' },
-      { find: /<!--\s*end-doc-gen/g, replace: '<!-- /docs' }
-    ]
-  });
+      { find: /<!--\s*end-doc-gen/g, replace: '<!-- /docs' },
+    ],
+  })
 }
 
 module.exports = {
   migrateMarkdownFiles,
   migrateDocGenToDocs,
-};
+}

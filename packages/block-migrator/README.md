@@ -1,11 +1,11 @@
-# comment-block-migrate
+# comment-block-migrator
 
 Migration utility for markdown-magic - Migrate markdown files with find-and-replace transformations.
 
 ## Installation
 
 ```bash
-npm install comment-block-migrate
+npm install comment-block-migrator
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install comment-block-migrate
 ### Basic Migration
 
 ```javascript
-const { migrateMarkdownFiles } = require('comment-block-migrate');
+const { migrateMarkdownFiles } = require('comment-block-migrator');
 
 await migrateMarkdownFiles({
   replacements: [
@@ -42,7 +42,7 @@ await migrateMarkdownFiles({
 Convenience function for the common doc-gen → docs migration:
 
 ```javascript
-const { migrateDocGenToDocs } = require('comment-block-migrate');
+const { migrateDocGenToDocs } = require('comment-block-migrator');
 
 await migrateDocGenToDocs();
 ```
