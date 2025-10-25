@@ -6,7 +6,7 @@ const { glob } = require('glob');
  * @param {Object} options - Migration options
  * @param {string} [options.pattern] - Glob pattern for files to migrate. Default is '**.md'.
  * @param {string} [options.cwd=process.cwd()] - Current working directory
- * @param {string[]} [options.ignore] - Patterns to ignore. Default is ['**\/node_modules/**'].
+ * @param {string[]} [options.ignore] - Patterns to ignore. Default is node_modules directories.
  * @param {Array<{find: RegExp|string, replace: string}>} [options.replacements] - Array of replacement rules
  * @param {boolean} [options.verbose=true] - Whether to log progress
  * @param {boolean} [options.dryRun=false] - If true, don't write files, just report what would change
@@ -14,7 +14,7 @@ const { glob } = require('glob');
  *
  * @example
  * // Migrate from old syntax to new syntax
- * const { migrateMarkdownFiles } = require('./migrate');
+ * const { migrateMarkdownFiles } = require('comment-block-migrate');
  *
  * await migrateMarkdownFiles({
  *   replacements: [
@@ -26,7 +26,7 @@ const { glob } = require('glob');
  * @example
  * // Dry run to see what would change
  * await migrateMarkdownFiles({
- *   pattern: 'docs/**\/*.md',
+ *   pattern: 'docs/**​/*.md',
  *   replacements: [
  *     { find: 'old-word', replace: 'new-word' }
  *   ],
@@ -73,7 +73,6 @@ async function migrateMarkdownFiles(options = {}) {
       const originalContent = content;
 
       // Apply all replacement rules
-      // Apply all replacement rules
       for (const rule of replacements) {
         if (rule.find instanceof RegExp) {
           content = content.replace(rule.find, rule.replace);
@@ -97,7 +96,6 @@ async function migrateMarkdownFiles(options = {}) {
       }
     } catch (error) {
       console.error(`Error processing ${file}:`, error.message);
-      // Consider tracking errors to return them
     }
   }
 
@@ -129,7 +127,7 @@ function escapeRegex(str) {
  *
  * @example
  * // Migrate from doc-gen to docs syntax
- * const { migrateDocGenToDocs } = require('./migrate');
+ * const { migrateDocGenToDocs } = require('comment-block-migrate');
  * await migrateDocGenToDocs();
  */
 async function migrateDocGenToDocs(options = {}) {

@@ -18,6 +18,19 @@ importers:
         specifier: ^0.5.1
         version: 0.5.6
 
+  packages/block-migrate:
+    dependencies:
+      glob:
+        specifier: ^10.3.10
+        version: 10.4.5
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      uvu:
+        specifier: ^0.5.1
+        version: 0.5.6
+
   packages/block-parser:
     dependencies:
       dedent:

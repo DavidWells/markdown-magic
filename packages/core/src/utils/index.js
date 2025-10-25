@@ -33,12 +33,8 @@ function pluralize(thing, single = '', plural = '') {
   return count === 1 ? single : plural
 }
 
-const { migrateMarkdownFiles, migrateDocGenToDocs } = require('./migrate')
-
 module.exports = {
   pluralize,
   onlyUnique,
-  getCodeLocation,
-  migrateMarkdownFiles,
-  migrateDocGenToDocs
+  getCodeLocation
 }
