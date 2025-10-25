@@ -7,6 +7,7 @@ yarn-error.log*
 
 .cursor
 
+test-install
 test/fixtures/output
 _out.md
 misc
