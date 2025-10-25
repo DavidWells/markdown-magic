@@ -7,6 +7,7 @@
     "pnpm": ">=7.0.0"
   },
   "scripts": {
+    "next-version": "lerna version --no-push --no-git-tag-version",
     "test": "pnpm -r test",
     "types": "pnpm -r types",
     "build": "pnpm -r build",

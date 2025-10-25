@@ -501,10 +501,11 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     errors = missing.map((item, i) => {
       const errorMessage = `Missing ${item.missingTransforms.length} transforms in ${item.srcPath}`
       const issues = item.missingTransforms.map((trn) => {
+        const lines = trn.block && trn.block.lines ? trn.block.lines : trn.lines
         // logger('trn', trn)
         // const rowData = getRowAndColumnFromCharPos(item.updatedContents, trn.open.start)
-        const location = `${item.srcPath}:${trn.lines[0]}:0`
-        const message = `Transform "${trn.transform}" at line ${trn.lines[0]} does not exist. → ${location}`
+        const location = `${item.srcPath}:${lines[0]}:0`
+        const message = `Transform "${trn.transform}" at line ${lines[0]} does not exist. → ${location}`
         return {
           message,
           location

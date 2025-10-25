@@ -1,0 +1,10 @@
+{
+  "version": "independent",
+  "npmClient": "pnpm",
+  "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "message": "chore(release): publish"
+    }
+  }
+}
