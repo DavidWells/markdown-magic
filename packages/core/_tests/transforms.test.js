@@ -138,12 +138,13 @@ test('<!-- AUTO-GENERATED-CONTENT:START remote -->', async () => {
   const filePath = path.join(MARKDOWN_FIXTURE_DIR, fileName)
 
   const result = await markdownMagic(filePath, {
-    open: 'docs',
-    close: '/docs',
+    open: 'doc-block',
+    close: '/doc-block',
     outputDir: OUTPUT_DIR,
     applyTransformsToSource: UPDATE_FIXTURE,
     silent: SILENT
   })
+
   // console.log('transform API', api)
 
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
