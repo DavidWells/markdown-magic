@@ -143,6 +143,9 @@ async function blockTransformer(inputText, config) {
   const transformsToRun = sortTransforms(blocksWithTransforms, transforms)
 
   let missingTransforms = []
+  // Track cumulative offset changes as we modify the text
+  let cumulativeOffset = 0
+  
   let updatedContents = await transformsToRun.reduce(async (contentPromise, originalMatch) => {
     const updatedText = await contentPromise
     /* Apply leading middleware */
@@ -261,9 +264,21 @@ async function blockTransformer(inputText, config) {
       fixWrapper = '\n'
     }
     
+    // console.log('updatedText', block.value)
+    
     const indent = addLeadingNewline + indentString(fix, preserveIndent) + addTrailingNewline
     const newCont = `${openTag}${fixWrapper}${indent}${fixWrapper}${closeTag}`
-    const newContents = updatedText.replace(block.value, () => newCont)
+    
+    // Use position-based replacement to handle duplicate block content
+    const adjustedStart = block.start + cumulativeOffset
+    const adjustedEnd = block.end + cumulativeOffset
+    const before = updatedText.substring(0, adjustedStart)
+    const after = updatedText.substring(adjustedEnd)
+    const newContents = before + newCont + after
+    
+    // Update offset for next iteration
+    cumulativeOffset += (newCont.length - block.value.length)
+    
     return Promise.resolve(newContents)
   }, Promise.resolve(inputText))
 
