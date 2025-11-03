@@ -53,8 +53,8 @@ importers:
   packages/block-replacer:
     dependencies:
       comment-block-transformer:
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: workspace:*
+        version: link:../block-transformer
       is-valid-path:
         specifier: ^0.1.1
         version: 0.1.1
@@ -69,8 +69,8 @@ importers:
   packages/block-transformer:
     dependencies:
       comment-block-parser:
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: workspace:*
+        version: link:../block-parser
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -85,14 +85,14 @@ importers:
         specifier: 0.0.53
         version: 0.0.53
       comment-block-parser:
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: workspace:*
+        version: link:../block-parser
       comment-block-replacer:
-        specifier: 0.1.1
-        version: 0.1.1
+        specifier: workspace:*
+        version: link:../block-replacer
       comment-block-transformer:
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: workspace:*
+        version: link:../block-transformer
       globrex:
         specifier: ^0.1.2
         version: 0.1.2
@@ -935,16 +935,6 @@ packages:
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
-
-  comment-block-parser@1.1.0:
-    resolution: {integrity: sha512-s8SKFzw8nnAXSECTBXP5xiIrZzFI/ALOnynNkaFI0v1smvL8eV682VDETyS6/znqrD5Ez7+c2lyG3fBsHZP/iw==}
-    engines: {node: '>=14.0.0'}
-
-  comment-block-replacer@0.1.1:
-    resolution: {integrity: sha512-fxYp85HfoiVEjmjgLMzxJInOnJHiUlu/gAUSUDsBo5+LH+0tSwQuQ0qjsyXSyeLPY5sQicALMvqe9r9T1RA7+w==}
-
-  comment-block-transformer@0.2.0:
-    resolution: {integrity: sha512-unGA9sFSWInEKGCGAIoFxfTcBbOvROc8LRq8tFrz1xk3sv6vU8r+pq1YRJ/28sXKvzwqqR+dQqDdWc2aZ7byhg==}
 
   common-ancestor-path@1.0.1:
     resolution: {integrity: sha512-L3sHRo1pXXEqX8VU28kfgUY+YGsk09hPqZiZmLacNib6XNTCM8ubYeT7ryXQw8asB1sKgcU5lkB7ONug08aB8w==}
@@ -3873,26 +3863,6 @@ snapshots:
       delayed-stream: 1.0.0
 
   commander@2.20.3: {}
-
-  comment-block-parser@1.1.0:
-    dependencies:
-      dedent: 1.7.0
-      oparser: 3.0.22
-    transitivePeerDependencies:
-      - babel-plugin-macros
-
-  comment-block-replacer@0.1.1:
-    dependencies:
-      comment-block-transformer: 0.2.0
-      is-valid-path: 0.1.1
-    transitivePeerDependencies:
-      - babel-plugin-macros
-
-  comment-block-transformer@0.2.0:
-    dependencies:
-      comment-block-parser: 1.1.0
-    transitivePeerDependencies:
-      - babel-plugin-macros
 
   common-ancestor-path@1.0.1: {}
 

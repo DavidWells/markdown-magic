@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.2.0...comment-block-transformer@0.2.1) (2025-11-03)
+
+
+### Bug Fixes
+
+* replace the block by position instead of simple replace ([fd93c39](https://github.com/DavidWells/markdown-magic/commit/fd93c39fea3c4c03901babe6039243194624bdcd))
+
+
+
+
+
 # 0.2.0 (2025-10-25)
 
 
