@@ -1,0 +1,122 @@
+name: Monorepo CI
+
+on:
+  # Trigger on PRs to master
+  pull_request:
+    branches: [master, main]
+
+  # Trigger on pushes to master
+  push:
+    branches: [master, main]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.detect.outputs.packages }}
+      count: ${{ steps.detect.outputs.count }}
+      matrix: ${{ steps.detect.outputs.json }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch enough history to compare branches
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Detect changed packages
+        id: detect
+        run: node scripts/ci-flow.js
+
+      - name: Display results
+        run: |
+          echo "Changed packages: ${{ steps.detect.outputs.packages }}"
+          echo "Package count: ${{ steps.detect.outputs.count }}"
+
+  # Run tests only for changed packages
+  test-changed-packages:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.count > 0
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Test ${{ matrix.package }}
+        run: |
+          if [ -f "packages/${{ matrix.package }}/package.json" ]; then
+            cd packages/${{ matrix.package }}
+            npm test || echo "No tests defined"
+          elif [ -f "components/${{ matrix.package }}/package.json" ]; then
+            cd components/${{ matrix.package }}
+            npm test || echo "No tests defined"
+          fi
+
+      - name: Build ${{ matrix.package }}
+        run: |
+          if [ -f "packages/${{ matrix.package }}/package.json" ]; then
+            cd packages/${{ matrix.package }}
+            npm run build || echo "No build script"
+          elif [ -f "components/${{ matrix.package }}/package.json" ]; then
+            cd components/${{ matrix.package }}
+            npm run build || echo "No build script"
+          fi
+
+  # Optional: Run full tests on push to master
+  full-test-on-master:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run all tests
+        run: npm test
+
+  # Skip if no packages changed
+  skip-if-no-changes:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.count == 0
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: No packages changed
+        run: echo "✅ No packages changed, skipping tests"
