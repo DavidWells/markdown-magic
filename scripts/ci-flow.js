@@ -71,6 +71,10 @@ async function detectChangedPackagesInCI() {
 
   console.log(`📝 Total files changed: ${allChangedFiles.length}\n`)
 
+  for (const file of allChangedFiles) {
+    console.log(`📝 ${file}`)
+  }
+
   // Extract package names from paths
   const changedPackages = new Set()
   const packageFiles = {}
