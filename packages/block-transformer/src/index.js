@@ -263,7 +263,7 @@ async function blockTransformer(inputText, config) {
     if (!context.isMultiline && fix.indexOf('\n') > -1) {
       fixWrapper = '\n'
     }
-    
+  
     // console.log('updatedText', block.value)
     
     const indent = addLeadingNewline + indentString(fix, preserveIndent) + addTrailingNewline

@@ -1,4 +1,5 @@
 const { gitDetails } = require('git-er-done')
+const { resolveDepPaths } = require('@davidwells/extract-deps/dep-graph')
 
 /**
  * Detects changed packages in CI environments (GitHub Actions, etc.)
@@ -113,6 +114,17 @@ async function detectChangedPackagesInCI() {
 
   // Sort and display each package
   const packageList = Array.from(changedPackages).sort()
+
+  // resolveDepPaths for each package
+  const depPaths = packageList.map(packageName => {
+    const packagePath = path.join(__dirname, 'packages', packageName, 'package.json')
+    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
+    const entryPoint = packageJson.main || packageJson.module || packageJson.browser || 'src/index.js'
+    const resolvedEntryPoint = path.join(packagePath, entryPoint)
+    return resolveDepPaths(resolvedEntryPoint)
+  })
+  console.log('depPaths', depPaths)
+
   packageList.forEach(packageName => {
     const files = packageFiles[packageName]
     const totalFiles = files.modified.length + files.created.length + files.deleted.length

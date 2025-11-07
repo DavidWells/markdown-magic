@@ -22,6 +22,7 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "devDependencies": {
+    "@davidwells/extract-deps": "^0.0.5",
     "git-er-done": "^0.1.10",
     "lerna": "^9.0.0",
     "rimraf": "^5.0.0",
