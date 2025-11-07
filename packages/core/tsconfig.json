@@ -15,5 +15,13 @@
     "module": "CommonJS"
   },
   "include": ["**/*.js", "**/*.ts"],
-  "exclude": ["node_modules", "__tests/**"]
+  "exclude": [
+    "node_modules",
+    "__tests/**",
+    "_tests/**",
+    "**/*.test.js",
+    "**/*.bench.js",
+    "test/**",
+    "types"
+  ]
 } 
