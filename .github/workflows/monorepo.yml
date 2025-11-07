@@ -21,24 +21,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Fetch enough history to compare branches
           fetch-depth: 0
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-          cache: 'pnpm'
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install --frozen-lockfile
 
       - name: Detect changed packages
         id: detect
-        run: node scripts/ci-flow.js
+        run: bun scripts/ci-flow.js
 
       - name: Display results
         run: |
