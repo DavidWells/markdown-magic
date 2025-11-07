@@ -51,17 +51,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-  
-      - name: Install Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
-          cache: 'pnpm'
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Test ${{ matrix.package }}
         run: |
