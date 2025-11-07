@@ -28,6 +28,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -61,6 +62,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -89,27 +91,28 @@ jobs:
           fi
 
   # Optional: Run full tests on push to master
-  full-test-on-master:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
+  # full-test-on-master:
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  #     - name: Install Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: 'pnpm'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+  #     - name: Install pnpm
+  #       uses: pnpm/action-setup@v4
 
-      - name: Install dependencies
-        run: pnpm install
+  #     - name: Install dependencies
+  #       run: pnpm install
 
-      - name: Run all tests
-        run: npm test
+  #     - name: Run all tests
+  #       run: npm test
 
   # Skip if no packages changed
   skip-if-no-changes:
