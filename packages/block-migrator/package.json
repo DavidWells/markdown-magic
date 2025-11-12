@@ -1,6 +1,6 @@
 {
   "name": "comment-block-migrator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Migration utility for markdown-magic - Migrate markdown files with find-and-replace transformations",
   "main": "src/index.js",
   "types": "types/index.d.ts",
