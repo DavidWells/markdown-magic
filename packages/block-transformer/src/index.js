@@ -197,7 +197,6 @@ async function blockTransformer(inputText, config) {
         tempContent = returnedContent
       }
     }
-
     /* Apply trailing middleware */
     const afterContent = await applyMiddleware({
       ...match,

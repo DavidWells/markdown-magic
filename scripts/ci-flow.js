@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const { gitDetails } = require('git-er-done')
 const { resolveDepPaths } = require('@davidwells/extract-deps/dep-graph')
 
@@ -115,10 +117,14 @@ async function detectChangedPackagesInCI() {
   // Sort and display each package
   const packageList = Array.from(changedPackages).sort()
 
+
+  const ROOT_DIR = path.join(__dirname, '..')
+
   // resolveDepPaths for each package
-  const depPaths = packageList.map(packageName => {
-    const packagePath = path.join(__dirname, 'packages', packageName, 'package.json')
-    const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'))
+  const depPaths = packageList.map((packageName) => {
+    const packagePath = path.join(ROOT_DIR, 'packages', packageName)
+    const packagePackageJsonPath = path.join(packagePath, 'package.json')
+    const packageJson = JSON.parse(fs.readFileSync(packagePackageJsonPath, 'utf8'))
     const entryPoint = packageJson.main || packageJson.module || packageJson.browser || 'src/index.js'
     const resolvedEntryPoint = path.join(packagePath, entryPoint)
     return resolveDepPaths(resolvedEntryPoint)
