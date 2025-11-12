@@ -1,5 +1,5 @@
 const util = require('util')
-const ansi = require('ansi-styles') // https://github.com/chalk/ansi-styles/blob/main/index.js
+const ansi = require('./ansi-styles') // https://github.com/chalk/ansi-styles/blob/main/index.js
 const process = require('process')
 
 function convertHrtime(hrtime) {
@@ -91,7 +91,7 @@ const error = log.bind(null, 'error')
 /*
 // Usage:
 console.log('Nice logs')
-deepLog({ deep: {object }})
+deepLog({ deep: { object: 'test' }})
 success('Success! Yay it worked')
 info('Info: Additional details here')
 warning('Warning: Watch out')

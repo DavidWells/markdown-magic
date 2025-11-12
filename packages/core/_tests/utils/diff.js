@@ -1,5 +1,5 @@
 const concordance = require('concordance')
-const ansiStyles = require('ansi-styles')
+const ansiStyles = require('../../src/utils/ansi-styles')
 const chalk = require('./chalk')
 
 const colorTheme = {
@@ -124,7 +124,7 @@ function formatDescriptorDiff(actualDescriptor, expectedDescriptor, options) {
   return concordance.diffDescriptors(actualDescriptor, expectedDescriptor, diffOptions)
 }
 
-module.exports = function diffValues(actual, expected) {
+function diffValues(actual, expected) {
   const result = concordance.compare(actual, expected, concordanceOptions)
   if (result.pass) {
     return null
@@ -133,4 +133,11 @@ module.exports = function diffValues(actual, expected) {
   const expectedDescriptor = result.expected || concordance.describe(expected, concordanceOptions)
 
   return formatDescriptorDiff(actualDescriptor, expectedDescriptor)
+}
+
+module.exports = diffValues
+
+
+if (require.main === module) {
+  console.log(diffValues({ a: 1 }, { a: 2 }))
 }
