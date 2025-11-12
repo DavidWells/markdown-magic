@@ -132,7 +132,7 @@ function matchInnerContent(str, open, close) {
     "sync-request": "^6.1.0"
   },
   "devDependencies": {
-    "ansi-styles": "^4.2.1",
+    "ansi-styles": "^6.0.0",
     "concordance": "^5.0.1",
     "doxxx": "^2.0.7",
     "rimraf": "^3.0.2",

@@ -1,5 +1,5 @@
 const concordance = require('concordance')
-const ansiStyles = require('ansi-styles')
+const ansiStyles = require('ansi-styles').default
 const chalk = require('./chalk')
 
 const colorTheme = {
