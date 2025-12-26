@@ -467,6 +467,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate Environment
+        id: validate-env
         run: |
           echo "🔍 Runtime Environment Information"
           echo "=================================="
@@ -480,8 +481,26 @@ jobs:
           echo "Base Ref: ${{ needs.setup.outputs.base-ref }}"
           echo "Head SHA: ${{ needs.setup.outputs.head-sha }}"
           echo "Has Linked PR: ${{ needs.setup.outputs.has-linked-pr }}"
-          echo "Trigger Text: '${{ needs.setup.outputs.trigger-text }}'"
+          
+          # Capture trigger text once using heredoc (safely handles multiline/special chars)
+          TRIGGER_TEXT=$(cat << 'TRIGGER_EOF'
+          ${{ needs.setup.outputs.trigger-text }}
+          TRIGGER_EOF
+          )
+          echo "Trigger Text: $TRIGGER_TEXT"
           echo "=================================="
+          
+          # Check for model keywords (case-insensitive)
+          if echo "$TRIGGER_TEXT" | grep -qi '\bopus\b'; then
+            echo "🧠 Opus model requested"
+            echo "model=opus" >> $GITHUB_OUTPUT
+          elif echo "$TRIGGER_TEXT" | grep -qi '\bhaiku\b'; then
+            echo "⚡ Haiku model requested"
+            echo "model=haiku" >> $GITHUB_OUTPUT
+          else
+            echo "🎵 Using default Sonnet model"
+            echo "model=sonnet" >> $GITHUB_OUTPUT
+          fi
       
       - name: Fetch Base Branch (PR only)
         if: needs.setup.outputs.is-pr == 'true' && needs.setup.outputs.base-ref
@@ -546,13 +565,14 @@ jobs:
           echo "total-files=$total_files" >> $GITHUB_OUTPUT
           
           echo "📊 Project summary: $framework ($total_files files)"
-
-      - name: Setup Env
-        id: setup-env
-        uses: DavidWells/actions/get-claude-tokens@master
-        with:
-          api-key: ${{ secrets.CLAUDE_CREDS_API_KEY }}
-          api-endpoint: ${{ secrets.CLAUDE_CREDS_API }}
+      
+      # Old claude code action to fetch tokens
+      # - name: Setup Env
+      #   id: setup-env
+      #   uses: DavidWells/actions/get-claude-tokens@master
+      #   with:
+      #     api-key: ${{ secrets.CLAUDE_CREDS_API_KEY }}
+      #     api-endpoint: ${{ secrets.CLAUDE_CREDS_API }}
 
       # - name: Run Claude PR Action
       #   uses: davidwells/claude-code-action@main
@@ -564,7 +584,7 @@ jobs:
       #     model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
       #     allowed_tools: ${{ steps.setup-env.outputs.allowed_tools || 'Bash,Edit,Read,Write,Glob,Grep,LS,MultiEdit,NotebookRead,NotebookEdit' }}
       #     timeout_minutes: "60"
-          
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@main
@@ -580,7 +600,8 @@ jobs:
                 "allowedTools": [
                   "Edit", "View", "Replace", "Write", "Create",
                   "BatchTool", "GlobTool", "GrepTool", "NotebookEditCell",
-                  "Bash(git:*)", "Bash(npm:*)", "Bash(yarn:*)", "Bash(python:*)",
+                  "Bash(git:*)", "Bash(npm:*)", "Bash(npx:*)", "Bash(yarn:*)", 
+                  "Bash(python:*)", "Bash(bun:*)", "Bash(pnpm:*)",
                   "Bash(docker:*)", "Bash(make:*)", "Bash(cargo:*)", "Bash(go:*)",
                   "Bash(ls:*)", "Bash(cat:*)", "Bash(echo:*)", "Bash(curl:*)",
                   "mcp__*"
@@ -592,7 +613,7 @@ jobs:
               }
             }
           claude_args: |
-            --model sonnet
+            --model ${{ steps.validate-env.outputs.model }} --dangerously-skip-permissions
           # If the workflow is triggered by a workflow_dispatch event, use the agent mode, otherwise use the tag mode
           mode: ${{ github.event_name == 'workflow_dispatch' && 'agent' || 'tag' }}
           # direct prompt from workflow_dispatch event
@@ -1080,6 +1101,11 @@ jobs:
             **If additional fixes are needed:** Mention \`@ claude\` in a comment on this PR.
 
             *resolves #${issueNumber}*
+
+            Please review @copilot
+
+            <!-- CLAUDE_ISSUE_RESPONSE start -->
+            <!-- CLAUDE_ISSUE_RESPONSE end -->
 
             ---
             *Automated PR by [Claude Code Action - Run #${{ github.run_id }}](https://github.com/${owner}/${repo}/actions/runs/${{ github.run_id }})*
