@@ -90,6 +90,9 @@ importers:
       '@davidwells/md-utils':
         specifier: 0.0.53
         version: 0.0.53
+      color-convert:
+        specifier: ^2.0.1
+        version: 2.0.1
       comment-block-parser:
         specifier: workspace:*
         version: link:../block-parser

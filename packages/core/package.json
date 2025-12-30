@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@davidwells/md-utils": "0.0.53",
+    "color-convert": "^2.0.1",
     "comment-block-parser": "workspace:*",
     "comment-block-replacer": "workspace:*",
     "comment-block-transformer": "workspace:*",
