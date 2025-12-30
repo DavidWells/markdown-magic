@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.2.2...comment-block-transformer@0.2.3) (2025-12-30)
+
+
+### Bug Fixes
+
+* add @types/node to block-transformer ([e049f6a](https://github.com/DavidWells/markdown-magic/commit/e049f6a60aa20d8b41835f09ccfcdd91c03389dc))
+
+
+
+
+
 ## [0.2.2](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.2.1...comment-block-transformer@0.2.2) (2025-11-12)
 
 **Note:** Version bump only for package comment-block-transformer
