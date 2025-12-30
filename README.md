@@ -184,6 +184,11 @@ jobs:
           git diff --staged --quiet || git commit -m "docs: update markdown"
           git push
 ```
+
+#### Alternative GitHub Actions
+
+- [markdown-code-inject](https://github.com/Cox65/markdown-code-inject) - Inject code snippets into markdown
+- [markdown-autodocs](https://github.com/dineshsonachalam/markdown-autodocs) - Auto-generate docs from code
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START (FILE:src=./docs/Syntax.md) -->
