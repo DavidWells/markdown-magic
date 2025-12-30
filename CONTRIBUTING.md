@@ -66,33 +66,26 @@ pnpm run bundle:all
 
 ## Releases
 
-### npm releases
+### Publishing (npm + binaries)
 
-Packages are published to npm individually:
-
-```bash
-cd packages/core
-pnpm run release:patch  # or release:minor, release:major
-```
-
-### Binary releases
-
-Binaries are automatically built and published to GitHub Releases when a version tag is pushed:
+Use lerna to publish all changed packages:
 
 ```bash
-git tag v4.0.5
-git push origin v4.0.5
+lerna publish
 ```
 
-This triggers the `release-binary.yml` workflow which:
-1. Builds binaries for all platforms (macOS, Linux, Windows)
-2. Creates checksums
-3. Publishes a GitHub Release with all assets
+This will:
+1. Bump versions for changed packages
+2. Publish to npm
+3. Create git tags (e.g., `markdown-magic@4.0.5`)
+4. Automatically trigger binary builds via GitHub Actions
+
+### Manual binary release
 
 You can also trigger a binary release manually:
 
 ```bash
-gh workflow run release-binary.yml -f version=v4.0.5
+gh workflow run release-binary.yml -f version=markdown-magic@4.0.5
 ```
 
 ### Binary platforms
