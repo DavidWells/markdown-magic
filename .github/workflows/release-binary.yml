@@ -4,11 +4,11 @@ name: Release Binary
 on:
   push:
     tags:
-      - 'v*'
+      - 'markdown-magic@*'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version tag (e.g., v4.0.5)'
+        description: 'Version tag (e.g., markdown-magic@4.0.5)'
         required: true
         type: string
 
@@ -96,14 +96,22 @@ jobs:
           sha256sum md-magic-* > checksums.txt
           cat checksums.txt
 
+      - name: Get version
+        id: version
+        run: |
+          TAG="${{ inputs.version || github.ref_name }}"
+          VERSION="${TAG#markdown-magic@}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.version || github.ref_name }}
-          name: md-magic ${{ inputs.version || github.ref_name }}
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: md-magic v${{ steps.version.outputs.version }}
           files: |
             dist/md-magic-*
             dist/checksums.txt
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(inputs.version || github.ref_name, '-') }}
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
