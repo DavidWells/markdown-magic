@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-ignore
 const mri = require('mri')
 const { runCli } = require('./src/cli-run')
 const argv = process.argv.slice(2)

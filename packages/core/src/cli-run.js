@@ -1,14 +1,86 @@
 const path = require('path')
+const fs = require('fs')
 const { loadConfig } = require('./utils/load-config')
 const { findUp } = require('./utils/fs')
 const { markdownMagic } = require('./')
+const { processFile } = require('comment-block-replacer')
 const { parse } = require('oparser')
+const defaultTransforms = require('./transforms')
 const { getGlobGroupsFromArgs } = require('./globparse')
 // const { deepLog } = require('./utils/logs')
 // const { uxParse } = require('./argparse/argparse')
 const argv = process.argv.slice(2)
 const cwd = process.cwd()
 const defaultConfigPath = 'md.config.js'
+
+/**
+ * Render markdown with ANSI styling for terminal output
+ * @param {string} content
+ */
+// async function renderMarkdown(content) {
+//   const { render, themes } = await import('markdansi')
+//   const githubDark = {
+//     ...themes.default,
+//     heading: { color: 'white', bold: true },
+//     strong: { bold: true },
+//     emph: { italic: true },
+//     inlineCode: { color: 'yellow' },
+//     blockCode: { color: 'white' },
+//     link: { color: 'cyan', underline: true },
+//     quote: { color: 'gray', italic: true },
+//     hr: { color: 'gray', dim: true },
+//     listMarker: { color: 'blue' },
+//     tableHeader: { color: 'white', bold: true },
+//     tableCell: { color: 'white' },
+//   }
+//   return render(content, { theme: githubDark })
+// }
+
+/**
+ * Read all data from stdin
+ * @returns {Promise<string>}
+ */
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    let data = ''
+    process.stdin.setEncoding('utf8')
+    process.stdin.on('data', chunk => data += chunk)
+    process.stdin.on('end', () => resolve(data))
+    process.stdin.on('error', reject)
+  })
+}
+
+/**
+ * Interpret escape sequences in string (e.g., \n -> newline)
+ * @param {string} str
+ * @returns {string}
+ */
+function interpretEscapes(str) {
+  if (!str) return str
+  return str.replace(/\\n/g, '\n').replace(/\\t/g, '\t')
+}
+
+/**
+ * Check if string looks like markdown content vs a file path
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isMarkdownContent(str) {
+  if (!str) return false
+  // Has newlines (real or escaped) = likely content
+  if (str.includes('\n') || str.includes('\\n')) return true
+  // Has markdown comment blocks = likely content
+  if (str.includes('<!--')) return true
+  // Check if file exists
+  try {
+    if (fs.existsSync(str)) return false
+  } catch (e) {
+    // ignore
+  }
+  // Has markdown heading at start = likely content
+  if (str.startsWith('#')) return true
+  return false
+}
 
 async function getBaseDir(opts = {}) {
   const { currentDir = cwd } = opts
@@ -29,6 +101,9 @@ Options:
   --files, --file    Files or glob patterns to process
   --config           Path to config file (default: md.config.js)
   --output           Output directory
+  --open             Opening comment keyword (default: docs)
+  --close            Closing comment keyword (default: /docs)
+  --pretty           Render output with ANSI styling
   --dry              Dry run - show what would be changed
   --debug            Show debug output
   --help, -h         Show this help message
@@ -38,14 +113,71 @@ Examples:
   md-magic README.md
   md-magic --files "**/*.md"
   md-magic --config ./my-config.js
+
+Stdin/stdout mode:
+  cat file.md | md-magic
+  echo "<!-- docs TOC --><!-- /docs -->" | md-magic
+  md-magic "# Title\\n<!-- docs TOC --><!-- /docs -->"
 `)
     return
   }
 
   if (options.version || options.v) {
+    // @ts-ignore
     const pkg = require('../package.json')
-    console.log(pkg.version)
+    console.log(`${pkg.name} v${pkg.version}`)
     return
+  }
+
+  // Check if first positional arg is markdown content (before stdin check)
+  const firstArg = options._ && options._[0]
+  const openKeyword = options.open || 'docs'
+  const closeKeyword = options.close || (options.open && options.open !== 'docs' ? `/${options.open}` : '/docs')
+  if (firstArg && isMarkdownContent(firstArg)) {
+    const content = interpretEscapes(firstArg)
+    const result = await processFile({
+      content,
+      syntax: 'md',
+      open: openKeyword,
+      close: closeKeyword,
+      transforms: defaultTransforms,
+      dryRun: true,
+    })
+    // TODO future pretty option
+    // if (options.pretty) {
+    //   console.log(await renderMarkdown(result.updatedContents))
+    // } else {
+    //   console.log()
+    //   console.log(result.updatedContents)
+    // }
+    console.log(result.updatedContents)
+    return
+  }
+
+  // Check for stdin pipe (when no positional file args provided)
+  const hasNoFileArgs = !options._ || options._.length === 0
+  const hasPipedInput = !process.stdin.isTTY && hasNoFileArgs
+  if (hasPipedInput) {
+    const content = await readStdin()
+    if (content.trim()) {
+      const result = await processFile({
+        content,
+        syntax: 'md',
+        open: openKeyword,
+        close: closeKeyword,
+        transforms: defaultTransforms,
+        dryRun: true, // Don't write files
+      })
+      // TODO future pretty option
+      // if (options.pretty) {
+      //   console.log(await renderMarkdown(result.updatedContents))
+      // } else {
+      //   console.log()
+      //   console.log(result.updatedContents)
+      // }
+      console.log(result.updatedContents)
+      return
+    }
   }
 
   let configFile
