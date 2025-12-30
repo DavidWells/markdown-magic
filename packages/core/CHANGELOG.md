@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.0.5...markdown-magic@4.1.0) (2025-12-30)
+
+
+### Features
+
+* **cli:** add stdin/pipe support and custom comment keywords ([2e97eb3](https://github.com/DavidWells/markdown-magic/commit/2e97eb33362e470ea0aea06d7e538290884c1fd1))
+
+
+
+
+
 ## [4.0.5](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.0.4...markdown-magic@4.0.5) (2025-12-30)
 
 **Note:** Version bump only for package markdown-magic
