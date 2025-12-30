@@ -46,8 +46,8 @@ importers:
         specifier: ^1.6.0
         version: 1.7.0
       oparser:
-        specifier: ^3.0.22
-        version: 3.0.22
+        specifier: ^3.0.24
+        version: 3.0.24
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -127,8 +127,8 @@ importers:
         specifier: ^2.7.0
         version: 2.7.0(encoding@0.1.13)
       oparser:
-        specifier: ^3.0.22
-        version: 3.0.22
+        specifier: ^3.0.24
+        version: 3.0.24
       punycode:
         specifier: ^2.3.1
         version: 2.3.1
@@ -138,9 +138,6 @@ importers:
       string-width:
         specifier: ^4.2.3
         version: 4.2.3
-      sync-request:
-        specifier: ^6.1.0
-        version: 6.1.0
     devDependencies:
       concordance:
         specifier: ^5.0.1
@@ -2306,8 +2303,8 @@ packages:
   oparser@2.2.1:
     resolution: {integrity: sha512-abZhs0fqhiWXyT1Klqj8IeNGRIz08+jqaDJXmC1FM8FfEgwcxufK3RrJJm8UEjmG0XJgoyCzREeozN8eAEBezA==}
 
-  oparser@3.0.22:
-    resolution: {integrity: sha512-9FLmBQ0Ut+56q7X4uvPwXG+NgvHecx3QwSqFhc/qC19xvogNt2HfXm3HrZR480hXOZKHxazudYY6srRaaT2uxQ==}
+  oparser@3.0.24:
+    resolution: {integrity: sha512-dBeR+X0BTWn2JI/7/YSuUxQOPOnHcNxd0ViBaoHQQLkYzkLqzYBaLraa2i7IK2hjg7Xc3rwCZNdZUucJjBuUgg==}
 
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
@@ -3195,13 +3192,13 @@ snapshots:
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24
-      oparser: 3.0.22
+      oparser: 3.0.24
 
   '@davidwells/md-utils@0.0.53':
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24
-      oparser: 3.0.22
+      oparser: 3.0.24
 
   '@emnapi/core@1.6.0':
     dependencies:
@@ -5293,7 +5290,7 @@ snapshots:
       module-alias: 2.2.3
       mri: 1.2.0
       node-fetch: 2.7.0(encoding@0.1.13)
-      oparser: 3.0.22
+      oparser: 3.0.24
       punycode: 2.3.1
       smart-glob: 1.0.2
       string-width: 4.2.3
@@ -5347,7 +5344,7 @@ snapshots:
 
   micro-mdx-parser@1.1.24:
     dependencies:
-      oparser: 3.0.22
+      oparser: 3.0.24
 
   micromatch@4.0.8:
     dependencies:
@@ -5666,7 +5663,7 @@ snapshots:
     dependencies:
       json-alexander: 0.1.13
 
-  oparser@3.0.22:
+  oparser@3.0.24:
     dependencies:
       json-alexander: 0.1.13
 

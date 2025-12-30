@@ -1,26 +1,7 @@
 const fetch = require('node-fetch')
-const request = require('sync-request')
 
 function formatUrl(url = '') {
   return url.match(/^https?:\/\//) ? url : `https://${url}`
-}
-
-function remoteRequestSync(url, settings = {}, srcPath) {
-  let body
-  const finalUrl = formatUrl(url)
-  try {
-    // @ts-expect-error
-    const res = request('GET', finalUrl)
-    body = res.getBody('utf8')
-  } catch (e) {
-    console.log(`⚠️  WARNING: REMOTE URL "${finalUrl}" NOT FOUND`)
-    const msg = (e.message || '').split('\n')[0] + `\nFix "${url}" value in ${srcPath}`
-    console.log(msg)
-    if (settings.failOnMissingRemote) {
-      throw new Error(msg)
-    }
-  }
-  return body
 }
 
 async function remoteRequest(url, settings = {}, srcPath) {
@@ -45,7 +26,6 @@ async function remoteRequest(url, settings = {}, srcPath) {
 }
 
 module.exports = {
-  remoteRequestSync,
   remoteRequest
 }
 

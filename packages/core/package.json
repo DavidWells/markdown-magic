@@ -22,6 +22,11 @@
     "docs": "node examples/generate-readme.js",
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
+    "bundle": "npm run bundle:all",
+    "bundle:all": "npm run bundle:mac && npm run bundle:linux && npm run bundle:windows",
+    "bundle:mac": "bun build ./cli.js --compile --minify --target=bun-darwin-arm64 --outfile dist/md-magic-darwin-arm64 && bun build ./cli.js --compile --minify --target=bun-darwin-x64 --outfile dist/md-magic-darwin-x64",
+    "bundle:linux": "bun build ./cli.js --compile --minify --target=bun-linux-x64 --outfile dist/md-magic-linux-x64 && bun build ./cli.js --compile --minify --target=bun-linux-arm64 --outfile dist/md-magic-linux-arm64",
+    "bundle:windows": "bun build ./cli.js --compile --minify --target=bun-windows-x64 --outfile dist/md-magic-windows-x64.exe",
     "postpublish": "git push origin && git push origin --tags",
     "release:patch": "pnpm version patch --git-tag-version && pnpm publish",
     "release:minor": "pnpm version minor --git-tag-version && pnpm publish",
@@ -48,11 +53,10 @@
     "module-alias": "^2.2.3",
     "mri": "^1.2.0",
     "node-fetch": "^2.7.0",
-    "oparser": "^3.0.22",
+    "oparser": "^3.0.24",
     "punycode": "^2.3.1",
     "smart-glob": "^1.0.2",
-    "string-width": "^4.2.3",
-    "sync-request": "^6.1.0"
+    "string-width": "^4.2.3"
   },
   "devDependencies": {
     "concordance": "^5.0.1",

@@ -1,0 +1,109 @@
+# Build and release md-magic binaries to GitHub Releases
+name: Release Binary
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v4.0.5)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            targets: linux-x64,linux-arm64
+          - os: macos-latest
+            targets: darwin-arm64,darwin-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build binaries
+        run: |
+          cd packages/core
+          mkdir -p dist
+          for target in $(echo "${{ matrix.targets }}" | tr ',' ' '); do
+            echo "Building md-magic-$target..."
+            bun build ./cli.js --compile --minify \
+              --target=bun-$target \
+              --outfile dist/md-magic-$target
+          done
+          ls -la dist/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-${{ matrix.os }}
+          path: packages/core/dist/md-magic-*
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build Windows binary
+        shell: bash
+        run: |
+          cd packages/core
+          mkdir -p dist
+          bun build ./cli.js --compile --minify --target=bun-windows-x64 --outfile dist/md-magic-windows-x64.exe
+          ls dist/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-windows
+          path: packages/core/dist/md-magic-*
+
+  release:
+    needs: [build, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -la dist/
+
+      - name: Create checksums
+        run: |
+          cd dist
+          sha256sum md-magic-* > checksums.txt
+          cat checksums.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || inputs.version }}
+          name: md-magic ${{ github.ref_name || inputs.version }}
+          files: |
+            dist/md-magic-*
+            dist/checksums.txt
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref_name || inputs.version, '-') }}

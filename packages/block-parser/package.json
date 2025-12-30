@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "dedent": "^1.6.0",
-    "oparser": "^3.0.22"
+    "oparser": "^3.0.24"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

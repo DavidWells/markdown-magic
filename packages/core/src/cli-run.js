@@ -21,6 +21,33 @@ function findSingleDashStrings(arr) {
 }
 
 async function runCli(options = {}, rawArgv) {
+  if (options.help || options.h) {
+    console.log(`
+Usage: md-magic [options] [files...]
+
+Options:
+  --files, --file    Files or glob patterns to process
+  --config           Path to config file (default: md.config.js)
+  --output           Output directory
+  --dry              Dry run - show what would be changed
+  --debug            Show debug output
+  --help, -h         Show this help message
+  --version, -v      Show version
+
+Examples:
+  md-magic README.md
+  md-magic --files "**/*.md"
+  md-magic --config ./my-config.js
+`)
+    return
+  }
+
+  if (options.version || options.v) {
+    const pkg = require('../package.json')
+    console.log(pkg.version)
+    return
+  }
+
   let configFile
   let opts = {}
 

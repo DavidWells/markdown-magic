@@ -39,6 +39,7 @@ test('getGitignoreContents', async () => {
     'yarn-error.log*',
     'test/fixtures/output',
     '_out.md',
+    'dist',
     'misc',
     'misc/**/**.js',
     "__misc",
