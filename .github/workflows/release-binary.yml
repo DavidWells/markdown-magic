@@ -99,11 +99,11 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name || inputs.version }}
-          name: md-magic ${{ github.ref_name || inputs.version }}
+          tag_name: ${{ inputs.version || github.ref_name }}
+          name: md-magic ${{ inputs.version || github.ref_name }}
           files: |
             dist/md-magic-*
             dist/checksums.txt
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(github.ref_name || inputs.version, '-') }}
+          prerelease: ${{ contains(inputs.version || github.ref_name, '-') }}
