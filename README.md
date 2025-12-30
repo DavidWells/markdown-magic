@@ -62,10 +62,32 @@ This `README.md` is generated with `markdown-magic` [view the raw file](https://
 <!-- ⛔️ MD-MAGIC-EXAMPLE:START FILE src=./docs/1_Getting-Started.md -->
 ## Install
 
-To get started. Install the npm package.
+**Via npm**
 
 ```bash
 npm install markdown-magic --save-dev
+```
+
+**Via binary (no Node.js required)**
+
+Download the prebuilt binary for your platform from [GitHub Releases](https://github.com/DavidWells/markdown-magic/releases):
+
+```bash
+# macOS (Apple Silicon)
+curl -fsSL https://github.com/DavidWells/markdown-magic/releases/latest/download/md-magic-darwin-arm64 -o md-magic
+chmod +x md-magic
+
+# macOS (Intel)
+curl -fsSL https://github.com/DavidWells/markdown-magic/releases/latest/download/md-magic-darwin-x64 -o md-magic
+chmod +x md-magic
+
+# Linux (x64)
+curl -fsSL https://github.com/DavidWells/markdown-magic/releases/latest/download/md-magic-linux-x64 -o md-magic
+chmod +x md-magic
+
+# Linux (ARM64)
+curl -fsSL https://github.com/DavidWells/markdown-magic/releases/latest/download/md-magic-linux-arm64 -o md-magic
+chmod +x md-magic
 ```
 
 ## Usage
@@ -125,6 +147,42 @@ import markdownMagic from 'markdown-magic'
 // Process a Single File
 const markdownPath = path.join(__dirname, 'README.md')
 markdownMagic(markdownPath)
+```
+
+### Running in GitHub Actions
+
+Use the prebuilt binary to automatically update markdown files on push:
+
+```yaml
+name: Update Markdown
+
+on:
+  push:
+    paths:
+      - '**.md'
+      - 'src/**'
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download md-magic
+        run: |
+          curl -fsSL https://github.com/DavidWells/markdown-magic/releases/latest/download/md-magic-linux-x64 -o md-magic
+          chmod +x md-magic
+
+      - name: Run markdown-magic
+        run: ./md-magic --files '**/*.md'
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "docs: update markdown"
+          git push
 ```
 <!-- ⛔️ MD-MAGIC-EXAMPLE:END *-->
 
