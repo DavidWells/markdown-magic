@@ -18,6 +18,7 @@
     "comment-block-parser": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "typescript": "^5.0.0",
     "uvu": "^0.5.6"
   },
