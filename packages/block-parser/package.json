@@ -4,9 +4,13 @@
   "description": "Block parser for markdown-magic - Parse comment blocks in markdown and other files",
   "main": "src/index.js",
   "types": "types/index.d.ts",
+  "bin": {
+    "comment-block-parser": "cli.js"
+  },
   "files": [
     "src",
     "types",
+    "cli.js",
     "README.md",
     "package.json"
   ],
@@ -29,7 +33,12 @@
     "benchmark": "node test/benchmark.js",
     "types": "tsc --emitDeclarationOnly --outDir types",
     "build": "pnpm run types",
-    "clean": "rimraf types",
+    "bundle": "npm run bundle:all",
+    "bundle:all": "npm run bundle:mac && npm run bundle:linux && npm run bundle:windows",
+    "bundle:mac": "bun build ./cli.js --compile --minify --target=bun-darwin-arm64 --outfile dist/block-parser-darwin-arm64 && bun build ./cli.js --compile --minify --target=bun-darwin-x64 --outfile dist/block-parser-darwin-x64",
+    "bundle:linux": "bun build ./cli.js --compile --minify --target=bun-linux-x64 --outfile dist/block-parser-linux-x64 && bun build ./cli.js --compile --minify --target=bun-linux-arm64 --outfile dist/block-parser-linux-arm64",
+    "bundle:windows": "bun build ./cli.js --compile --minify --target=bun-windows-x64 --outfile dist/block-parser-windows-x64.exe",
+    "clean": "rimraf types dist",
     "publish": "git push origin && git push origin --tags",
     "release:patch": "pnpm version patch && pnpm publish --no-git-checks",
     "release:minor": "pnpm version minor && pnpm publish --no-git-checks",
@@ -37,6 +46,7 @@
   },
   "dependencies": {
     "dedent": "^1.6.0",
+    "mri": "^1.2.0",
     "oparser": "^3.0.24"
   },
   "devDependencies": {

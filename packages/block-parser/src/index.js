@@ -15,8 +15,6 @@ const defaultOptions = {
   close: CLOSE_WORD,
 }
 
-
-
 /**
  * Details about the open tag
  * @typedef {Object} OpenBlock

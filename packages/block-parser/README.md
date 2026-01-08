@@ -8,6 +8,31 @@ A standalone block parser for parsing comment blocks in markdown and other file 
 npm install comment-block-parser
 ```
 
+## CLI
+
+Parse comment blocks from the command line.
+
+```bash
+# Parse from argument
+comment-block-parser --match auto '# Title\n<!-- auto TOC -->content<!-- /auto -->'
+
+# Parse from stdin
+cat file.md | comment-block-parser --match auto
+
+# Extract specific data with jq
+cat file.md | comment-block-parser --find auto | jq '.blocks[0].options'
+```
+
+### CLI Options
+
+```
+--open, --match, --find    Opening comment keyword (default: doc-gen)
+--close                    Closing comment keyword (auto-derived from open)
+--syntax                   Comment syntax: md, js, html, etc (default: md)
+--help, -h                 Show help
+--version, -v              Show version
+```
+
 ## Example
 
 The library works with a variety of [syntaxes](#supported-syntaxes).
