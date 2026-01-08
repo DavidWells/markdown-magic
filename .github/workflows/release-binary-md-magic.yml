@@ -1,0 +1,24 @@
+# Build and release md-magic binaries to GitHub Releases
+name: Release Binary (md-magic)
+
+on:
+  push:
+    tags:
+      - 'markdown-magic@*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., markdown-magic@4.0.5)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    uses: ./.github/workflows/actions/build-binary.yml
+    with:
+      package_path: packages/core
+      binary_name: md-magic
+      tag_prefix: 'markdown-magic@'
+      version_tag: ${{ inputs.version || github.ref_name }}
+    permissions:
+      contents: write

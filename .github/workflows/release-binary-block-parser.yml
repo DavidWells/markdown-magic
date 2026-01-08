@@ -1,0 +1,24 @@
+# Build and release block-parser binaries to GitHub Releases
+name: Release Binary (block-parser)
+
+on:
+  push:
+    tags:
+      - 'comment-block-parser@*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., comment-block-parser@1.2.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    uses: ./.github/workflows/actions/build-binary.yml
+    with:
+      package_path: packages/block-parser
+      binary_name: block-parser
+      tag_prefix: 'comment-block-parser@'
+      version_tag: ${{ inputs.version || github.ref_name }}
+    permissions:
+      contents: write
