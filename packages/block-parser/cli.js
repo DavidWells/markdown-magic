@@ -6,7 +6,12 @@ const mri = require('mri')
 const { parseBlocks } = require('./src/index')
 
 const argv = process.argv.slice(2)
-const options = mri(argv)
+const options = mri(argv, {
+  boolean: ['parseType', 'help', 'h', 'version', 'v'],
+  alias: {
+    parseType: ['parsetype', 'parse-type'],
+  },
+})
 
 /**
  * Read all data from stdin
@@ -99,6 +104,41 @@ function isSingleWord(str) {
   return !isContent(str)
 }
 
+/**
+ * Map file extensions to syntax types
+ */
+const extToSyntax = {
+  '.md': 'md',
+  '.markdown': 'md',
+  '.html': 'html',
+  '.htm': 'html',
+  '.js': 'js',
+  '.mjs': 'js',
+  '.cjs': 'js',
+  '.ts': 'js',
+  '.mts': 'js',
+  '.cts': 'js',
+  '.json': 'js',
+  '.jsx': 'jsx',
+  '.tsx': 'jsx',
+  '.mdx': 'jsx',
+  '.yml': 'yaml',
+  '.yaml': 'yaml',
+  '.sql': 'sql',
+  '.toml': 'toml',
+}
+
+/**
+ * Detect syntax from file path extension
+ * @param {string} filePath
+ * @returns {string|null}
+ */
+function detectSyntax(filePath) {
+  if (!filePath) return null
+  const ext = path.extname(filePath).toLowerCase()
+  return extToSyntax[ext] || null
+}
+
 async function run() {
   if (options.help || options.h) {
     console.log(`
@@ -108,12 +148,14 @@ Usage: block-parser [options] [content]
 Options:
   --open             Opening comment keyword (default: block)
   --close            Closing comment keyword (default: /block)
-  --syntax           Comment syntax: md, js, html, etc (default: md)
+  --syntax           Comment syntax: md, js, jsx, yaml, sql, toml (auto-detected from file extension)
+  --parseType        Treat first arg after open keyword as transform type (default: false)
   --help, -h         Show this help message
   --version, -v      Show version
 
 Examples:
-  block-parser ./file.md
+  block-parser ./file.md                    # auto-detects md syntax
+  block-parser ./src/index.js               # auto-detects js syntax
   block-parser auto ./file.md
   block-parser "<!-- block enabled -->\\ncontent\\n<!-- /block -->"
   echo "<!-- block enabled --><!-- /block -->" | block-parser
@@ -128,7 +170,6 @@ Examples:
     return
   }
   
-  const syntax = options.syntax || 'md'
   const positionalArgs = options._ || []
   const firstArg = positionalArgs[0]
   const secondArg = positionalArgs[1]
@@ -137,6 +178,7 @@ Examples:
   let matchWord = options.open || options.match || options.find
   let contentArg = null
   let contentSource = null
+  let filePath = null
 
   // If first positional arg is single word, treat as match word
   if (firstArg && isSingleWord(firstArg)) {
@@ -158,10 +200,15 @@ Examples:
     const fileContent = tryReadFile(contentArg)
     if (fileContent !== null) {
       contentSource = fileContent
+      filePath = contentArg
     } else if (isContent(contentArg)) {
       contentSource = interpretEscapes(contentArg)
     }
   }
+
+  // Auto-detect syntax from file extension, fallback to --syntax or 'md'
+  const syntax = options.syntax || detectSyntax(filePath || '') || 'md'
+  const firstArgIsType = Boolean(options.parseType)
 
   // Process content from arg or file
   if (contentSource) {
@@ -169,6 +216,7 @@ Examples:
       syntax,
       open: openKeyword,
       close: closeKeyword,
+      firstArgIsType,
     })
     console.log(JSON.stringify(result, jsonReplacer, 2))
     return
@@ -180,14 +228,19 @@ Examples:
     content = content.trim()
     if (content) {
       // Check if piped content is a file path
+      let stdinFilePath = null
       const fileContent = tryReadFile(content)
       if (fileContent !== null) {
+        stdinFilePath = content
         content = fileContent
       }
+      // Auto-detect syntax from piped file path if not already set
+      const stdinSyntax = options.syntax || detectSyntax(stdinFilePath || '') || 'md'
       const result = parseBlocks(content, {
-        syntax,
+        syntax: stdinSyntax,
         open: openKeyword,
         close: closeKeyword,
+        firstArgIsType,
       })
       console.log(JSON.stringify(result, jsonReplacer, 2))
       return

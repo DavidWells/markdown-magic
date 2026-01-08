@@ -1,39 +1,38 @@
 console.log('hi')
 
-/*! GENERATED negated yay='nice'*/
+/*! block negated yay='nice'*/
 console.log('yesss')
-/* END-GENERATED */
+/* /block */
 
-/* ⛔️ GENERATED a */
+/* ⛔️ block a */
 // comment inside
-/* END-GENERATED */
+/* /block */
 
-/* GENERATED b */
+/* block b */
 /* comment inside */
-/* END-GENERATED */
+/* /block */
 
-/* GENERATED c */
+/* block c */
 /* 
   comment inside 
 */
-/* END-GENERATED */
+/* /block */
 
-/* GENERATED d */
+/* block d */
 /**
  * comment inside 
  */
-/* END-GENERATED */
+/* /block */
 
-/* GENERATED e */
+/* block e */
 /****************
  comment inside 
 ******************/
-/* END-GENERATED */
+/* /block */
 
 var x = 'joe'
 
-/* GENERATED MyCodeGen yay='nice' */
+/* block MyCodeGen yay='nice' */
 /* Awesome */
 console.log('noooo')
-/* END-GENERATED */
-
+/* /block */

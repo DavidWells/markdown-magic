@@ -138,24 +138,25 @@ test('cli - --version returns version', () => {
 /* File path tests */
 
 test('cli - file path as positional arg', () => {
-  const result = runCli('--syntax js --open GENERATED --close END-GENERATED test/fixtures/simple.js')
+  const result = runCli('--parseType --open GENERATED --close END-GENERATED test/fixtures/custom-match-blocks.js')
   assert.is(result.blocks.length, 6)
-  assert.equal(result.blocks[0].options, { a: true })
+  assert.equal(result.blocks[0].options, {})
+  assert.is(result.blocks[0].type, 'a')
 })
 
 test('cli - match word + file path', () => {
-  const result = runCli('--syntax js --close END-GENERATED GENERATED test/fixtures/simple.js')
+  const result = runCli('--parseType --close END-GENERATED GENERATED test/fixtures/custom-match-blocks.js')
   assert.is(result.blocks.length, 6)
 })
 
 test('cli - piped file path', () => {
-  const result = runCli('--syntax js --open GENERATED --close END-GENERATED', 'test/fixtures/simple.js')
+  const result = runCli('--parseType --open GENERATED --close END-GENERATED', 'test/fixtures/custom-match-blocks.js')
   assert.is(result.blocks.length, 6)
 })
 
 test('cli - file path not treated as match word', () => {
   // File path should be read, not treated as match word
-  const result = runCli('--syntax js --open GENERATED --close END-GENERATED ./test/fixtures/simple.js')
+  const result = runCli('--parseType --open GENERATED --close END-GENERATED ./test/fixtures/custom-match-blocks.js')
   assert.is(result.blocks.length, 6)
 })
 
