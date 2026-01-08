@@ -21,4 +21,3 @@ Old comment syntax
 <!-- AUTO-GENERATED-CONTENT:START (FILE:src=../local-code-file-lines.js) -->
 Old comment syntax
 <!-- AUTO-GENERATED-CONTENT:END -->
-
