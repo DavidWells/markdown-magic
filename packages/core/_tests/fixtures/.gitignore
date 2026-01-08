@@ -1,0 +1,5 @@
+# Test output directory
+output/
+
+# Dynamic temp fixtures created during tests
+temp-*/
