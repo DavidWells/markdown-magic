@@ -22,7 +22,7 @@ I'm imagining a world where your code AST is parsed and you can automatically in
 One day...
 
 <!-- docs FILE
-  src="./x.md"
+  // src="./x.md"
   shiftHeaders=-1
   removeLeadingH1
 -->
