@@ -1,0 +1,28 @@
+# Parse issue body with block-parser
+name: Parse Issue
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'Issue number'
+        required: true
+        default: '115'
+        type: string
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download block-parser
+        run: |
+          TAG=$(curl -s "https://api.github.com/repos/DavidWells/markdown-magic/releases" | \
+            grep -o '"tag_name": "comment-block-parser@[^"]*"' | head -1 | cut -d'"' -f4)
+          curl -sL "https://github.com/DavidWells/markdown-magic/releases/download/${TAG}/block-parser-linux-x64" -o block-parser
+          chmod +x block-parser
+
+      - name: Parse issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue view ${{ inputs.issue }} --repo ${{ github.repository }} --json body -q '.body' | ./block-parser --match auto | jq '.blocks[0].options'
