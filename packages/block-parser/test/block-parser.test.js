@@ -503,14 +503,94 @@ test('Returns empty array', () => {
   assert.equal(parseBlocks('', defaultOpts).blocks, [])
   assert.equal(parseBlocks(' ', defaultOpts).blocks, [])
   assert.equal(parseBlocks(`
-  
-  
+
+
   `, defaultOpts).blocks, [])
   assert.equal(parseBlocks(`
 # No block in here
 
-nope  
+nope
   `, defaultOpts).blocks, [])
+})
+
+/* Tests for firstArgIsType: false (default behavior) */
+
+test('firstArgIsType false - all args parsed as options', () => {
+  const content = `<!-- auto isCool optionOne=foo optionTwo="bar" -->
+content here
+<!-- /auto -->`
+
+  const result = parseBlocks(content, {
+    open: 'auto',
+    close: '/auto',
+    // firstArgIsType defaults to false
+  })
+
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, undefined, 'type should be undefined')
+  assert.equal(result.blocks[0].options, {
+    isCool: true,
+    optionOne: 'foo',
+    optionTwo: 'bar'
+  }, 'all args parsed as options')
+})
+
+test('firstArgIsType false - single boolean option', () => {
+  const content = `<!-- auto enabled -->
+content
+<!-- /auto -->`
+
+  const result = parseBlocks(content, {
+    open: 'auto',
+    close: '/auto',
+  })
+
+  assert.is(result.blocks[0].type, undefined)
+  assert.equal(result.blocks[0].options, { enabled: true })
+})
+
+test('firstArgIsType false - complex options only', () => {
+  const content = `<!-- auto src="./file.js" lines=1-10 syntax='javascript' -->
+code here
+<!-- /auto -->`
+
+  const result = parseBlocks(content, {
+    open: 'auto',
+    close: '/auto',
+  })
+
+  assert.is(result.blocks[0].type, undefined)
+  assert.equal(result.blocks[0].options, {
+    src: './file.js',
+    lines: '1-10',
+    syntax: 'javascript'
+  })
+})
+
+test('firstArgIsType true vs false comparison', () => {
+  const content = `<!-- auto CODE src="./file.js" -->
+content
+<!-- /auto -->`
+
+  const withType = parseBlocks(content, {
+    open: 'auto',
+    close: '/auto',
+    firstArgIsType: true,
+  })
+
+  const withoutType = parseBlocks(content, {
+    open: 'auto',
+    close: '/auto',
+    firstArgIsType: false,
+  })
+
+  // With firstArgIsType: true, CODE is the type
+  assert.is(withType.blocks[0].type, 'CODE')
+  assert.equal(withType.blocks[0].options, { src: './file.js' })
+
+  // With firstArgIsType: false, CODE becomes a boolean option
+  assert.is(withoutType.blocks[0].type, undefined)
+  assert.equal(withoutType.blocks[0].options, { CODE: true, src: './file.js' })
 })
 
 test.run()
