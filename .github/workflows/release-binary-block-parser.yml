@@ -14,7 +14,7 @@ on:
 
 jobs:
   release:
-    uses: ./.github/workflows/actions/build-binary.yml
+    uses: ./.github/workflows/build-binary.yml
     with:
       package_path: packages/block-parser
       binary_name: block-parser
