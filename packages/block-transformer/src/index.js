@@ -113,7 +113,8 @@ async function blockTransformer(inputText, config) {
       syntax,
       open,
       close,
-      customPatterns
+      customPatterns,
+      firstArgIsType: true,
     })
   } catch (e) {
     const errMsg = (srcPath) ? `in ${srcPath}` : inputText
@@ -313,8 +314,10 @@ function getDetails({
   openValue,
   srcPath,
   index,
-  opts
+  opts = {}
 }) {
+  // @ts-ignore
+  opts.firstArgIsType = true
   const blockData = parseBlocks(contents, opts)
   const matchingBlocks = blockData.blocks.filter((block) => {
     return block.open.value === openValue

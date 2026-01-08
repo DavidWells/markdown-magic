@@ -183,7 +183,8 @@ Markdown magic uses comment blocks in markdown files to automatically sync or tr
 test('verify parser', () => {
   const parsedValue = parseBlocks(md, {
     open: 'XYZ:START',
-    close: 'XYZ:END'
+    close: 'XYZ:END',
+    firstArgIsType: true,
   })
   /*
   console.log('parsedValue')
@@ -198,7 +199,8 @@ test('inline parser', () => {
   const inlineOne = `<!--XYZ:START functionName foo={{ rad: 'bar' }}-->99<!--XYZ:END-->`
   const one = parseBlocks(inlineOne, {
     open: 'XYZ:START',
-    close: 'XYZ:END'
+    close: 'XYZ:END',
+    firstArgIsType: true,
   })
   /*
   console.log('inline one')
@@ -221,7 +223,8 @@ test('inline parser', () => {
   const inlineTwo = ` <!-- XYZ:START transformX foo=111 -->99<!-- XYZ:END -->`
   const two = parseBlocks(inlineTwo, {
     open: 'XYZ:START',
-    close: 'XYZ:END'
+    close: 'XYZ:END',
+    firstArgIsType: true,
   })
   /*
   console.log('inline two ───────────────────────')
@@ -275,7 +278,8 @@ nice
 test('Handles function names', () => {
   const parsedValue = parseBlocks(fnBlocks, {
     open: 'XYZ:START',
-    close: 'XYZ:END'
+    close: 'XYZ:END',
+    firstArgIsType: true,
   })
   /*
   console.log('fn names')
@@ -351,7 +355,8 @@ This content will be dynamically replaced with code from the file lines 22 throu
 `
   const parsedValue = parseBlocks(backwardCompat, {
     open: 'XYZ:START',
-    close: 'XYZ:END'
+    close: 'XYZ:END',
+    firstArgIsType: true,
   })
   /*
   console.log('backwardCompat')
@@ -388,6 +393,7 @@ const defaultOpts = {
   syntax: 'md',
   open: 'DOCS:START',
   close: 'DOCS:END',
+  firstArgIsType: true,
 }
 
 const mdText = `

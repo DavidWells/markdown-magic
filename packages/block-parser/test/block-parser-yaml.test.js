@@ -12,6 +12,7 @@ test('YAML file parse', async () => {
     syntax: 'yaml',
     open: 'GENERATED',
     close: 'END-GENERATED',
+    firstArgIsType: true,
   })
   /*
   deepLog(blocks.blocks)

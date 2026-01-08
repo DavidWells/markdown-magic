@@ -314,6 +314,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
         syntax,
         open,
         close,
+        firstArgIsType: true,
       })
       // console.log('foundBlocks', foundBlocks.blocks.length)
     } catch (e) {

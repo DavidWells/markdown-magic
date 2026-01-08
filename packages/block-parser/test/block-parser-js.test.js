@@ -11,6 +11,7 @@ test('JS file parse',async () => {
     syntax: 'js',
     open: 'GENERATED',
     close: 'END-GENERATED',
+    firstArgIsType: true,
   })
   //*
   deepLog(blocks.blocks)

@@ -12,6 +12,7 @@ test('TOML file parse', async () => {
     syntax: 'toml',
     open: 'GENERATED',
     close: 'END-GENERATED',
+    firstArgIsType: true,
   })
 
   /*

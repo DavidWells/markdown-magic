@@ -12,6 +12,7 @@ test('MDX file parse', async () => {
     syntax: 'mdx',
     open: 'GENERATED',
     close: 'END-GENERATED',
+    firstArgIsType: true,
   })
   /*
   deepLog(blocks.blocks)

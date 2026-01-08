@@ -7,7 +7,8 @@ const { parseBlocks } = require('../src/index')
 const opts = {
   open: 'DOCS:START',
   close: 'DOCS:END',
-  syntax: 'md'
+  syntax: 'md',
+  firstArgIsType: true,
 }
 
 test('legacyParseOptions - parses colon syntax key=value', () => {

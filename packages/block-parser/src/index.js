@@ -13,6 +13,7 @@ const defaultOptions = {
   syntax: SYNTAX,
   open: OPEN_WORD,
   close: CLOSE_WORD,
+  firstArgIsType: false,
 }
 
 /**
@@ -62,7 +63,7 @@ const defaultOptions = {
 /**
  * Details about the matched comment block
  * @typedef {Object} BlockData
- * @property {string} type - Transform type
+ * @property {string|undefined} type - Transform type (undefined when firstArgIsType=false)
  * @property {number} index - Block index in the file
  * @property {number[]} lines - Array of exactly 2 numbers: [startLine, endLine]
  * @property {number[]} position - Array of exactly 2 numbers: [startPosition, endPosition]
@@ -98,12 +99,13 @@ const defaultOptions = {
  * @param {string} [opts.syntax=SYNTAX] - Comment syntax to use
  * @param {string} [opts.open=OPEN_WORD] - Open tag word
  * @param {string} [opts.close=CLOSE_WORD] - Close tag word
+ * @param {boolean} [opts.firstArgIsType=false] - Treat first arg after open word as transform type
  * @param {CustomPatterns} [opts.customPatterns] - Custom regex patterns for open and close tags
  * @returns {ParseBlocksResult} Result containing parsed blocks and patterns used
  */
 function parseBlocks(contents, opts = {}) {
   const _options = Object.assign({}, defaultOptions, opts)
-  const { syntax, open, close, customPatterns } = _options
+  const { syntax, open, close, customPatterns, firstArgIsType } = _options
 
   let patterns = {}
   let hasCustomPatterns = false
@@ -240,15 +242,21 @@ Details:
     }
 
     const [ block, spaces, openTag, type, params = '', content, closeTag ] = newMatches
-    
-    let transformType = type
-    paramString = params.trim()
 
-    /* Account for dashes in transform name. E.g. funky-name-here */
-    const dashInTransform = params.match(/^(-[^\s]*)/)
-    if (dashInTransform && dashInTransform[1]) {
-      transformType = type + dashInTransform[1]
-      paramString = paramString.replace(dashInTransform[1], '')
+    let transformType
+    if (firstArgIsType) {
+      transformType = type
+      paramString = params.trim()
+      /* Account for dashes in transform name. E.g. funky-name-here */
+      const dashInTransform = params.match(/^(-[^\s]*)/)
+      if (dashInTransform && dashInTransform[1]) {
+        transformType = type + dashInTransform[1]
+        paramString = paramString.replace(dashInTransform[1], '')
+      }
+    } else {
+      /* No transform type - everything is options */
+      transformType = undefined
+      paramString = (type + ' ' + params).trim()
     }
     /*
     console.log('index', newMatches.index)

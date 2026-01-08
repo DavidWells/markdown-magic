@@ -12,6 +12,7 @@ test('SQL file parse', async () => {
     syntax: 'sql',
     open: 'GENERATED',
     close: 'END-GENERATED',
+    firstArgIsType: true,
   })
   /*
   deepLog(blocks.blocks)
