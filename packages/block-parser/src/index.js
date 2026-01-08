@@ -4,8 +4,8 @@ const { getTextBetweenChars, findMinIndent, dedentString } = require('./text')
 // Alt parser https://github.com/LesterLyu/fast-formula-parser/blob/master/grammar/lexing.js
 
 const SYNTAX = 'md'
-const OPEN_WORD = 'doc-gen'
-const CLOSE_WORD = 'end-doc-gen'
+const OPEN_WORD = 'block'
+const CLOSE_WORD = '/block'
 
 const LEADING_INDENT_REGEX = /^[\r\n]*(\s*)/
 

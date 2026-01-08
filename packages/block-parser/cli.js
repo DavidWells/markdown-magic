@@ -61,16 +61,16 @@ async function run() {
 Usage: block-parser [options] [content]
 
 Options:
-  --open             Opening comment keyword (default: doc-gen)
-  --close            Closing comment keyword (default: end-doc-gen)
+  --open             Opening comment keyword (default: block)
+  --close            Closing comment keyword (default: /block)
   --syntax           Comment syntax: md, js, html, etc (default: md)
   --help, -h         Show this help message
   --version, -v      Show version
 
 Examples:
-  block-parser "# Title\\n<!-- doc-gen TOC --><!-- end-doc-gen -->"
-  echo "<!-- doc-gen TOC --><!-- end-doc-gen -->" | block-parser
-  block-parser --open auto --close /auto "<!-- auto TOC --><!-- /auto -->"
+  block-parser "# Title\\n<!-- block -->content<!-- /block -->"
+  echo "<!-- block enabled --><!-- /block -->" | block-parser
+  block-parser --open auto --close /auto "<!-- auto isCool --><!-- /auto -->"
 `)
     return
   }
@@ -82,8 +82,8 @@ Examples:
   }
   
   const word = options.open || options.match || options.find
-  const openKeyword = word || 'doc-gen'
-  const closeKeyword = options.close || (word && word !== 'doc-gen' ? `/${word}` : 'end-doc-gen')
+  const openKeyword = word || 'block'
+  const closeKeyword = options.close || (word ? `/${word}` : '/block')
   const syntax = options.syntax || 'md'
 
   // Check if first positional arg is content
