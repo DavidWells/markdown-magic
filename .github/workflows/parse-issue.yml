@@ -14,11 +14,24 @@ jobs:
   parse:
     runs-on: ubuntu-latest
     steps:
-      - name: Download block-parser
+      - name: Get latest release tag
+        id: release
         run: |
           TAG=$(curl -s "https://api.github.com/repos/DavidWells/markdown-magic/releases" | \
             grep -o '"tag_name": "comment-block-parser@[^"]*"' | head -1 | cut -d'"' -f4)
-          curl -sL "https://github.com/DavidWells/markdown-magic/releases/download/${TAG}/block-parser-linux-x64" -o block-parser
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Cache block-parser
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: block-parser
+          key: block-parser-linux-x64-${{ steps.release.outputs.tag }}
+
+      - name: Download block-parser
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          curl -sL "https://github.com/DavidWells/markdown-magic/releases/download/${{ steps.release.outputs.tag }}/block-parser-linux-x64" -o block-parser
           chmod +x block-parser
 
       - name: Parse issue
