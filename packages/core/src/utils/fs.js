@@ -192,11 +192,34 @@ function isLocalPath(filePath) {
   return _isLocalPath(filePath)
 }
 
+const fsSync = require('fs')
+
+/**
+ * Check if file's directory or any parent has .md-ignore
+ * @param {string} filePath - Absolute path to file
+ * @returns {boolean} True if should be ignored
+ */
+function hasIgnoreFile(filePath) {
+  let dir = dirname(filePath)
+  const root = resolve('/')
+  while (dir !== root) {
+    const ignoreFile = join(dir, '.md-ignore')
+    if (fsSync.existsSync(ignoreFile)) {
+      return true
+    }
+    const parent = dirname(dir)
+    if (parent === dir) break
+    dir = parent
+  }
+  return false
+}
+
 module.exports = {
   isLocalPath,
   writeFile,
-  readFile, 
+  readFile,
   findUp,
+  hasIgnoreFile,
   resolveOutputPath,
   resolveFlatPath,
   resolveCommonParent,

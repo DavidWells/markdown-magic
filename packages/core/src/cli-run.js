@@ -61,6 +61,18 @@ function interpretEscapes(str) {
 }
 
 /**
+ * JSON.stringify replacer that handles RegExp objects
+ * @param {string} key
+ * @param {any} value
+ */
+function jsonReplacer(key, value) {
+  if (value instanceof RegExp) {
+    return value.toString()
+  }
+  return value
+}
+
+/**
  * Check if string looks like markdown content vs a file path
  * @param {string} str
  * @returns {boolean}
@@ -103,6 +115,7 @@ Options:
   --output           Output directory
   --open             Opening comment keyword (default: docs)
   --close            Closing comment keyword (default: /docs)
+  --json             Output full result as JSON
   --pretty           Render output with ANSI styling
   --dry              Dry run - show what would be changed
   --debug            Show debug output
@@ -130,7 +143,12 @@ Stdin/stdout mode:
   }
 
   // Check if first positional arg is markdown content (before stdin check)
-  const firstArg = options._ && options._[0]
+  // Handle case where mri assigns content to a flag (e.g., --json '# content')
+  let firstArg = options._ && options._[0]
+  const outputJson = options.json === true || (typeof options.json === 'string' && isMarkdownContent(options.json))
+  if (typeof options.json === 'string' && isMarkdownContent(options.json)) {
+    firstArg = options.json
+  }
   const openKeyword = options.open || 'docs'
   const closeKeyword = options.close || (options.open && options.open !== 'docs' ? `/${options.open}` : '/docs')
   if (firstArg && isMarkdownContent(firstArg)) {
@@ -143,14 +161,12 @@ Stdin/stdout mode:
       transforms: defaultTransforms,
       dryRun: true,
     })
-    // TODO future pretty option
-    // if (options.pretty) {
-    //   console.log(await renderMarkdown(result.updatedContents))
-    // } else {
-    //   console.log()
-    //   console.log(result.updatedContents)
-    // }
-    console.log(result.updatedContents)
+    console.log('result', result)
+    if (outputJson) {
+      console.log(JSON.stringify(result, jsonReplacer, 2))
+    } else {
+      console.log(result.updatedContents)
+    }
     return
   }
 
@@ -168,14 +184,11 @@ Stdin/stdout mode:
         transforms: defaultTransforms,
         dryRun: true, // Don't write files
       })
-      // TODO future pretty option
-      // if (options.pretty) {
-      //   console.log(await renderMarkdown(result.updatedContents))
-      // } else {
-      //   console.log()
-      //   console.log(result.updatedContents)
-      // }
-      console.log(result.updatedContents)
+      if (outputJson) {
+        console.log(JSON.stringify(result, jsonReplacer, 2))
+      } else {
+        console.log(result.updatedContents)
+      }
       return
     }
   }

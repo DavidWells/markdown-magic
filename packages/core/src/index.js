@@ -13,7 +13,7 @@ const remoteTransform = require('./transforms/remote')
 const installTransform = require('./transforms/install')
 const { getSyntaxInfo } = require('./utils/syntax')
 const { onlyUnique, getCodeLocation, pluralize } = require('./utils')
-const { readFile, resolveOutputPath, resolveFlatPath } = require('./utils/fs')
+const { readFile, resolveOutputPath, resolveFlatPath, hasIgnoreFile } = require('./utils/fs')
 const stringBreak = require('./utils/string-break')
 const { processFile } = require('comment-block-replacer')
 const { blockTransformer } = require('comment-block-transformer')
@@ -257,7 +257,10 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
 
   let files = []
   try {
-    files = (await Promise.all(pathsPromise)).flat().filter(onlyUnique)
+    files = (await Promise.all(pathsPromise))
+      .flat()
+      .filter(onlyUnique)
+      .filter((f) => !hasIgnoreFile(f))
     // opts.files = files
   } catch (e) {
     // console.log(e.message)
@@ -541,12 +544,16 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     let planMsg = `${count} Found ${transformsToRun.length} transforms in ${item.srcPath}`
     planTotal = planTotal + transformsToRun.length
     // logger(`Found ${transformsToRun.length} transforms in ${item.srcPath}`)
+    const maxPrefixLen = Math.max(...transformsToRun.map((t) => {
+      return `"${t.transform}" on line ${t.lines[0]}`.length
+    }))
     transformsToRun.forEach((trn) => {
       const line = trn.lines[0]
+      const prefix = `"${trn.transform}" on line ${line}`
+      const paddedPrefix = prefix.padEnd(maxPrefixLen)
       const location = getCodeLocation(item.srcPath, line)
-      const planData = `      - "${trn.transform}" at line ${line} → ${location}`
+      const planData = `      - ${paddedPrefix}  →  ${location}`
       planMsg += `\n${planData}`
-      // logger(` - "${trn.transform}" at line ${trn.lines[0]}`)
     })
     const newLine = plan.length !== i + 1 ? '\n' : ''
     return `${planMsg}${newLine}`

@@ -23,8 +23,15 @@ module.exports = function FILE(api) {
       if (options.src === './path/to/file') {
         return api.content
       }
-      console.log(`FILE NOT FOUND ${resolvedFilePath}`)
-      throw e
+      const err = new Error(`FILE NOT FOUND: ${resolvedFilePath}
+      
+Referenced in: ${srcPath}
+
+Via the "src" attribute: src="${options.src}"
+
+`)
+      err.code = 'ENOENT'
+      throw err
     }
   }
 

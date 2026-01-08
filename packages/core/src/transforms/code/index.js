@@ -91,8 +91,9 @@ module.exports = async function CODE(api) {
         if (src === './relative/path/to/code.js') {
           return api.content
         } else {
-          console.log(`FILE NOT FOUND ${codeFilePath}`)
-          throw e
+          const err = new Error(`FILE NOT FOUND: ${codeFilePath}\n  Referenced in: ${srcPath}\n  src="${src}"`)
+          err.code = 'ENOENT'
+          throw err
         }
       }
     }
