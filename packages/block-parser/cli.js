@@ -55,10 +55,22 @@ function isContent(str) {
   return false
 }
 
+/**
+ * Check if string is a single word (potential match word)
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isSingleWord(str) {
+  if (!str) return false
+  if (/\s/.test(str)) return false
+  return !isContent(str)
+}
+
 async function run() {
   if (options.help || options.h) {
     console.log(`
 Usage: block-parser [options] [content]
+       block-parser <match-word> [content]
 
 Options:
   --open             Opening comment keyword (default: block)
@@ -68,9 +80,10 @@ Options:
   --version, -v      Show version
 
 Examples:
-  block-parser "# Title\\n<!-- block -->content<!-- /block -->"
+  block-parser "<!-- block enabled -->\\ncontent\\n<!-- /block -->"
+  block-parser auto "<!-- auto isCool -->\\ncontent\\n<!-- /auto -->"
   echo "<!-- block enabled --><!-- /block -->" | block-parser
-  block-parser --open auto --close /auto "<!-- auto isCool --><!-- /auto -->"
+  echo "<!-- auto foo --><!-- /auto -->" | block-parser auto
 `)
     return
   }
@@ -81,20 +94,33 @@ Examples:
     return
   }
   
-  const word = options.open || options.match || options.find
-  const openKeyword = word || 'block'
-  const closeKeyword = options.close || (word ? `/${word}` : '/block')
   const syntax = options.syntax || 'md'
+  const positionalArgs = options._ || []
+  const firstArg = positionalArgs[0]
+  const secondArg = positionalArgs[1]
 
-  // Check if first positional arg is content
-  let firstArg = options._ && options._[0]
+  // Determine match word and content from args
+  let matchWord = options.open || options.match || options.find
+  let contentArg = null
+
+  // If first positional arg is single word, treat as match word
+  if (firstArg && isSingleWord(firstArg)) {
+    matchWord = firstArg
+    contentArg = secondArg
+  } else if (firstArg && isContent(firstArg)) {
+    contentArg = firstArg
+  }
   // Handle mri assigning content to a flag
-  if (typeof options.open === 'string' && isContent(options.open)) {
-    firstArg = options.open
+  if (!contentArg && typeof options.open === 'string' && isContent(options.open)) {
+    contentArg = options.open
   }
 
-  if (firstArg && isContent(firstArg)) {
-    const content = interpretEscapes(firstArg)
+  const openKeyword = matchWord || 'block'
+  const closeKeyword = options.close || (matchWord ? `/${matchWord}` : '/block')
+
+  // Process content from arg
+  if (contentArg) {
+    const content = interpretEscapes(contentArg)
     const result = parseBlocks(content, {
       syntax,
       open: openKeyword,
@@ -105,8 +131,7 @@ Examples:
   }
 
   // Check for stdin pipe
-  const hasNoFileArgs = !options._ || options._.length === 0
-  if (!process.stdin.isTTY && hasNoFileArgs) {
+  if (!process.stdin.isTTY) {
     const content = await readStdin()
     if (content.trim()) {
       const result = parseBlocks(content, {
