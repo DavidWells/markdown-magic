@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 // CLI for parsing comment blocks from markdown and other files
+const fs = require('fs')
+const path = require('path')
 const mri = require('mri')
 const { parseBlocks } = require('./src/index')
 
@@ -56,6 +58,36 @@ function isContent(str) {
 }
 
 /**
+ * Check if string looks like a file path
+ * @param {string} str
+ * @returns {boolean}
+ */
+function looksLikeFilePath(str) {
+  if (!str) return false
+  if (isContent(str)) return false
+  // Has file extension or starts with ./ or / or contains path separators
+  return /\.\w+$/.test(str) || str.startsWith('./') || str.startsWith('/') || str.includes(path.sep)
+}
+
+/**
+ * Try to read file, returns content or null if not a file
+ * @param {string} str
+ * @returns {string|null}
+ */
+function tryReadFile(str) {
+  if (!looksLikeFilePath(str)) return null
+  try {
+    const resolved = path.resolve(str)
+    if (fs.existsSync(resolved) && fs.statSync(resolved).isFile()) {
+      return fs.readFileSync(resolved, 'utf8')
+    }
+  } catch (e) {
+    // Not a readable file
+  }
+  return null
+}
+
+/**
  * Check if string is a single word (potential match word)
  * @param {string} str
  * @returns {boolean}
@@ -63,6 +95,7 @@ function isContent(str) {
 function isSingleWord(str) {
   if (!str) return false
   if (/\s/.test(str)) return false
+  if (looksLikeFilePath(str)) return false
   return !isContent(str)
 }
 
@@ -80,10 +113,11 @@ Options:
   --version, -v      Show version
 
 Examples:
+  block-parser ./file.md
+  block-parser auto ./file.md
   block-parser "<!-- block enabled -->\\ncontent\\n<!-- /block -->"
-  block-parser auto "<!-- auto isCool -->\\ncontent\\n<!-- /auto -->"
   echo "<!-- block enabled --><!-- /block -->" | block-parser
-  echo "<!-- auto foo --><!-- /auto -->" | block-parser auto
+  echo "./file.md" | block-parser auto
 `)
     return
   }
@@ -102,12 +136,13 @@ Examples:
   // Determine match word and content from args
   let matchWord = options.open || options.match || options.find
   let contentArg = null
+  let contentSource = null
 
   // If first positional arg is single word, treat as match word
   if (firstArg && isSingleWord(firstArg)) {
     matchWord = firstArg
     contentArg = secondArg
-  } else if (firstArg && isContent(firstArg)) {
+  } else if (firstArg) {
     contentArg = firstArg
   }
   // Handle mri assigning content to a flag
@@ -118,10 +153,19 @@ Examples:
   const openKeyword = matchWord || 'block'
   const closeKeyword = options.close || (matchWord ? `/${matchWord}` : '/block')
 
-  // Process content from arg
+  // Try to read content from file if it looks like a path
   if (contentArg) {
-    const content = interpretEscapes(contentArg)
-    const result = parseBlocks(content, {
+    const fileContent = tryReadFile(contentArg)
+    if (fileContent !== null) {
+      contentSource = fileContent
+    } else if (isContent(contentArg)) {
+      contentSource = interpretEscapes(contentArg)
+    }
+  }
+
+  // Process content from arg or file
+  if (contentSource) {
+    const result = parseBlocks(contentSource, {
       syntax,
       open: openKeyword,
       close: closeKeyword,
@@ -132,8 +176,14 @@ Examples:
 
   // Check for stdin pipe
   if (!process.stdin.isTTY) {
-    const content = await readStdin()
-    if (content.trim()) {
+    let content = await readStdin()
+    content = content.trim()
+    if (content) {
+      // Check if piped content is a file path
+      const fileContent = tryReadFile(content)
+      if (fileContent !== null) {
+        content = fileContent
+      }
       const result = parseBlocks(content, {
         syntax,
         open: openKeyword,

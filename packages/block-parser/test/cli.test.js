@@ -135,4 +135,34 @@ test('cli - --version returns version', () => {
   assert.ok(output.includes('comment-block-parser'))
 })
 
+/* File path tests */
+
+test('cli - file path as positional arg', () => {
+  const result = runCli('--syntax js --open GENERATED --close END-GENERATED test/fixtures/simple.js')
+  assert.is(result.blocks.length, 6)
+  assert.equal(result.blocks[0].options, { a: true })
+})
+
+test('cli - match word + file path', () => {
+  const result = runCli('--syntax js --close END-GENERATED GENERATED test/fixtures/simple.js')
+  assert.is(result.blocks.length, 6)
+})
+
+test('cli - piped file path', () => {
+  const result = runCli('--syntax js --open GENERATED --close END-GENERATED', 'test/fixtures/simple.js')
+  assert.is(result.blocks.length, 6)
+})
+
+test('cli - file path not treated as match word', () => {
+  // File path should be read, not treated as match word
+  const result = runCli('--syntax js --open GENERATED --close END-GENERATED ./test/fixtures/simple.js')
+  assert.is(result.blocks.length, 6)
+})
+
+test('cli - nonexistent file treated as content if looks like content', () => {
+  // This has <!-- so it's treated as content, not a file path
+  const result = runCli('', '<!-- block foo -->\ncontent\n<!-- /block -->')
+  assert.is(result.blocks.length, 1)
+})
+
 test.run()
