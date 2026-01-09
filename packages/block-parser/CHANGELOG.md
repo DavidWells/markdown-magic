@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/DavidWells/markdown-magic/compare/comment-block-parser@1.1.3...comment-block-parser@1.4.0) (2026-01-09)
+
+
+### Features
+
+* **block-parser:** add auto-detect syntax from file extension & parseType flag ([86edb63](https://github.com/DavidWells/markdown-magic/commit/86edb63829533a3a2a22ebb60e612f0c44ee497c))
+* **block-parser:** add firstArgIsType option ([e7067a2](https://github.com/DavidWells/markdown-magic/commit/e7067a28504578ad4b77e7da19cafe107508c85d))
+* **block-parser:** add pattern mode and RegExp support for open/close ([03ec456](https://github.com/DavidWells/markdown-magic/commit/03ec4568c1f88c21e9d8b0814711ba535a6fb7ee))
+* **block-parser:** cli reads file paths ([dcdc1b0](https://github.com/DavidWells/markdown-magic/commit/dcdc1b0a8f18549ffc80fa1876b54cc0659ec06b))
+* **block-parser:** cli supports match-word as first positional arg ([521ddb0](https://github.com/DavidWells/markdown-magic/commit/521ddb0e3df84c2bc45afc357038329a300f5a63))
+
+
+
+
+
 # [1.3.0](https://github.com/DavidWells/markdown-magic/compare/comment-block-parser@1.1.3...comment-block-parser@1.3.0) (2026-01-09)
 
 
