@@ -38,4 +38,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue view ${{ inputs.issue }} --repo ${{ github.repository }} --json body -q '.body' | ./block-parser --match auto | jq '.blocks[0].options'
+          gh issue view ${{ inputs.issue }} --repo ${{ github.repository }} --json body -q '.body' | block-parser --match auto | jq '.blocks[0].options'
