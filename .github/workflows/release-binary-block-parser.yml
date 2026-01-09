@@ -2,9 +2,8 @@
 name: Release Binary (block-parser)
 
 on:
-  push:
-    tags:
-      - 'comment-block-parser@*'
+  release:
+    types: [created]
   workflow_dispatch:
     inputs:
       version:
@@ -14,11 +13,12 @@ on:
 
 jobs:
   release:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'comment-block-parser@')
     uses: ./.github/workflows/build-binary.yml
     with:
       package_path: packages/block-parser
       binary_name: block-parser
       tag_prefix: 'comment-block-parser@'
-      version_tag: ${{ inputs.version || github.ref_name }}
+      version_tag: ${{ inputs.version || github.event.release.tag_name }}
     permissions:
       contents: write
