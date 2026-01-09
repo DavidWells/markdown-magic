@@ -166,4 +166,68 @@ test('cli - nonexistent file treated as content if looks like content', () => {
   assert.is(result.blocks.length, 1)
 })
 
+/* Pattern mode tests (--open without --close) */
+
+test('cli - pattern mode with single component', () => {
+  const content = `/* MyComp foo='bar' */\ncontent here\n/* /MyComp */`
+  const result = runCli('--open MyComp --syntax js', content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'MyComp')
+  assert.equal(result.blocks[0].options, { foo: 'bar' })
+})
+
+test('cli - pattern mode with OR pattern', () => {
+  const content = `/* CompA a=1 */\nA content\n/* /CompA */\n/* CompB b=2 */\nB content\n/* /CompB */`
+  const result = runCli('--open "CompA|CompB" --syntax js', content)
+  assert.is(result.blocks.length, 2)
+  assert.is(result.blocks[0].type, 'CompA')
+  assert.is(result.blocks[1].type, 'CompB')
+})
+
+test('cli - pattern mode close must match open', () => {
+  const content = `/* CompA */\ncontent\n/* /CompB */`
+  const result = runCli('--open "CompA|CompB" --syntax js', content)
+  assert.is(result.blocks.length, 0)
+})
+
+test('cli - pattern mode with markdown syntax', () => {
+  const content = `<!-- Widget name="test" -->\nwidget content\n<!-- /Widget -->`
+  const result = runCli('--open Widget', content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'Widget')
+  assert.equal(result.blocks[0].options, { name: 'test' })
+})
+
+/* Regex literal string tests */
+
+test('cli - regex literal string as open pattern', () => {
+  const content = `/* CompA a=1 */\ncontent A\n/* /CompA */`
+  const result = runCli('--open "/CompA/" --syntax js', content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'CompA')
+})
+
+test('cli - regex literal OR pattern', () => {
+  const content = `/* CompA a=1 */\nA\n/* /CompA */\n/* CompB b=2 */\nB\n/* /CompB */`
+  const result = runCli('--open "/CompA|CompB/" --syntax js', content)
+  assert.is(result.blocks.length, 2)
+  assert.is(result.blocks[0].type, 'CompA')
+  assert.is(result.blocks[1].type, 'CompB')
+})
+
+test('cli - regex literal not treated as file path', () => {
+  const content = `/* Widget foo=bar */\ncontent\n/* /Widget */`
+  const result = runCli('--open "/Widget/" --syntax js', content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'Widget')
+})
+
+test('cli - regex literal as positional arg triggers pattern mode', () => {
+  const content = `<!-- auto foo=bar -->\ncontent\n<!-- /auto -->`
+  const result = runCli("'/auto/'", content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'auto')
+  assert.equal(result.blocks[0].options, { foo: 'bar' })
+})
+
 test.run()

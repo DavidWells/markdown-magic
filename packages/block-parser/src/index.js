@@ -8,6 +8,72 @@ const OPEN_WORD = 'block'
 const CLOSE_WORD = '/block'
 
 const LEADING_INDENT_REGEX = /^[\r\n]*(\s*)/
+const REGEX_PATTERN_CHARS = /[|[\]*+?()\\]/
+const REGEX_LITERAL = /^\/((?:\\\/|[^\/])+)\/([gimsuy]*)$/
+
+/**
+ * Check if value is a RegExp object
+ * @param {any} value
+ * @returns {boolean}
+ */
+function isRegExp(value) {
+  return value instanceof RegExp
+}
+
+/**
+ * Check if string is a regex literal like /pattern/flags
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isRegexLiteral(str) {
+  if (!str || typeof str !== 'string') return false
+  return REGEX_LITERAL.test(str)
+}
+
+/**
+ * Parse a regex literal string into { source, flags }
+ * @param {string} str - Regex literal like '/pattern/gi'
+ * @returns {{ source: string, flags: string } | null}
+ */
+function parseRegexLiteral(str) {
+  if (!str || typeof str !== 'string') return null
+  const match = str.match(REGEX_LITERAL)
+  if (!match) return null
+  return { source: match[1], flags: match[2] || '' }
+}
+
+/**
+ * Get the regex source from a value (RegExp, regex literal string, or plain string)
+ * @param {RegExp|string} value
+ * @returns {{ source: string, flags: string, isRegex: boolean }}
+ */
+function getRegexSource(value) {
+  if (isRegExp(value)) {
+    const re = /** @type {RegExp} */ (value)
+    return {
+      source: re.source,
+      flags: re.flags,
+      isRegex: true
+    }
+  }
+  if (typeof value === 'string') {
+    const parsed = parseRegexLiteral(value)
+    if (parsed) {
+      return { source: parsed.source, flags: parsed.flags, isRegex: true }
+    }
+  }
+  return { source: String(value), flags: '', isRegex: false }
+}
+
+/**
+ * Check if string contains regex pattern characters
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isRegexPattern(str) {
+  if (!str || typeof str !== 'string') return false
+  return REGEX_PATTERN_CHARS.test(str)
+}
 
 const defaultOptions = {
   syntax: SYNTAX,
@@ -97,18 +163,36 @@ const defaultOptions = {
  * @param {string} contents - The content string to parse
  * @param {Object} [opts={}] - Options object
  * @param {string} [opts.syntax=SYNTAX] - Comment syntax to use
- * @param {string} [opts.open=OPEN_WORD] - Open tag word
- * @param {string} [opts.close=CLOSE_WORD] - Close tag word
+ * @param {string|RegExp} [opts.open=OPEN_WORD] - Open tag word, regex pattern string, or RegExp (e.g., 'MyComp|Other', /MyComp/i)
+ * @param {string|RegExp} [opts.close=CLOSE_WORD] - Close tag word, pattern, or RegExp. If omitted and open is regex-like, uses backreference
  * @param {boolean} [opts.firstArgIsType=false] - Treat first arg after open word as transform type
  * @param {CustomPatterns} [opts.customPatterns] - Custom regex patterns for open and close tags
  * @returns {ParseBlocksResult} Result containing parsed blocks and patterns used
  */
 function parseBlocks(contents, opts = {}) {
   const _options = Object.assign({}, defaultOptions, opts)
-  const { syntax, open, close, customPatterns, firstArgIsType } = _options
+  const { syntax, customPatterns, firstArgIsType } = _options
+
+  // Extract regex source from open/close (handles RegExp objects and '/pattern/flags' strings)
+  const openInfo = getRegexSource(opts.open !== undefined ? opts.open : _options.open)
+  const closeInfo = opts.close !== undefined ? getRegexSource(opts.close) : null
+
+  const open = openInfo.source
+  const close = closeInfo ? closeInfo.source : _options.close
+
+  // Detect pattern mode:
+  // 1. If open is RegExp or regex literal string → pattern mode
+  // 2. If open contains regex chars (|, [, *, etc.) → pattern mode
+  // 3. If close not provided AND open differs from default → pattern mode (single word component)
+  const openIsRegex = openInfo.isRegex
+  const openIsPattern = isRegexPattern(open)
+  const closeProvided = opts.close !== undefined
+  const openDiffersFromDefault = open !== OPEN_WORD
+  const usePatternMode = openIsRegex || openIsPattern || (!closeProvided && openDiffersFromDefault)
 
   let patterns = {}
   let hasCustomPatterns = false
+  let useMatchPattern = false
   if (customPatterns && typeof customPatterns === 'object') {
     const { openPattern, closePattern } = customPatterns
     if (openPattern instanceof RegExp && closePattern instanceof RegExp) {
@@ -120,8 +204,23 @@ function parseBlocks(contents, opts = {}) {
       }
       hasCustomPatterns = true
     }
+  } else if (usePatternMode && !closeProvided) {
+    /* Pattern mode with backreference: close derived as /name */
+    patterns = getBlockRegex({
+      syntax,
+      openPattern: open,
+    })
+    useMatchPattern = true
+  } else if (usePatternMode && closeProvided) {
+    /* Both patterns provided - use open pattern and close pattern */
+    patterns = getBlockRegex({
+      syntax,
+      openPattern: open,
+      closePattern: close,
+    })
+    useMatchPattern = true
   } else {
-    /* default patterns */
+    /* Literal word mode */
     patterns = getBlockRegex({
       syntax,
       openText: open,
@@ -167,13 +266,14 @@ function parseBlocks(contents, opts = {}) {
 
   const balanced = (closeCount > openCount) ? true : isBalanced
   if (!balanced) {
+    const expectedClose = useMatchPattern && !closeProvided ? `/${open}` : close
     throw new Error(`[Parsing error]
 
 Comment blocks are unbalanced in string
 
 Details:
   - Found ${openCount} "${open}" open tags.
-  - Found ${closeCount} "${close}" close tags.\n\n`)
+  - Found ${closeCount} "${expectedClose}" close tags.\n\n`)
   }
 
   /* New regex works! */
@@ -238,6 +338,74 @@ Details:
           value: block,
         },
       })
+      continue
+    }
+
+    /* matchPattern mode: groups are (spaces)(openTag)(componentName)(params)(content)(closeTag)(closeName) */
+    if (useMatchPattern) {
+      const [ block, spaces, openTag, componentName, params = '', content, closeTag ] = newMatches
+      const isMultiline = block.indexOf('\n') > -1
+      const indent = spaces || ''
+
+      if (newMatches.index === newerRegex.lastIndex) {
+        newerRegex.lastIndex++
+      }
+
+      const openValue = indent + openTag
+      const openStart = newMatches.index + indent.length
+      const openEnd = openStart + openTag.length
+      const closeEnd = newerRegex.lastIndex
+      const lineOpen = contents.substr(0, openStart).split('\n').length
+      const lineClose = contents.substr(0, closeEnd).split('\n').length
+      const contentStart = openStart + openTag.length
+      const contentEnd = contentStart + content.length
+
+      let context = { isMultiline }
+      const paramString = params.trim()
+      const parsedOptions = paramString ? parse(paramString) : {}
+
+      const rawContent = getTextBetweenChars(contents, contentStart, contentEnd)
+      const dedentResult = dedentString(rawContent, { preserveEmptyLines: false })
+      const blockDedentResult = dedentString(block, { preserveEmptyLines: false })
+
+      const blockData = {
+        type: componentName,
+        index: blockIndex,
+        lines: [lineOpen, lineClose],
+        position: [openStart, closeEnd],
+        options: parsedOptions,
+        optionsStr: paramString,
+        context,
+        open: {
+          start: openStart,
+          end: openEnd,
+          match: openValue,
+          value: openTag,
+          indent: (!context.isMultiline) ? 0 : findLeadingIndent(openValue),
+        },
+        content: {
+          start: contentStart,
+          end: contentEnd,
+          indent: dedentResult.minIndent,
+          match: content,
+          value: dedentResult.text,
+        },
+        close: {
+          start: contentEnd,
+          end: closeEnd,
+          match: closeTag,
+          value: closeTag,
+          indent: (!context.isMultiline) ? 0 : findLeadingIndent(closeTag),
+        },
+        block: {
+          start: openStart,
+          end: closeEnd,
+          indent: blockDedentResult.minIndent,
+          match: block,
+          value: blockDedentResult.text,
+        },
+      }
+      newBlocks.push(blockData)
       continue
     }
 
@@ -424,30 +592,34 @@ function legacyParseOptions(options) {
 
 /**
  * Block matching patterns
- * @typedef {{blockPattern: RegExp, openPattern: RegExp, closePattern: RegExp}} RegexPatterns
+ * @typedef {{blockPattern: RegExp, openPattern: RegExp, closePattern: RegExp, isPatternMode?: boolean}} RegexPatterns
  */
 
 /**
  * Get Regex pattern to match block
  * @param {object} options
- * @param {string} [options.syntax] - comment open text
- * @param {string} [options.openText] - comment open text
- * @param {string} [options.openEmoji] - emoji
- * @param {string} [options.closeText] - comment close text
+ * @param {string} [options.syntax] - comment syntax type
+ * @param {string} [options.openText] - literal open word
+ * @param {string} [options.closeText] - literal close word
+ * @param {string} [options.openPattern] - regex pattern for open (e.g., 'MyComp|Other')
+ * @param {string} [options.closePattern] - regex pattern for close. If omitted with openPattern, uses backreference
+ * @param {string} [options.openEmoji] - emoji marker
  * @param {boolean} [options.allowMissingTransforms] - Allow for missing transform key
  * @returns {RegexPatterns}
  */
 function getBlockRegex({
   openEmoji,
   syntax = SYNTAX,
-  openText = '', 
+  openText = '',
   closeText = '',
+  openPattern: openPat,
+  closePattern: closePat,
   allowMissingTransforms = false
 }) {
-  if (!openText) {
-    throw new Error('Missing options.open')
+  if (!openPat && !openText) {
+    throw new Error('Missing options.open or options.openPattern')
   }
-  if (!closeText) {
+  if (!openPat && !closeText) {
     throw new Error('Missing options.close')
   }
   if (!syntax) {
@@ -460,6 +632,40 @@ function getBlockRegex({
   }
 
   const [ openComment, closeComment ] = syntaxInfo.pattern
+
+  /* Pattern mode - openPattern provided */
+  if (openPat) {
+    const emojiPat = (openEmoji) ? `(?:\\s*${openEmoji})?` : '(?:\\s*⛔️)?'
+
+    if (closePat) {
+      /* Both patterns provided - use them directly */
+      const open = `(${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)(${openPat})\\s*((?:.|\\r?\\n)*?)${closeComment}\\n?)`
+      const close = `(\\n?[ \\t]*${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)(${closePat})(?:.|\\r?\\n)*?${closeComment})`
+      const blockPattern = new RegExp(`([ \\t]*)${open}([\\s\\S]*?)${close}`, 'gmi')
+      return {
+        blockPattern,
+        openPattern: new RegExp(open, 'gi'),
+        closePattern: new RegExp(close, 'gi'),
+        isPatternMode: true,
+      }
+    }
+
+    /* Backreference mode - close derived as /name */
+    // Capture component name, then params
+    // Group structure: (spaces)(openTag with (componentName)(params))(content)(closeTag)
+    const open = `(${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)(${openPat})\\s*((?:.|\\r?\\n)*?)${closeComment}\\n?)`
+    // Close uses backreference \3 to match captured component name (prefixed with /)
+    const close = `(\\n?[ \\t]*${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)/(\\3)(?:.|\\r?\\n)*?${closeComment})`
+    // Full pattern: (1:spaces)(2:openTag(3:name)(4:params))(5:content)(6:closeTag(7:nameRef))
+    const blockPattern = new RegExp(`([ \\t]*)${open}([\\s\\S]*?)${close}`, 'gmi')
+    return {
+      blockPattern,
+      openPattern: new RegExp(open, 'gi'),
+      closePattern: new RegExp(`(\\n?[ \\t]*${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)/(${openPat})(?:.|\\r?\\n)*?${closeComment})`, 'gi'),
+      isPatternMode: true,
+    }
+  }
+
   // https://regex101.com/r/SU2g1Q/1
   // https://regex101.com/r/SU2g1Q/2
   // https://regex101.com/r/SU2g1Q/3

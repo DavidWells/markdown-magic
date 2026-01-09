@@ -13,24 +13,35 @@ npm install comment-block-parser
 Parse comment blocks from the command line.
 
 ```bash
-# Parse from argument
-comment-block-parser --match auto '# Title\n<!-- auto TOC -->content<!-- /auto -->'
+# Parse file (syntax auto-detected from extension)
+comment-block-parser ./file.md
+comment-block-parser ./src/index.js
+
+# Parse with custom open/close words
+comment-block-parser auto ./file.md                    # open=auto, close=/auto
+comment-block-parser --open docs --close /docs ./file.md
+
+# Pattern mode (--open without --close)
+comment-block-parser --open MyComponent --syntax js ./file.js
+comment-block-parser --open "CompA|CompB" --syntax js ./file.js
 
 # Parse from stdin
-cat file.md | comment-block-parser --match auto
+cat file.md | comment-block-parser
+echo "<!-- block foo -->content<!-- /block -->" | comment-block-parser
 
 # Extract specific data with jq
-cat file.md | comment-block-parser --find auto | jq '.blocks[0].options'
+cat file.md | comment-block-parser | jq '.blocks[0].options'
 ```
 
 ### CLI Options
 
 ```
---open, --match, --find    Opening comment keyword (default: doc-gen)
---close                    Closing comment keyword (auto-derived from open)
---syntax                   Comment syntax: md, js, html, etc (default: md)
---help, -h                 Show help
---version, -v              Show version
+--open             Opening pattern (literal word or regex pattern, default: block)
+--close            Closing pattern (if omitted with regex open, uses /name backreference)
+--syntax           Comment syntax: md, js, jsx, yaml, sql, toml (auto-detected from file)
+--parseType        Treat first arg after open keyword as transform type
+--help, -h         Show help
+--version, -v      Show version
 ```
 
 ## Example
@@ -117,9 +128,10 @@ Parse comment blocks from content string.
 **Parameters:**
 - `content` (string) - The content to parse
 - `options` (object) - Parser options
-  - `open` (string) - Opening delimiter (default: 'doc-gen')
-  - `close` (string) - Closing delimiter (default: 'end-doc-gen')
+  - `open` (string) - Opening word or regex pattern (default: 'block')
+  - `close` (string) - Closing word or pattern. If omitted and `open` is regex-like or differs from default, uses pattern mode with backreference
   - `syntax` (string) - File syntax type (default: 'md')
+  - `firstArgIsType` (boolean) - Treat first arg after open word as transform type (default: false)
 
 **Returns:** Object with parsed blocks and regex patterns
 
@@ -135,6 +147,132 @@ Get regex patterns for matching blocks.
   - `allowMissingTransforms` (boolean) - Allow missing transform keys
 
 **Returns:** Object with `blockPattern`, `openPattern`, and `closePattern` regex objects
+
+## Pattern Mode
+
+Pattern mode allows matching component-style blocks where the open tag name is dynamic and the close tag must match via backreference.
+
+**When pattern mode activates:**
+1. `open` contains regex chars (`|`, `[`, `*`, `+`, etc.)
+2. `close` not provided AND `open` differs from default 'block'
+
+### Single Component
+
+```js
+const content = `/* MyComponent name="test" */
+widget content here
+/* /MyComponent */`
+
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: 'MyComponent',  // no close = pattern mode
+})
+
+// result.blocks[0].type === 'MyComponent'
+// result.blocks[0].options === { name: 'test' }
+```
+
+### Multiple Components (OR pattern)
+
+```js
+const content = `/* Header title="Hello" */
+header content
+/* /Header */
+
+/* Footer year="2024" */
+footer content
+/* /Footer */`
+
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: 'Header|Footer',  // matches either
+})
+
+// result.blocks[0].type === 'Header'
+// result.blocks[1].type === 'Footer'
+```
+
+### Wildcard Patterns
+
+```js
+const content = `/* Gen_Users enabled -->
+user list
+/* /Gen_Users */
+
+/* Gen_Products disabled */
+product list
+/* /Gen_Products */`
+
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: 'Gen_[A-Za-z]+',
+})
+
+// Matches Gen_Users, Gen_Products, Gen_Anything, etc.
+```
+
+### Backreference Enforcement
+
+Close tags must match the open tag exactly:
+
+```js
+/* ComponentA */
+content
+/* /ComponentB */  // DOES NOT MATCH - close doesn't match open
+```
+
+### Explicit Open and Close Patterns
+
+When both `open` and `close` are provided as patterns:
+
+```js
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: 'START_[A-Z]',
+  close: 'END_[A-Z]',
+})
+// Matches START_A...END_A, START_B...END_B, etc.
+```
+
+### RegExp Objects and Regex Literals
+
+The `open` option accepts RegExp objects directly or regex literal strings (`/pattern/flags`):
+
+```js
+// RegExp object
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: /CompA|CompB/,
+})
+
+// Regex literal string
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: '/CompA|CompB/',
+})
+
+// With flags (parsed but flags not applied to block matching)
+const result = parseBlocks(content, {
+  syntax: 'js',
+  open: '/Widget/i',
+})
+```
+
+### CLI Pattern Mode
+
+```bash
+# Single component
+comment-block-parser --open MyComponent --syntax js ./file.js
+
+# OR pattern
+comment-block-parser --open "CompA|CompB" --syntax js ./file.js
+
+# Wildcard
+comment-block-parser --open "Gen_[A-Za-z]+" --syntax js ./file.js
+
+# Regex literal string
+comment-block-parser --open "/CompA|CompB/" --syntax js ./file.js
+```
 
 ## Supported Syntaxes
 

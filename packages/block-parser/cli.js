@@ -8,6 +8,7 @@ const { parseBlocks } = require('./src/index')
 const argv = process.argv.slice(2)
 const options = mri(argv, {
   boolean: ['parseType', 'help', 'h', 'version', 'v'],
+  string: ['open', 'close', 'syntax'],
   alias: {
     parseType: ['parsetype', 'parse-type'],
   },
@@ -35,6 +36,21 @@ function readStdin() {
 function interpretEscapes(str) {
   if (!str) return str
   return str.replace(/\\n/g, '\n').replace(/\\t/g, '\t')
+}
+
+/**
+ * Regex literal pattern like /pattern/flags
+ */
+const REGEX_LITERAL = /^\/((?:\\\/|[^\/])+)\/([gimsuy]*)$/
+
+/**
+ * Check if string is a regex literal like /pattern/flags
+ * @param {string} str
+ * @returns {boolean}
+ */
+function isRegexLiteral(str) {
+  if (!str || typeof str !== 'string') return false
+  return REGEX_LITERAL.test(str)
 }
 
 /**
@@ -70,6 +86,7 @@ function isContent(str) {
 function looksLikeFilePath(str) {
   if (!str) return false
   if (isContent(str)) return false
+  if (isRegexLiteral(str)) return false
   // Has file extension or starts with ./ or / or contains path separators
   return /\.\w+$/.test(str) || str.startsWith('./') || str.startsWith('/') || str.includes(path.sep)
 }
@@ -142,24 +159,29 @@ function detectSyntax(filePath) {
 async function run() {
   if (options.help || options.h) {
     console.log(`
-Usage: block-parser [options] [content]
-       block-parser <match-word> [content]
+Usage: comment-block-parser [options] [content]
+       comment-block-parser <match-word> [content]
 
 Options:
-  --open             Opening comment keyword (default: block)
-  --close            Closing comment keyword (default: /block)
+  --open             Opening pattern (literal word or regex pattern)
+  --close            Closing pattern (if omitted with regex open, uses /name backreference)
   --syntax           Comment syntax: md, js, jsx, yaml, sql, toml (auto-detected from file extension)
   --parseType        Treat first arg after open keyword as transform type (default: false)
   --help, -h         Show this help message
   --version, -v      Show version
 
 Examples:
-  block-parser ./file.md                    # auto-detects md syntax
-  block-parser ./src/index.js               # auto-detects js syntax
-  block-parser auto ./file.md
-  block-parser "<!-- block enabled -->\\ncontent\\n<!-- /block -->"
-  echo "<!-- block enabled --><!-- /block -->" | block-parser
-  echo "./file.md" | block-parser auto
+  comment-block-parser ./file.md                    # default: open=block, close=/block
+  comment-block-parser ./src/index.js               # auto-detects js syntax
+  comment-block-parser auto ./file.md               # open=auto, close=/auto
+  echo "<!-- block enabled --><!-- /block -->" | comment-block-parser
+
+Pattern mode (--open without --close):
+  comment-block-parser --open MyComp --syntax js ./file.js
+  # Matches: /* MyComp opts */ content /* /MyComp */
+
+  comment-block-parser --open "CompA|CompB" --syntax js ./file.js
+  # Matches both /* CompA */ ... /* /CompA */ and /* CompB */ ... /* /CompB */
 `)
     return
   }
@@ -175,13 +197,18 @@ Examples:
   const secondArg = positionalArgs[1]
 
   // Determine match word and content from args
-  let matchWord = options.open || options.match || options.find
+  let matchWord = null  // Only from positional arg, not --open flag
+  let regexLiteralArg = null  // Regex literal like /pattern/ triggers pattern mode
   let contentArg = null
   let contentSource = null
   let filePath = null
 
-  // If first positional arg is single word, treat as match word
-  if (firstArg && isSingleWord(firstArg)) {
+  // If first positional arg is regex literal, use pattern mode
+  // If first positional arg is single word, treat as match word (literal mode)
+  if (firstArg && isRegexLiteral(firstArg)) {
+    regexLiteralArg = firstArg
+    contentArg = secondArg
+  } else if (firstArg && isSingleWord(firstArg)) {
     matchWord = firstArg
     contentArg = secondArg
   } else if (firstArg) {
@@ -192,8 +219,12 @@ Examples:
     contentArg = options.open
   }
 
-  const openKeyword = matchWord || 'block'
-  const closeKeyword = options.close || (matchWord ? `/${matchWord}` : '/block')
+  const openKeyword = regexLiteralArg || matchWord || options.open || 'block'
+  // Positional match word uses literal mode with derived close
+  // Regex literal or --open without --close triggers pattern mode
+  const closeKeyword = matchWord
+    ? (options.close || `/${matchWord}`)  // positional match word: literal mode
+    : options.close  // regex literal or --open flag: undefined triggers pattern mode
 
   // Try to read content from file if it looks like a path
   if (contentArg) {
@@ -210,14 +241,15 @@ Examples:
   const syntax = options.syntax || detectSyntax(filePath || '') || 'md'
   const firstArgIsType = Boolean(options.parseType)
 
+  // Build parser options - if close is undefined, parseBlocks auto-detects pattern mode
+  const parserOpts = { syntax, open: openKeyword, firstArgIsType }
+  if (closeKeyword !== undefined) {
+    parserOpts.close = closeKeyword
+  }
+
   // Process content from arg or file
   if (contentSource) {
-    const result = parseBlocks(contentSource, {
-      syntax,
-      open: openKeyword,
-      close: closeKeyword,
-      firstArgIsType,
-    })
+    const result = parseBlocks(contentSource, parserOpts)
     console.log(JSON.stringify(result, jsonReplacer, 2))
     return
   }
@@ -236,12 +268,11 @@ Examples:
       }
       // Auto-detect syntax from piped file path if not already set
       const stdinSyntax = options.syntax || detectSyntax(stdinFilePath || '') || 'md'
-      const result = parseBlocks(content, {
-        syntax: stdinSyntax,
-        open: openKeyword,
-        close: closeKeyword,
-        firstArgIsType,
-      })
+      const stdinParserOpts = { syntax: stdinSyntax, open: openKeyword, firstArgIsType }
+      if (closeKeyword !== undefined) {
+        stdinParserOpts.close = closeKeyword
+      }
+      const result = parseBlocks(content, stdinParserOpts)
       console.log(JSON.stringify(result, jsonReplacer, 2))
       return
     }
