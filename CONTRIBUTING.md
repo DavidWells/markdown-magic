@@ -77,8 +77,17 @@ lerna publish
 This will:
 1. Bump versions for changed packages
 2. Publish to npm
-3. Create git tags (e.g., `markdown-magic@4.0.5`)
+3. Create git tags and GitHub releases (e.g., `markdown-magic@4.0.5`)
 4. Automatically trigger binary builds via GitHub Actions
+
+### Binary release workflows
+
+Two workflows build platform binaries when releases are created:
+
+- `release-binary-md-magic.yml` - triggers on `markdown-magic@*` releases
+- `release-binary-block-parser.yml` - triggers on `comment-block-parser@*` releases
+
+These use the `release: created` event (not `push: tags`) because lerna's `GITHUB_TOKEN` can't trigger workflows on tag push (GitHub prevents this to avoid infinite loops).
 
 ### Manual binary release
 
