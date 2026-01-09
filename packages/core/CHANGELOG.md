@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.4.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.2.0...markdown-magic@4.4.0) (2026-01-09)
+
+
+### Features
+
+* **block-parser:** add firstArgIsType option ([e7067a2](https://github.com/DavidWells/markdown-magic/commit/e7067a28504578ad4b77e7da19cafe107508c85d))
+
+
+
+
+
 # [4.3.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.2.0...markdown-magic@4.3.0) (2026-01-09)
 
 
