@@ -230,4 +230,38 @@ test('cli - regex literal as positional arg triggers pattern mode', () => {
   assert.equal(result.blocks[0].options, { foo: 'bar' })
 })
 
+/* Single comment mode tests (--no-close) */
+
+test('cli - --no-close matches single comments', () => {
+  const content = `<!-- config debug=true -->\nsome content\n<!-- other stuff -->`
+  const result = runCli('--no-close --open config', content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'config')
+  assert.equal(result.blocks[0].options, { debug: true })
+})
+
+test('cli - --no-close with match word', () => {
+  const content = `<!-- widget id="one" -->\nstuff\n<!-- widget id="two" -->`
+  const result = runCli('--no-close widget', content)
+  assert.is(result.blocks.length, 2)
+  assert.equal(result.blocks[0].options, { id: 'one' })
+  assert.equal(result.blocks[1].options, { id: 'two' })
+})
+
+test('cli - --no-close with pattern', () => {
+  const content = `<!-- header title="Hi" -->\n<!-- footer year="2024" -->`
+  const result = runCli('--no-close --open "header|footer"', content)
+  assert.is(result.blocks.length, 2)
+  assert.is(result.blocks[0].type, 'header')
+  assert.is(result.blocks[1].type, 'footer')
+})
+
+test('cli - --close false works same as --no-close', () => {
+  const content = `<!-- config debug=true -->\nsome content`
+  const result = runCli('--close false --open config', content)
+  assert.is(result.blocks.length, 1)
+  assert.is(result.blocks[0].type, 'config')
+  assert.equal(result.blocks[0].options, { debug: true })
+})
+
 test.run()

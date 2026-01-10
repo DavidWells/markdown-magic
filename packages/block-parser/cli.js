@@ -8,7 +8,7 @@ const { parseBlocks } = require('./src/index')
 const argv = process.argv.slice(2)
 const options = mri(argv, {
   boolean: ['parseType', 'help', 'h', 'version', 'v'],
-  string: ['open', 'close', 'syntax'],
+  string: ['open', 'syntax'],
   alias: {
     parseType: ['parsetype', 'parse-type'],
   },
@@ -165,6 +165,7 @@ Usage: comment-block-parser [options] [content]
 Options:
   --open             Opening pattern (literal word or regex pattern)
   --close            Closing pattern (if omitted with regex open, uses /name backreference)
+  --no-close         Match single comments only (no close tag required)
   --syntax           Comment syntax: md, js, jsx, yaml, sql, toml (auto-detected from file extension)
   --parseType        Treat first arg after open keyword as transform type (default: false)
   --help, -h         Show this help message
@@ -175,6 +176,13 @@ Examples:
   comment-block-parser ./src/index.js               # auto-detects js syntax
   comment-block-parser auto ./file.md               # open=auto, close=/auto
   echo "<!-- block enabled --><!-- /block -->" | comment-block-parser
+
+Single comment mode (--no-close):
+  comment-block-parser --no-close --open config ./file.md
+  # Matches: <!-- config debug=true --> (no close tag needed)
+
+  comment-block-parser --no-close widget ./file.md
+  # Matches all <!-- widget ... --> comments
 
 Pattern mode (--open without --close):
   comment-block-parser --open MyComp --syntax js ./file.js
@@ -220,11 +228,16 @@ Pattern mode (--open without --close):
   }
 
   const openKeyword = regexLiteralArg || matchWord || options.open || 'block'
+  // mri parses --no-close as close: false, also support --close false (string)
+  const noClose = options.close === false || options.close === 'false'
   // Positional match word uses literal mode with derived close
   // Regex literal or --open without --close triggers pattern mode
-  const closeKeyword = matchWord
-    ? (options.close || `/${matchWord}`)  // positional match word: literal mode
-    : options.close  // regex literal or --open flag: undefined triggers pattern mode
+  // --no-close triggers single comment mode
+  const closeKeyword = noClose
+    ? false  // single comment mode
+    : matchWord
+      ? (options.close || `/${matchWord}`)  // positional match word: literal mode
+      : options.close  // regex literal or --open flag: undefined triggers pattern mode
 
   // Try to read content from file if it looks like a path
   if (contentArg) {
@@ -242,6 +255,7 @@ Pattern mode (--open without --close):
   const firstArgIsType = Boolean(options.parseType)
 
   // Build parser options - if close is undefined, parseBlocks auto-detects pattern mode
+  // If close is false, single comment mode is triggered
   const parserOpts = { syntax, open: openKeyword, firstArgIsType }
   if (closeKeyword !== undefined) {
     parserOpts.close = closeKeyword

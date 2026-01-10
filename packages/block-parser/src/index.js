@@ -124,6 +124,7 @@ const defaultOptions = {
  * @typedef {Object} Context
  * @property {boolean} isMultiline - Whether the block spans multiple lines
  * @property {boolean} [isLegacy] - Whether using legacy syntax
+ * @property {boolean} [isSingleComment] - Whether this is a single comment (no close tag)
  */
 
 /**
@@ -164,7 +165,7 @@ const defaultOptions = {
  * @param {Object} [opts={}] - Options object
  * @param {string} [opts.syntax=SYNTAX] - Comment syntax to use
  * @param {string|RegExp} [opts.open=OPEN_WORD] - Open tag word, regex pattern string, or RegExp (e.g., 'MyComp|Other', /MyComp/i)
- * @param {string|RegExp} [opts.close=CLOSE_WORD] - Close tag word, pattern, or RegExp. If omitted and open is regex-like, uses backreference
+ * @param {string|RegExp|false} [opts.close=CLOSE_WORD] - Close tag word, pattern, or RegExp. If omitted and open is regex-like, uses backreference. Set to false for single comment mode
  * @param {boolean} [opts.firstArgIsType=false] - Treat first arg after open word as transform type
  * @param {CustomPatterns} [opts.customPatterns] - Custom regex patterns for open and close tags
  * @returns {ParseBlocksResult} Result containing parsed blocks and patterns used
@@ -175,10 +176,16 @@ function parseBlocks(contents, opts = {}) {
 
   // Extract regex source from open/close (handles RegExp objects and '/pattern/flags' strings)
   const openInfo = getRegexSource(opts.open !== undefined ? opts.open : _options.open)
-  const closeInfo = opts.close !== undefined ? getRegexSource(opts.close) : null
+  const closeIsFalse = opts.close === false
+  const closeInfo = (!closeIsFalse && opts.close !== undefined)
+    ? getRegexSource(/** @type {string|RegExp} */ (opts.close))
+    : null
 
   const open = openInfo.source
   const close = closeInfo ? closeInfo.source : _options.close
+
+  // Single comment mode: close === false means no close tag
+  const singleCommentMode = closeIsFalse
 
   // Detect pattern mode:
   // 1. If open is RegExp or regex literal string → pattern mode
@@ -186,14 +193,22 @@ function parseBlocks(contents, opts = {}) {
   // 3. If close not provided AND open differs from default → pattern mode (single word component)
   const openIsRegex = openInfo.isRegex
   const openIsPattern = isRegexPattern(open)
-  const closeProvided = opts.close !== undefined
+  const closeProvided = opts.close !== undefined && !closeIsFalse
   const openDiffersFromDefault = open !== OPEN_WORD
-  const usePatternMode = openIsRegex || openIsPattern || (!closeProvided && openDiffersFromDefault)
+  const usePatternMode = !singleCommentMode && (openIsRegex || openIsPattern || (!closeProvided && openDiffersFromDefault))
 
   let patterns = {}
   let hasCustomPatterns = false
   let useMatchPattern = false
-  if (customPatterns && typeof customPatterns === 'object') {
+  if (singleCommentMode) {
+    /* Single comment mode - only match open tag, no close */
+    patterns = getBlockRegex({
+      syntax,
+      openPattern: openIsRegex || openIsPattern ? open : undefined,
+      openText: openIsRegex || openIsPattern ? undefined : open,
+      singleComment: true,
+    })
+  } else if (customPatterns && typeof customPatterns === 'object') {
     const { openPattern, closePattern } = customPatterns
     if (openPattern instanceof RegExp && closePattern instanceof RegExp) {
       // Ensure global flag is present
@@ -254,26 +269,28 @@ function parseBlocks(contents, opts = {}) {
   // console.log('closeTagRegex', closeTagRegex)
   // console.log('patterns.closePattern',  patterns.closePattern)
 
-  /* Verify comment blocks aren't broken (redos) */
-  const { isBalanced, openCount, closeCount } = verifyTagsBalanced(
-    contents, 
-    patterns.openPattern, 
-    patterns.closePattern
-  )
-  /*
-  console.log('isBalanced', isBalanced)
-  /** */
+  /* Verify comment blocks aren't broken (redos) - skip for single comment mode */
+  if (!singleCommentMode) {
+    const { isBalanced, openCount, closeCount } = verifyTagsBalanced(
+      contents,
+      patterns.openPattern,
+      patterns.closePattern
+    )
+    /*
+    console.log('isBalanced', isBalanced)
+    /** */
 
-  const balanced = (closeCount > openCount) ? true : isBalanced
-  if (!balanced) {
-    const expectedClose = useMatchPattern && !closeProvided ? `/${open}` : close
-    throw new Error(`[Parsing error]
+    const balanced = (closeCount > openCount) ? true : isBalanced
+    if (!balanced) {
+      const expectedClose = useMatchPattern && !closeProvided ? `/${open}` : close
+      throw new Error(`[Parsing error]
 
 Comment blocks are unbalanced in string
 
 Details:
   - Found ${openCount} "${open}" open tags.
   - Found ${closeCount} "${expectedClose}" close tags.\n\n`)
+    }
   }
 
   /* New regex works! */
@@ -338,6 +355,73 @@ Details:
           value: block,
         },
       })
+      continue
+    }
+
+    /* Single comment mode: groups are (spaces)(fullComment)(type?)(params) */
+    if (singleCommentMode) {
+      // For pattern mode: (spaces)(fullComment)(type)(params)
+      // For literal mode: (spaces)(fullComment)(params) - type is the open word
+      const isPatternMatch = openIsRegex || openIsPattern
+      let spaces, fullComment, matchedType, params
+
+      if (isPatternMatch) {
+        [ , spaces, fullComment, matchedType, params = '' ] = newMatches
+      } else {
+        [ , spaces, fullComment, params = '' ] = newMatches
+        matchedType = open // For literal mode, type is the open word
+      }
+
+      const indent = spaces || ''
+      const openStart = newMatches.index + indent.length
+      const openEnd = openStart + fullComment.length
+      const lineNum = contents.substr(0, openStart).split('\n').length
+
+      if (newMatches.index === newerRegex.lastIndex) {
+        newerRegex.lastIndex++
+      }
+
+      const paramString = params.trim()
+      const parsedOptions = paramString ? parse(paramString) : {}
+
+      const blockData = {
+        type: matchedType,
+        index: blockIndex,
+        lines: [lineNum, lineNum],
+        position: [openStart, openEnd],
+        options: parsedOptions,
+        optionsStr: paramString,
+        context: { isMultiline: false, isSingleComment: true },
+        open: {
+          start: openStart,
+          end: openEnd,
+          match: fullComment,
+          value: fullComment,
+          indent: findLeadingIndent(indent + fullComment),
+        },
+        content: {
+          start: openEnd,
+          end: openEnd,
+          indent: 0,
+          match: '',
+          value: '',
+        },
+        close: {
+          start: openEnd,
+          end: openEnd,
+          match: '',
+          value: '',
+          indent: 0,
+        },
+        block: {
+          start: openStart,
+          end: openEnd,
+          indent: findLeadingIndent(indent + fullComment),
+          match: fullComment,
+          value: fullComment,
+        },
+      }
+      newBlocks.push(blockData)
       continue
     }
 
@@ -592,7 +676,7 @@ function legacyParseOptions(options) {
 
 /**
  * Block matching patterns
- * @typedef {{blockPattern: RegExp, openPattern: RegExp, closePattern: RegExp, isPatternMode?: boolean}} RegexPatterns
+ * @typedef {{blockPattern: RegExp, openPattern: RegExp, closePattern: RegExp, isPatternMode?: boolean, isSingleComment?: boolean}} RegexPatterns
  */
 
 /**
@@ -605,6 +689,7 @@ function legacyParseOptions(options) {
  * @param {string} [options.closePattern] - regex pattern for close. If omitted with openPattern, uses backreference
  * @param {string} [options.openEmoji] - emoji marker
  * @param {boolean} [options.allowMissingTransforms] - Allow for missing transform key
+ * @param {boolean} [options.singleComment] - Match single comments only (no close tag)
  * @returns {RegexPatterns}
  */
 function getBlockRegex({
@@ -614,12 +699,13 @@ function getBlockRegex({
   closeText = '',
   openPattern: openPat,
   closePattern: closePat,
-  allowMissingTransforms = false
+  allowMissingTransforms = false,
+  singleComment = false
 }) {
   if (!openPat && !openText) {
     throw new Error('Missing options.open or options.openPattern')
   }
-  if (!openPat && !closeText) {
+  if (!singleComment && !openPat && !closeText) {
     throw new Error('Missing options.close')
   }
   if (!syntax) {
@@ -632,6 +718,30 @@ function getBlockRegex({
   }
 
   const [ openComment, closeComment ] = syntaxInfo.pattern
+
+  /* Single comment mode - match individual comments without close tag */
+  if (singleComment) {
+    const emojiPat = (openEmoji) ? `(?:\\s*${openEmoji})?` : '(?:\\s*⛔️)?'
+    const matchText = openPat || openText
+    const isPattern = Boolean(openPat) || isRegexPattern(matchText)
+
+    // Build the open pattern - captures: (1:spaces)(2:fullComment(3:type)(4:params))
+    const open = isPattern
+      ? `(${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)(${matchText})\\s*((?:.|\\r?\\n)*?)${closeComment})`
+      : `(${openComment}${emojiPat}(?:\\r?|\\n?|\\s*)\\b${matchText}\\b\\s*((?:.|\\r?\\n)*?)${closeComment})`
+
+    const blockPattern = new RegExp(`([ \\t]*)${open}`, 'gmi')
+    const openPattern = new RegExp(open, 'gi')
+    // No close pattern for single comments
+    const closePattern = new RegExp('$^', 'g') // Never matches
+
+    return {
+      blockPattern,
+      openPattern,
+      closePattern,
+      isSingleComment: true,
+    }
+  }
 
   /* Pattern mode - openPattern provided */
   if (openPat) {

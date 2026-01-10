@@ -38,6 +38,7 @@ cat file.md | comment-block-parser | jq '.blocks[0].options'
 ```
 --open             Opening pattern (literal word or regex pattern, default: block)
 --close            Closing pattern (if omitted with regex open, uses /name backreference)
+--no-close         Match single comments only (no close tag required)
 --syntax           Comment syntax: md, js, jsx, yaml, sql, toml (auto-detected from file)
 --parseType        Treat first arg after open keyword as transform type
 --help, -h         Show help
@@ -272,6 +273,52 @@ comment-block-parser --open "Gen_[A-Za-z]+" --syntax js ./file.js
 
 # Regex literal string
 comment-block-parser --open "/CompA|CompB/" --syntax js ./file.js
+```
+
+## Single Comment Mode
+
+Single comment mode matches individual comments without requiring a close tag. Use `close: false` to enable this mode.
+
+```js
+const content = `
+<!-- config debug=true -->
+some content here
+<!-- config env="prod" -->
+more content
+`
+
+const result = parseBlocks(content, {
+  syntax: 'md',
+  open: 'config',
+  close: false  // single comment mode
+})
+
+// result.blocks.length === 2
+// result.blocks[0].options === { debug: true }
+// result.blocks[1].options === { env: 'prod' }
+```
+
+### With Pattern Matching
+
+```js
+const result = parseBlocks(content, {
+  syntax: 'md',
+  open: 'header|footer',  // match multiple comment types
+  close: false
+})
+```
+
+### CLI Single Comment Mode
+
+```bash
+# Match single comments with --no-close
+comment-block-parser --no-close --open config ./file.md
+
+# With match word
+comment-block-parser --no-close widget ./file.md
+
+# With pattern
+comment-block-parser --no-close --open "header|footer" ./file.md
 ```
 
 ## Supported Syntaxes
