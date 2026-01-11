@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.5.0...comment-block-transformer@0.5.1) (2026-01-11)
+
+**Note:** Version bump only for package comment-block-transformer
+
+
+
+
+
 # [0.5.0](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.2.4...comment-block-transformer@0.5.0) (2026-01-09)
 
 

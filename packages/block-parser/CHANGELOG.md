@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/DavidWells/markdown-magic/compare/comment-block-parser@1.4.0...comment-block-parser@1.5.0) (2026-01-11)
+
+
+### Features
+
+* **block-parser:** add single comment mode with close: false ([2f84fff](https://github.com/DavidWells/markdown-magic/commit/2f84fffe4892e35dd5fabdcc016c2661b858dc17))
+
+
+
+
+
 # [1.4.0](https://github.com/DavidWells/markdown-magic/compare/comment-block-parser@1.1.3...comment-block-parser@1.4.0) (2026-01-09)
 
 
