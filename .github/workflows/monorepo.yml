@@ -1,13 +1,13 @@
 name: Monorepo CI
 
 on:
-  # Trigger on PRs to master
-  pull_request:
-    branches: [master, main]
-
-  # Trigger on pushes to master
-  push:
-    branches: [master, main]
+  workflow_dispatch: # Manual trigger only - auto triggers disabled
+  # # Trigger on PRs to master
+  # pull_request:
+  #   branches: [master, main]
+  # # Trigger on pushes to master
+  # push:
+  #   branches: [master, main]
 
 jobs:
   detect-changes:
