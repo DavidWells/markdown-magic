@@ -11,7 +11,7 @@ const options = mri(argv, {
   string: ['open', 'syntax'],
   alias: {
     parseType: ['parsetype', 'parse-type'],
-  },
+  }
 })
 
 /**
