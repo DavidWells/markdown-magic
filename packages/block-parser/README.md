@@ -310,6 +310,14 @@ const result = parseBlocks(content, {
 
 ### CLI Single Comment Mode
 
+This matches single comments without a closing comment.
+
+E.g.
+
+```html
+<!-- config foo="bar" optionTwo=22 -->
+```
+
 ```bash
 # Match single comments with --no-close
 comment-block-parser --no-close --open config ./file.md
