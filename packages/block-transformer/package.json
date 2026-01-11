@@ -1,6 +1,6 @@
 {
   "name": "comment-block-transformer",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Transform markdown blocks based on configured transforms",
   "main": "src/index.js",
   "types": "types/index.d.ts",
