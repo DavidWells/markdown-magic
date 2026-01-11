@@ -1,0 +1,39 @@
+# Trigger binary builds after lerna publish
+name: Post Publish
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  trigger-binaries:
+    if: startsWith(github.event.head_commit.message, 'chore(release): publish')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get new tags
+        id: tags
+        run: |
+          BLOCK_PARSER=$(git tag --points-at HEAD | grep '^comment-block-parser@' || echo '')
+          MD_MAGIC=$(git tag --points-at HEAD | grep '^markdown-magic@' || echo '')
+          echo "block_parser=$BLOCK_PARSER" >> $GITHUB_OUTPUT
+          echo "md_magic=$MD_MAGIC" >> $GITHUB_OUTPUT
+
+      - name: Trigger block-parser binary build
+        if: steps.tags.outputs.block_parser != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh workflow run release-binary-block-parser.yml \
+            -f version=${{ steps.tags.outputs.block_parser }}
+
+      - name: Trigger md-magic binary build
+        if: steps.tags.outputs.md_magic != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh workflow run release-binary-md-magic.yml \
+            -f version=${{ steps.tags.outputs.md_magic }}
