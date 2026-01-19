@@ -98,7 +98,6 @@ async function blockTransformer(inputText, config) {
     srcPath,
     outputPath,
     open = OPEN_WORD,
-    close = CLOSE_WORD,
     syntax = SYNTAX,
     transforms = {},
     beforeMiddleware = [],
@@ -106,6 +105,8 @@ async function blockTransformer(inputText, config) {
     removeComments = false,
     customPatterns
   } = opts
+  // Don't default close - let undefined pass through to enable pattern mode in block-parser
+  const close = opts.close !== undefined ? opts.close : (opts.open ? undefined : CLOSE_WORD)
 
   let foundBlocks = {}
   try {

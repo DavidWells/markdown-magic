@@ -296,11 +296,16 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   
 
 
-  const patterns = getBlockRegex({
-    syntax,
-    openText: open,
-    closeText: close
-  })
+  // Pattern mode (close undefined) - parseBlocks handles regex generation
+  // Standard mode - get patterns for comment stripping
+  let patterns = {}
+  if (close !== undefined) {
+    patterns = getBlockRegex({
+      syntax,
+      openText: open,
+      closeText: close
+    })
+  }
 
   if (debug) {
     console.log(`patterns:`, patterns)
