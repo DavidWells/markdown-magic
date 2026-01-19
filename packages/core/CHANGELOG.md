@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.5.7](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.5.6...markdown-magic@4.5.7) (2026-01-19)
+
+
+### Bug Fixes
+
+* enable pattern mode for custom open tags ([904d4dc](https://github.com/DavidWells/markdown-magic/commit/904d4dc391a36848d5bb142d54835423df0b9d05))
+
+
+
+
+
 ## [4.5.6](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.5.5...markdown-magic@4.5.6) (2026-01-19)
 
 
