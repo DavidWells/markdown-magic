@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.8.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.7.0...markdown-magic@4.8.0) (2026-01-19)
+
+
+### Features
+
+* **core:** pass normalizeBlankLines option through to block-transformer ([5b04d6d](https://github.com/DavidWells/markdown-magic/commit/5b04d6d7abe60c15ff126c9f58ad1f7c082118ef))
+
+
+
+
+
 # [4.7.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.6.2...markdown-magic@4.7.0) (2026-01-19)
 
 
