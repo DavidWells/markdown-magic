@@ -288,4 +288,53 @@ content
   assert.ok(result.updatedContents.includes('transformed'))
 })
 
+test('normalizeBlankLines option collapses multiple blank lines', async () => {
+  const text = `## Section
+
+<!-- block test -->
+content
+<!-- /block -->
+
+<!-- block empty -->
+<!-- /block -->
+
+---`
+  const result = await blockTransformer(text, {
+    forceRemoveComments: true,
+    normalizeBlankLines: true,
+    transforms: {
+      test: () => 'transformed',
+      empty: () => ''
+    }
+  })
+
+  // Should not have 2+ consecutive blank lines outside code blocks
+  assert.not.ok(result.updatedContents.includes('\n\n\n'))
+})
+
+test('normalizeBlankLines preserves blank lines in code blocks', async () => {
+  const text = `## Section
+
+<!-- block code -->
+\`\`\`bash
+line 1
+
+
+line 2
+\`\`\`
+<!-- /block -->
+
+---`
+  const result = await blockTransformer(text, {
+    forceRemoveComments: true,
+    normalizeBlankLines: true,
+    transforms: {
+      code: (api) => api.content
+    }
+  })
+
+  // Code block should preserve its blank lines
+  assert.ok(result.updatedContents.includes('line 1\n\n\nline 2'))
+})
+
 test.run()

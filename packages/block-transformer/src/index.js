@@ -67,6 +67,7 @@ const CLOSE_WORD = '/block'
  * @property {Array<Middleware>}  [afterMiddleware=[]] - Middleware functions change inner block content after transforms.
  * @property {boolean} [removeComments=false] - Remove comments from the processed contents.
  * @property {boolean} [forceRemoveComments=false] - Force remove comments even when srcPath === outputPath, strips comments directly in updatedContents.
+ * @property {boolean} [normalizeBlankLines=false] - Collapse multiple consecutive blank lines to single blank line (preserves blank lines in code blocks).
  * @property {string} [srcPath] - The source path.
  * @property {string} [outputPath] - The output path.
  * @property {import('comment-block-parser').CustomPatterns} [customPatterns] - Custom regex patterns for open and close tags.
@@ -105,6 +106,7 @@ async function blockTransformer(inputText, config) {
     afterMiddleware = [],
     removeComments = false,
     forceRemoveComments = false,
+    normalizeBlankLines: normalizeBlankLinesOpt = false,
     customPatterns
   } = opts
   // Don't default close - let undefined pass through to enable pattern mode in block-parser
@@ -295,7 +297,10 @@ async function blockTransformer(inputText, config) {
 
   let finalContents = updatedContents
   if (forceRemoveComments && openPattern && closePattern) {
-    finalContents = updatedContents.replace(openPattern, '').replace(closePattern, '')
+    finalContents = finalContents.replace(openPattern, '').replace(closePattern, '')
+  }
+  if (normalizeBlankLinesOpt) {
+    finalContents = normalizeBlankLines(finalContents)
   }
 
   // console.log('inputText', inputText)
@@ -444,6 +449,43 @@ function getCodeLocation(srcPath, line, column = '0') {
   return `${srcPath}:${line}:${column}`
 }
 
+/**
+ * Normalize blank lines in content, collapsing multiple consecutive blank lines to a single one.
+ * Preserves blank lines inside fenced code blocks (``` or ~~~).
+ * @param {string} content - The content to normalize
+ * @returns {string} Content with normalized blank lines
+ */
+function normalizeBlankLines(content) {
+  if (!content) return content
+
+  const lines = content.split('\n')
+  const result = []
+  let inCodeBlock = false
+  let consecutiveBlanks = 0
+
+  for (const line of lines) {
+    // Check for code fence (``` or ~~~), possibly with language specifier, possibly indented
+    if (/^\s*(`{3,}|~{3,})/.test(line)) {
+      inCodeBlock = !inCodeBlock
+      consecutiveBlanks = 0
+      result.push(line)
+      continue
+    }
+
+    if (line.trim() === '' && !inCodeBlock) {
+      consecutiveBlanks++
+      if (consecutiveBlanks <= 1) {
+        result.push(line)
+      }
+    } else {
+      consecutiveBlanks = 0
+      result.push(line)
+    }
+  }
+
+  return result.join('\n')
+}
+
 if (require.main === module) {
   const yaml = `
   - name: Run tests two
@@ -456,4 +498,5 @@ if (require.main === module) {
 module.exports = {
   blockTransformer,
   indentString,
+  normalizeBlankLines,
 } 
