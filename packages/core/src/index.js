@@ -297,13 +297,21 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
 
 
   // Pattern mode (close undefined) - parseBlocks handles regex generation
+  // Single comment mode (close === false) - no close tag
   // Standard mode - get patterns for comment stripping
   let patterns = {}
-  if (close !== undefined) {
+  const singleCommentMode = close === false
+  if (close !== undefined && close !== false) {
     patterns = getBlockRegex({
       syntax,
       openText: open,
       closeText: close
+    })
+  } else if (singleCommentMode) {
+    patterns = getBlockRegex({
+      syntax,
+      openText: open,
+      singleComment: true
     })
   }
 
