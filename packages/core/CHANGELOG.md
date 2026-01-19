@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.7.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.6.2...markdown-magic@4.7.0) (2026-01-19)
+
+
+### Features
+
+* **core:** pass forceRemoveComments option through to block-transformer ([b120f46](https://github.com/DavidWells/markdown-magic/commit/b120f46831d2d5a390e4589dae81e989fcd16c87))
+
+
+
+
+
 ## [4.6.2](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.6.1...markdown-magic@4.6.2) (2026-01-19)
 
 **Note:** Version bump only for package markdown-magic
