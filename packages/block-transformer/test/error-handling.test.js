@@ -248,4 +248,44 @@ original content
   assert.ok(result.updatedContents.includes('original content'))
 })
 
+test('forceRemoveComments bypasses safety check and strips comments from updatedContents', async () => {
+  const text = `
+<!-- block test -->
+content
+<!-- /block -->
+`
+  const result = await blockTransformer(text, {
+    srcPath: '/same/path.md',
+    outputPath: '/same/path.md',
+    forceRemoveComments: true,
+    transforms: {
+      test: (api) => 'transformed'
+    }
+  })
+
+  assert.is(result.stripComments, true)
+  assert.not.ok(result.updatedContents.includes('<!-- block'))
+  assert.not.ok(result.updatedContents.includes('<!-- /block'))
+  assert.ok(result.updatedContents.includes('transformed'))
+})
+
+test('forceRemoveComments works without outputPath', async () => {
+  const text = `
+<!-- block test -->
+content
+<!-- /block -->
+`
+  const result = await blockTransformer(text, {
+    forceRemoveComments: true,
+    transforms: {
+      test: (api) => 'transformed'
+    }
+  })
+
+  assert.is(result.stripComments, true)
+  assert.not.ok(result.updatedContents.includes('<!-- block'))
+  assert.not.ok(result.updatedContents.includes('<!-- /block'))
+  assert.ok(result.updatedContents.includes('transformed'))
+})
+
 test.run()

@@ -66,6 +66,7 @@ const CLOSE_WORD = '/block'
  * @property {Array<Middleware>}  [beforeMiddleware=[]] - Middleware functions change inner block content before transforms.
  * @property {Array<Middleware>}  [afterMiddleware=[]] - Middleware functions change inner block content after transforms.
  * @property {boolean} [removeComments=false] - Remove comments from the processed contents.
+ * @property {boolean} [forceRemoveComments=false] - Force remove comments even when srcPath === outputPath, strips comments directly in updatedContents.
  * @property {string} [srcPath] - The source path.
  * @property {string} [outputPath] - The output path.
  * @property {import('comment-block-parser').CustomPatterns} [customPatterns] - Custom regex patterns for open and close tags.
@@ -103,6 +104,7 @@ async function blockTransformer(inputText, config) {
     beforeMiddleware = [],
     afterMiddleware = [],
     removeComments = false,
+    forceRemoveComments = false,
     customPatterns
   } = opts
   // Don't default close - let undefined pass through to enable pattern mode in block-parser
@@ -285,15 +287,19 @@ async function blockTransformer(inputText, config) {
 
   const isNewPath = srcPath !== outputPath
 
-  if (removeComments && !isNewPath) {
+  if (removeComments && !isNewPath && !forceRemoveComments) {
     throw new Error('"removeComments" can only be used if "outputPath" option is set. Otherwise this will break doc generation.')
   }
 
-  const stripComments = isNewPath && removeComments
+  const stripComments = (isNewPath && removeComments) || forceRemoveComments
 
+  let finalContents = updatedContents
+  if (forceRemoveComments && openPattern && closePattern) {
+    finalContents = updatedContents.replace(openPattern, '').replace(closePattern, '')
+  }
 
   // console.log('inputText', inputText)
-  // console.log('updatedContents', updatedContents) 
+  // console.log('updatedContents', updatedContents)
   return {
     isChanged: inputText !== updatedContents,
     isNewPath,
@@ -303,7 +309,7 @@ async function blockTransformer(inputText, config) {
     transforms: transformsToRun,
     missingTransforms,
     originalContents: inputText,
-    updatedContents,
+    updatedContents: finalContents,
     patterns: regexInfo,
   }
 }
