@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.5.7...comment-block-transformer@0.6.0) (2026-01-19)
+
+
+### Features
+
+* **block-transformer:** add forceRemoveComments option ([7503338](https://github.com/DavidWells/markdown-magic/commit/7503338ee182a935b04e7162276fd3df072b59a9))
+
+
+
+
+
 ## [0.5.7](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.5.6...comment-block-transformer@0.5.7) (2026-01-19)
 
 **Note:** Version bump only for package comment-block-transformer
