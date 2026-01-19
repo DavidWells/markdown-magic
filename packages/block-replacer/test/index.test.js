@@ -243,7 +243,7 @@ TotallyCustom uppercase
 content with comments
 BlockHere
   `
-  
+
   /** @type {ProcessFileOptions} */
   const options = {
     content,
@@ -263,9 +263,53 @@ BlockHere
   const result = await processFile(options)
 
   console.log('result', result)
-  
+
   assert.is(result.stripComments, true)
   assert.is(result.isNewPath, true)
+})
+
+test('removeComments should strip comment blocks from output file', async () => {
+  const content = `# Test Document
+
+<!-- block uppercase -->
+hello world
+<!-- /block -->
+
+Some content in between.
+
+<!-- block wordcount -->
+one two three four five
+<!-- /block -->
+
+End of document.
+`
+
+  const removeCommentsOutput = path.join(testDir, 'stripped.md')
+
+  /** @type {ProcessFileOptions} */
+  const options = {
+    content,
+    outputPath: removeCommentsOutput,
+    removeComments: true,
+    transforms: mockTransforms
+  }
+
+  const result = await processFile(options)
+
+  assert.is(result.stripComments, true, 'stripComments should be true')
+  assert.is(result.isNewPath, true, 'isNewPath should be true')
+  assert.is(result.isChanged, true, 'isChanged should be true')
+
+  // Read the output file and verify comments are stripped
+  const outputContent = await fs.readFile(removeCommentsOutput, 'utf8')
+
+  // Should contain the transformed content
+  assert.ok(outputContent.includes('HELLO WORLD'), 'should have transformed content')
+  assert.ok(outputContent.includes('Word count: 5'), 'should have wordcount transform')
+
+  // Should NOT contain comment blocks
+  assert.not.ok(outputContent.includes('<!-- block'), 'should not have opening comment')
+  assert.not.ok(outputContent.includes('<!-- /block'), 'should not have closing comment')
 })
 
 test.run()
