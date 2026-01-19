@@ -176,13 +176,18 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     open = `${opts.matchWord}:start`
   }
 
-  let close = CLOSE_WORD
-  if (opts.close) {
+  // When open is custom and close not specified, leave close undefined
+  // to enable pattern mode in block-parser (auto-generates close as /OpenTag)
+  let close
+  if (opts.close !== undefined) {
     close = opts.close
     // @ts-ignore legacy
   } else if (opts.matchWord) {
     // @ts-ignore legacy
     close = `${opts.matchWord}:end`
+  } else if (!opts.open || opts.open === OPEN_WORD) {
+    // Only default to /docs when using default open word
+    close = CLOSE_WORD
   }
   
   const cwd = opts.cwd || process.cwd()
