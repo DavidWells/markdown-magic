@@ -308,6 +308,7 @@ async function blockTransformer(inputText, config) {
   }
 }
 
+
 /** @typedef {BlockData & { sourceLocation?: string, transform?: string }} BlockDataExtended */
 
 function getDetails({
