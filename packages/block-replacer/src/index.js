@@ -119,8 +119,8 @@ async function processFile(opts = {}) {
 
   if (outputPath && (result.isChanged || result.isNewPath)) {
     let cleanContents = result.updatedContents
-    if (result.stripComments && result.patterns.openPattern && result.patterns.closePattern) {
-      cleanContents = result.updatedContents.replace(result.patterns.openPattern, '').replace(result.patterns.closePattern, '')
+    if (result.stripComments && result.patterns.open && result.patterns.close) {
+      cleanContents = result.updatedContents.replace(result.patterns.open, '').replace(result.patterns.close, '')
     }
     await writeFile(outputPath, cleanContents)
   }
