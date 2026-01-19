@@ -152,6 +152,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   // @ts-ignore 
   const outputDir = output.directory || opts.outputDir
   const removeComments = output.removeComments || false
+  const forceRemoveComments = output.forceRemoveComments || false
   const pathFormatter = output.pathFormatter
   
   let applyTransformsToSource = true
@@ -429,6 +430,7 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
       outputPath: newPath,
       transforms: useTransforms,
       removeComments,
+      forceRemoveComments,
       processedFiles
     })
 
