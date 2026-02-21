@@ -158,23 +158,29 @@ module.exports = async function CODE(api) {
 
   /* Check for Id */
   if (id) {
-    const lines = code.split("\n")
-    const startLineIndex = lines.findIndex(line => line.includes(`CODE_SECTION:${id}:START`));
-    const startLine = startLineIndex !== -1 ? startLineIndex : 0;
+    const lines = code.split('\n')
+    const startLineIndex = lines.findIndex((line) => line.includes(`CODE_SECTION:${id}:START`))
+    const endLineIndex = lines.findIndex((line) => line.includes(`CODE_SECTION:${id}:END`))
 
-    const endLineIndex = lines.findIndex(line => line.includes(`CODE_SECTION:${id}:END`));
-    const endLine = endLineIndex !== -1 ? endLineIndex : lines.length - 1;
-    // console.log('startLine', startLine)
-    // console.log('endLine', endLine)
-    if (startLine === -1 && endLine === -1) {
+    if (startLineIndex === -1 || endLineIndex === -1) {
       throw new Error(`Missing ${id} code section from ${codeFilePath}`)
     }
-  
-    const selectedLines = lines.slice(startLine + 1, endLine)
-  
-    const firstMatch = selectedLines[0] && selectedLines[0].match(/^(\s*)/);
-    const trimBy = firstMatch && firstMatch[1] ? firstMatch[1].length : 0;
-    const newValue = `${selectedLines.map(line => line.substring(trimBy).replace(/^\/\/ CODE_SECTION:INCLUDE /g, "")).join("\n")}`
+
+    if (endLineIndex <= startLineIndex) {
+      throw new Error(`Invalid ${id} code section in ${codeFilePath}. End marker must be after start marker`)
+    }
+
+    // console.log('startLine', startLine)
+    // console.log('endLine', endLine)
+    const selectedLines = lines.slice(startLineIndex + 1, endLineIndex)
+
+    if (!selectedLines.length) {
+      throw new Error(`Empty ${id} code section in ${codeFilePath}`)
+    }
+
+    const firstMatch = selectedLines[0] && selectedLines[0].match(/^(\s*)/)
+    const trimBy = firstMatch && firstMatch[1] ? firstMatch[1].length : 0
+    const newValue = `${selectedLines.map((line) => line.substring(trimBy).replace(/^\/\/ CODE_SECTION:INCLUDE /g, '')).join('\n')}`
     // console.log('newValue', newValue)
     code = newValue
   }

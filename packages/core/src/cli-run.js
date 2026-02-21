@@ -11,7 +11,7 @@ const { getGlobGroupsFromArgs } = require('./globparse')
 // const { uxParse } = require('./argparse/argparse')
 const argv = process.argv.slice(2)
 const cwd = process.cwd()
-const defaultConfigPath = 'md.config.js'
+const defaultConfigPaths = ['md.config.js', 'markdown.config.js']
 
 /**
  * Render markdown with ANSI styling for terminal output
@@ -100,6 +100,22 @@ async function getBaseDir(opts = {}) {
   return (gitDir) ? path.dirname(gitDir) : currentDir
 }
 
+/**
+ * Find the first config file that exists in parent dirs
+ * @param {string} baseDir
+ * @param {Array<string>} configPaths
+ * @returns {Promise<string|undefined>}
+ */
+async function findFirstConfig(baseDir, configPaths = []) {
+  for (let i = 0; i < configPaths.length; i++) {
+    const configPath = configPaths[i]
+    const found = await findUp(baseDir, configPath)
+    if (found) {
+      return found
+    }
+  }
+}
+
 function findSingleDashStrings(arr) {
   return arr.filter(str => str.match(/^-[^-]/))
 }
@@ -110,8 +126,9 @@ async function runCli(options = {}, rawArgv) {
 Usage: md-magic [options] [files...]
 
 Options:
-  --files, --file    Files or glob patterns to process
-  --config           Path to config file (default: md.config.js)
+  --files, --file, --path
+                      Files or glob patterns to process
+  --config           Path to config file (default: md.config.js or markdown.config.js)
   --output           Output directory
   --open             Opening comment keyword (default: docs)
   --close            Closing comment keyword (default: /docs)
@@ -125,6 +142,7 @@ Options:
 Examples:
   md-magic README.md
   md-magic --files "**/*.md"
+  md-magic --path "**/*.md"   # alias for --files
   md-magic --config ./my-config.js
 
 Stdin/stdout mode:
@@ -210,14 +228,14 @@ Stdin/stdout mode:
   /** */
   options.files = []
   /* If raw args found, process them further */
-  if (argv.length && (options._ && options._.length || (options.file || options.files))) {
+  if (argv.length && (options._ && options._.length || (options.file || options.files || options.path))) {
     // if (isGlob(argv[0])) {
     //   console.log('glob', argv[0])
     //   options.glob = argv[0]
     // }
     const globParse = getGlobGroupsFromArgs(argv, {
       /* CLI args that should be glob keys */
-      globKeys: ['files', 'file']
+      globKeys: ['files', 'file', 'path']
     })
     const { globGroups, otherOpts } = globParse
     /*
@@ -304,6 +322,10 @@ Stdin/stdout mode:
       if (globGroupByKey.files) {
         options.files = options.files.concat(globGroupByKey.files.values)
       } 
+      if (globGroupByKey.path) {
+        options.files = options.files.concat(globGroupByKey.path.values)
+        delete options.path
+      }
       if (globGroupByKey['']) {
         options.files = options.files.concat(globGroupByKey[''].values)
       }
@@ -325,6 +347,11 @@ Stdin/stdout mode:
     if (extraParse.files) {
       options.files = options.files.concat(extraParse.files)
       delete extraParse.files
+    }
+
+    if (extraParse.path) {
+      options.files = options.files.concat(extraParse.path)
+      delete extraParse.path
     }
 
     if (extraParse['--files']) {
@@ -354,7 +381,7 @@ Stdin/stdout mode:
     configFile = opts.config
   } else {
     const baseDir = await getBaseDir()
-    configFile = await findUp(baseDir, defaultConfigPath)
+    configFile = await findFirstConfig(baseDir, defaultConfigPaths)
   }
   const config = (configFile) ? loadConfig(configFile) : {}
   const mergedConfig = {

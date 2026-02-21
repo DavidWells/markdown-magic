@@ -71,6 +71,7 @@ const CLOSE_WORD = '/block'
  * @property {string} [srcPath] - The source path.
  * @property {string} [outputPath] - The output path.
  * @property {import('comment-block-parser').CustomPatterns} [customPatterns] - Custom regex patterns for open and close tags.
+ * @property {import('comment-block-parser').ParseBlocksResult} [parsedBlocks] - Optional pre-parsed block data to skip reparsing.
  */
 
 /**
@@ -112,18 +113,21 @@ async function blockTransformer(inputText, config) {
   // Don't default close - let undefined pass through to enable pattern mode in block-parser
   const close = opts.close !== undefined ? opts.close : (opts.open ? undefined : CLOSE_WORD)
 
-  let foundBlocks = {}
-  try {
-    foundBlocks = parseBlocks(inputText, {
-      syntax,
-      open,
-      close,
-      customPatterns,
-      firstArgIsType: true,
-    })
-  } catch (e) {
-    const errMsg = (srcPath) ? `in ${srcPath}` : inputText
-    throw new Error(`${e.message}\nFix content in ${errMsg}\n`)
+  /** @type {ParseBlocksResult} */
+  let foundBlocks = opts.parsedBlocks
+  if (!foundBlocks || !Array.isArray(foundBlocks.blocks)) {
+    try {
+      foundBlocks = parseBlocks(inputText, {
+        syntax,
+        open,
+        close,
+        customPatterns,
+        firstArgIsType: true,
+      })
+    } catch (e) {
+      const errMsg = (srcPath) ? `in ${srcPath}` : inputText
+      throw new Error(`${e.message}\nFix content in ${errMsg}\n`)
+    }
   }
 
 

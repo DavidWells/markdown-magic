@@ -1,28 +1,52 @@
 const fetch = require('node-fetch')
 
 function formatUrl(url = '') {
-  return url.match(/^https?:\/\//) ? url : `https://${url}`
+  if (typeof url !== 'string') return ''
+  const trimmed = url.trim()
+  if (!trimmed) return ''
+  return trimmed.match(/^https?:\/\//) ? trimmed : `https://${trimmed}`
 }
 
 async function remoteRequest(url, settings = {}, srcPath) {
-  let body
   const finalUrl = formatUrl(url)
+  const fixText = srcPath ? `\nFix "${url}" value in ${srcPath}` : ''
+  if (!finalUrl) {
+    const msg = `Invalid URL "${url}"${fixText}`
+    if (settings.failOnMissingRemote) {
+      throw new Error(msg)
+    }
+    console.log(msg)
+    return
+  }
+
   // ignore demo url todo remove one day
   if (finalUrl === 'http://url-to-raw-md-file.md') {
     return
   }
+
+  let response
   try {
-    const res = await fetch(finalUrl)
-    body = await res.text()
+    response = await fetch(finalUrl)
   } catch (e) {
     console.log(`⚠️  WARNING: REMOTE URL "${finalUrl}" NOT FOUND`)
-    const msg = (e.message || '').split('\n')[0] + `\nFix "${url}" value in ${srcPath}`
+    const msg = (e.message || '').split('\n')[0] + fixText
     console.log(msg)
     if (settings.failOnMissingRemote) {
       throw new Error(msg)
     }
+    return
   }
-  return body
+
+  if (!response.ok) {
+    const msg = `Remote request failed with status ${response.status} (${response.statusText}) for "${finalUrl}"${fixText}`
+    console.log(`⚠️  WARNING: ${msg}`)
+    if (settings.failOnMissingRemote) {
+      throw new Error(msg)
+    }
+    return
+  }
+
+  return response.text()
 }
 
 module.exports = {

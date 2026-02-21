@@ -16,6 +16,7 @@ const { blockTransformer } = require('comment-block-transformer')
  * @typedef {ProcessContentConfig & {
  *   content?: string
  *   srcPath?: string
+ *   parsedBlocks?: import('comment-block-parser').ParseBlocksResult
  *   outputPath?: string
  *   dryRun?: boolean
  *   patterns?: {
@@ -82,11 +83,11 @@ async function processFile(opts = {}) {
   const outputDir = output.directory || opts.outputDir
 
   let srcPath = opts.srcPath
-  if (srcPath && content) {
-    throw new Error(`Can't set both "srcPath" & "content"`)
-  }
   let fileContents
-  if (content) {
+  if (typeof content === 'string' && srcPath) {
+    // Allow callers to provide preloaded content for srcPath files
+    fileContents = content
+  } else if (content) {
     const isFile = isValidFile(content) && content.indexOf('\n') === -1
     srcPath = (isFile) ? content : undefined
     fileContents = (!isFile) ? content : undefined

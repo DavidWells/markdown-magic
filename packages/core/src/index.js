@@ -344,22 +344,24 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
       name: file,
       id: file,
       srcPath: file,
-      blocks: foundBlocks.blocks
+      blocks: foundBlocks.blocks,
+      parsedBlocks: foundBlocks
     }
   })
 
   const blocks = blocksByPath.map((item) => {
     const dir = path.dirname(item.srcPath)
-    item.dependencies = []
+    const dependencySet = new Set()
     item.blocks.forEach((block) => {
       if (block.options && block.options.src) {
         const resolvedPath = path.resolve(dir, block.options.src)
         // if (resolvedPath.match(/\.md$/)) {
           // console.log('resolvedPath', resolvedPath)
-          item.dependencies = item.dependencies.concat(resolvedPath)
+          dependencySet.add(resolvedPath)
         //}
       }
     })
+    item.dependencies = Array.from(dependencySet)
     return item
   })
 
@@ -381,22 +383,22 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
   /** */
 
   // Convert items into a format suitable for toposort
-  const graph = blocks
-    .filter((item) => item.blocks && item.blocks.length)
-    .map((item) => {
-      return [ item.id, ...item.dependencies ]
-    })
+  const { itemsWithBlocks, itemIds, graph } = createDependencyGraph(blocks)
   // console.log('graph', graph)
   // Perform the topological sort and reverse for execution order
-  const sortedIds = toposort(graph).reverse();
+  const sortedIds = graph.length ? toposort.array(itemIds, graph).reverse() : itemIds
 
   // Reorder items based on sorted ids
-  const sortedItems = sortedIds.map(id => blocks.find(item => item.id === id)).filter(Boolean);
+  const itemById = new Map(itemsWithBlocks.map((item) => [item.id, item]))
+  const sortedItems = sortedIds.map((id) => itemById.get(id)).filter(Boolean)
 
   // topoSort(blocks)
   const orderedFiles = sortedItems.map((block) => block.id)
   // console.log('sortedItems', sortedItems)
   // console.log('orderedFiles', orderedFiles)
+
+  const fileContentByPath = new Map(files.map((file, i) => [file, fileContents[i]]))
+  const parsedBlocksByPath = new Map(blocksByPath.map((item) => [item.id, item.parsedBlocks]))
 
   const processedFiles = []
   await asyncForEach(orderedFiles, async (file) => {
@@ -424,6 +426,8 @@ async function markdownMagic(globOrOpts = {}, options = {}) {
     // logger('newPath', newPath)
     const result = await processFile({
       ...opts,
+      content: fileContentByPath.get(file),
+      parsedBlocks: parsedBlocksByPath.get(file),
       patterns,
       open,
       close,
@@ -787,6 +791,29 @@ function changedFiles(files) {
   return files.filter(({ isChanged }) => isChanged)
 }
 
+/**
+ * Create graph data for deterministic dependency ordering
+ * @param {Array<{id: string, blocks: Array<any>, dependencies?: Array<string>}>} blockItems
+ * @returns {{itemsWithBlocks: Array<any>, itemIds: Array<string>, graph: Array<[string, string]>}}
+ */
+function createDependencyGraph(blockItems = []) {
+  const itemsWithBlocks = blockItems.filter((item) => item.blocks && item.blocks.length)
+  const itemIds = itemsWithBlocks.map((item) => item.id)
+  const itemIdSet = new Set(itemIds)
+  const graph = itemsWithBlocks
+    .flatMap((item) => {
+      return (item.dependencies || [])
+        .filter((dependency) => itemIdSet.has(dependency))
+        .map((dependency) => [item.id, dependency])
+    })
+
+  return {
+    itemsWithBlocks,
+    itemIds,
+    graph
+  }
+}
+
 async function asyncForEach(array, callback) {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array)
@@ -802,5 +829,8 @@ module.exports = {
   parseMarkdown,
   blockTransformer,
   processFile,
-  stringUtils
+  stringUtils,
+  __private: {
+    createDependencyGraph
+  }
 }

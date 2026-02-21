@@ -11,8 +11,8 @@ Thank you for your interest in contributing to markdown-magic! This guide will h
 
 ### Prerequisites
 
-- Node.js (version 14 or higher)
-- npm or yarn
+- Node.js (version 18 or higher)
+- pnpm (version 10 or higher)
 - Git
 
 ### Getting Started
@@ -26,9 +26,7 @@ Thank you for your interest in contributing to markdown-magic! This guide will h
 
 3. **Install dependencies**:
    ```bash
-   npm install
-   # or
-   yarn install
+   pnpm install
    ```
 
 4. **Create a feature branch**:
@@ -41,12 +39,14 @@ Thank you for your interest in contributing to markdown-magic! This guide will h
 ```
 markdown-magic/
 ├── packages/              # Monorepo packages
-│   ├── core/             # Core markdown-magic package
-│   ├── cli/              # CLI package  
-│   └── transforms/       # Built-in transforms
+│   ├── core/              # Core markdown-magic package
+│   ├── block-parser/      # Comment block parser package
+│   ├── block-replacer/    # Block replacement engine
+│   ├── block-transformer/ # Transform orchestration engine
+│   └── plugin-*/          # Optional plugin packages
 ├── examples/             # Usage examples
 ├── docs/                 # Documentation
-├── test/                 # Test files
+├── packages/**/_tests/   # Test files
 └── scripts/              # Build and development scripts
 ```
 
@@ -56,45 +56,31 @@ markdown-magic/
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests for specific package
-npm run test:core
+# Run tests for all packages directly
+pnpm -r test
 ```
 
-### Linting and Formatting
-
-```bash
-# Run linter
-npm run lint
-
-# Auto-fix linting issues
-npm run lint:fix
-
-# Format code
-npm run format
-```
+### Types and Build
 
 ### Building
 
 ```bash
 # Build all packages
-npm run build
+pnpm build
 
-# Build specific package
-npm run build:core
+# Generate declaration files where configured
+pnpm types
 ```
 
 ### Testing Your Changes
 
 1. **Link locally** to test in other projects:
    ```bash
-   npm link
+   pnpm link --global
    cd /path/to/test-project
-   npm link markdown-magic
+   pnpm link --global markdown-magic
    ```
 
 2. **Run examples**:
@@ -105,8 +91,8 @@ npm run build:core
 
 3. **Test CLI**:
    ```bash
-   npm run cli -- --help
-   npm run cli -- --path './test/*.md'
+   pnpm --filter markdown-magic run cli -- --help
+   pnpm --filter markdown-magic run cli -- --files './docs/*.md'
    ```
 
 ## Types of Contributions
@@ -186,7 +172,7 @@ New built-in transforms should:
 
 - **ES6+ features** are encouraged
 - **2 spaces** for indentation
-- **Semicolons** are required
+- **Semicolons** are generally omitted
 - **Single quotes** for strings
 - **Trailing commas** in multiline structures
 
@@ -221,12 +207,13 @@ export default function mainFunction() {}
 ```js
 /**
  * Transform function description
- * @param {string} content - The content to transform
- * @param {object} options - Transform options
- * @param {object} config - Global configuration
+ * @param {object} api - Transform API payload
+ * @param {string} api.content - The content to transform
+ * @param {object} api.options - Transform options
+ * @param {object} api.settings - Global configuration
  * @returns {string|Promise<string>} Transformed content
  */
-function myTransform(content, options, config) {
+function myTransform({ content, options, settings }) {
   // Implementation details
 }
 ```

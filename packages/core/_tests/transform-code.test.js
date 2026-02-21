@@ -6,6 +6,7 @@ const { test } = require('uvu')
 const assert = require('uvu/assert')
 const { markdownMagic } = require('../src')
 const { FIXTURE_DIR, MARKDOWN_FIXTURE_DIR, OUTPUT_DIR } = require('./config')
+const TEMP_FIXTURE_DIR = path.join(FIXTURE_DIR, 'temp-code')
 
 function getNewFile(result) {
   if (!result.results || !result.results[0]) {
@@ -15,6 +16,10 @@ function getNewFile(result) {
 }
 
 const SILENT = true
+
+function ensureDir(dir) {
+  fs.mkdirSync(dir, { recursive: true })
+}
 
 test('CODE - local file inclusion', async () => {
   const fileName = 'transform-code.md'
@@ -103,6 +108,32 @@ test('CODE - legacy colon syntax works', async () => {
   const newContent = fs.readFileSync(getNewFile(result), 'utf8')
   // The fixture has legacy syntax blocks that should still work
   assert.ok(newContent.includes('module.exports.run'), 'legacy syntax processed correctly')
+})
+
+test('CODE - throws when id markers are missing', async () => {
+  const content = `<!-- docs CODE src='../js/simple.js' id='MISSING_ID' -->
+original content
+<!-- /docs -->`
+
+  ensureDir(TEMP_FIXTURE_DIR)
+  const tempFile = path.join(TEMP_FIXTURE_DIR, 'code-id-missing.md')
+  fs.writeFileSync(tempFile, content)
+
+  let threw = false
+  try {
+    await markdownMagic(tempFile, {
+      open: 'docs',
+      close: '/docs',
+      outputDir: OUTPUT_DIR,
+      applyTransformsToSource: false,
+      silent: SILENT
+    })
+  } catch (err) {
+    threw = true
+    assert.ok(err.message.includes('Missing MISSING_ID code section'), 'throws missing code section error')
+  }
+
+  assert.ok(threw, 'should throw when CODE id markers are missing')
 })
 
 test.run()

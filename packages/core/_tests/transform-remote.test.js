@@ -89,6 +89,31 @@ original content
   assert.ok(threw, 'should throw on invalid URL')
 })
 
+test('remote - throws on HTTP 404 response', async () => {
+  const content = `<!-- docs remote url='https://raw.githubusercontent.com/DavidWells/markdown-magic/master/THIS_FILE_DOES_NOT_EXIST.md' -->
+original content
+<!-- /docs -->`
+
+  ensureDir(TEMP_FIXTURE_DIR)
+  const tempFile = path.join(TEMP_FIXTURE_DIR, 'remote-404.md')
+  fs.writeFileSync(tempFile, content)
+
+  let threw = false
+  try {
+    await markdownMagic(tempFile, {
+      open: 'docs',
+      close: '/docs',
+      outputDir: OUTPUT_DIR,
+      applyTransformsToSource: false,
+      silent: SILENT
+    })
+  } catch (err) {
+    threw = true
+    assert.ok(err.message.includes('status 404') || err.message.includes('404'), 'throws HTTP status error')
+  }
+  assert.ok(threw, 'should throw on 404 response')
+})
+
 test('remote - fetches raw markdown from GitHub', async () => {
   const content = `<!-- docs remote url='https://raw.githubusercontent.com/DavidWells/types-with-jsdocs/master/README.md' -->
 original

@@ -9,21 +9,23 @@ Learn how to create custom transforms (plugins) for markdown-magic to extend its
 
 ## Transform Basics
 
-A transform is a function that takes content and options, then returns processed content:
+A transform is a function that takes a single API object and returns processed content:
 
 ```js
 // Basic transform structure
-function myTransform(content, options, config) {
+function myTransform(api) {
+  const { content, options, settings } = api
   // Process the content
   return processedContent
 }
 ```
 
-### Parameters
+### API Parameters
 
 - `content`: The content between the comment blocks
 - `options`: Parsed options from the comment block
-- `config`: Global markdown-magic configuration
+- `srcPath`: Current source markdown file path
+- `settings`: Global markdown-magic configuration
 
 ## Creating Your First Transform
 
@@ -31,7 +33,7 @@ function myTransform(content, options, config) {
 
 ```js
 // transforms/greeting.js
-module.exports = function greeting(content, options) {
+module.exports = function greeting({ options }) {
   const name = options.name || 'World'
   return `Hello, ${name}!`
 }
@@ -39,8 +41,8 @@ module.exports = function greeting(content, options) {
 
 Usage:
 ```md
-<!-- doc-gen greeting name='Alice' -->
-<!-- end-doc-gen -->
+<!-- docs greeting name='Alice' -->
+<!-- /docs -->
 ```
 
 Result: `Hello, Alice!`
@@ -52,7 +54,7 @@ Result: `Hello, Alice!`
 const fs = require('fs')
 const path = require('path')
 
-module.exports = function include(content, options) {
+module.exports = function include({ content, options }) {
   if (!options.src) {
     throw new Error('include transform requires "src" option')
   }
@@ -70,8 +72,8 @@ module.exports = function include(content, options) {
 
 Usage:
 ```md
-<!-- doc-gen include src='./snippets/example.md' -->
-<!-- end-doc-gen -->
+<!-- docs include src='./snippets/example.md' -->
+<!-- /docs -->
 ```
 
 ## Async Transforms
@@ -82,7 +84,7 @@ For operations that require network requests or file system operations:
 // transforms/fetchContent.js
 const fetch = require('node-fetch')
 
-module.exports = async function fetchContent(content, options) {
+module.exports = async function fetchContent({ content, options }) {
   if (!options.url) {
     throw new Error('fetchContent requires "url" option')
   }
@@ -108,7 +110,7 @@ module.exports = async function fetchContent(content, options) {
 // transforms/template.js
 const mustache = require('mustache')
 
-module.exports = function template(content, options) {
+module.exports = function template({ content, options }) {
   const template = options.template || content
   const data = {
     ...options.data,
@@ -126,7 +128,7 @@ module.exports = function template(content, options) {
 // transforms/codeStats.js
 const fs = require('fs')
 
-module.exports = function codeStats(content, options) {
+module.exports = function codeStats({ options }) {
   if (!options.src) {
     throw new Error('codeStats requires "src" option')
   }
@@ -149,7 +151,7 @@ module.exports = function codeStats(content, options) {
 
 ```js
 // transforms/tableOfContents.js
-module.exports = function tableOfContents(content, options) {
+module.exports = function tableOfContents({ content, options }) {
   const format = options.format || 'markdown'
   const maxDepth = parseInt(options.maxDepth) || 3
   const minDepth = parseInt(options.minDepth) || 1
@@ -194,7 +196,7 @@ function extractHeadings(content, minDepth, maxDepth) {
 ### In Configuration File
 
 ```js
-// markdown.config.js
+// md.config.js
 const greeting = require('./transforms/greeting')
 const include = require('./transforms/include')
 
@@ -215,7 +217,7 @@ import markdownMagic from 'markdown-magic'
 
 const config = {
   transforms: {
-    myTransform: (content, options) => {
+    myTransform: ({ content, options }) => {
       return `Processed: ${content}`
     }
   }
@@ -231,7 +233,7 @@ markdownMagic('./docs/*.md', config)
 Markdown-magic automatically parses options from the comment block:
 
 ```md
-<!-- doc-gen myTransform 
+<!-- docs myTransform 
   stringOption='value'
   numberOption=42
   boolOption=true
@@ -242,7 +244,7 @@ Markdown-magic automatically parses options from the comment block:
 
 Access in transform:
 ```js
-module.exports = function myTransform(content, options) {
+module.exports = function myTransform({ options }) {
   console.log(options.stringOption) // 'value'
   console.log(options.numberOption) // 42
   console.log(options.boolOption)   // true
@@ -254,7 +256,7 @@ module.exports = function myTransform(content, options) {
 ### Default Options
 
 ```js
-module.exports = function myTransform(content, options) {
+module.exports = function myTransform({ options }) {
   const defaults = {
     format: 'markdown',
     includeTitle: true,
@@ -272,7 +274,7 @@ module.exports = function myTransform(content, options) {
 ### Validation
 
 ```js
-module.exports = function strictTransform(content, options) {
+module.exports = function strictTransform({ options }) {
   // Required options
   const required = ['url', 'format']
   for (const opt of required) {
@@ -294,7 +296,7 @@ module.exports = function strictTransform(content, options) {
 ### Graceful Degradation
 
 ```js
-module.exports = async function robustTransform(content, options) {
+module.exports = async function robustTransform({ content, options }) {
   try {
     // Attempt primary operation
     return await primaryOperation(options)
@@ -353,8 +355,8 @@ describe('transform integration', () => {
   beforeEach(() => {
     // Reset test file
     fs.writeFileSync(testFile, `
-<!-- doc-gen greeting name='Test' -->
-<!-- end-doc-gen -->
+<!-- docs greeting name='Test' -->
+<!-- /docs -->
     `.trim())
   })
   
