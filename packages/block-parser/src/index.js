@@ -173,6 +173,7 @@ const defaultOptions = {
 function parseBlocks(contents, opts = {}) {
   const _options = Object.assign({}, defaultOptions, opts)
   const { syntax, customPatterns, firstArgIsType } = _options
+  const getLineNumberAt = createLineNumberResolver(contents)
 
   // Extract regex source from open/close (handles RegExp objects and '/pattern/flags' strings)
   const openInfo = getRegexSource(opts.open !== undefined ? opts.open : _options.open)
@@ -375,7 +376,7 @@ Details:
       const indent = spaces || ''
       const openStart = newMatches.index + indent.length
       const openEnd = openStart + fullComment.length
-      const lineNum = contents.substr(0, openStart).split('\n').length
+      const lineNum = getLineNumberAt(openStart)
 
       if (newMatches.index === newerRegex.lastIndex) {
         newerRegex.lastIndex++
@@ -439,8 +440,8 @@ Details:
       const openStart = newMatches.index + indent.length
       const openEnd = openStart + openTag.length
       const closeEnd = newerRegex.lastIndex
-      const lineOpen = contents.substr(0, openStart).split('\n').length
-      const lineClose = contents.substr(0, closeEnd).split('\n').length
+      const lineOpen = getLineNumberAt(openStart)
+      const lineClose = getLineNumberAt(closeEnd)
       const contentStart = openStart + openTag.length
       const contentEnd = contentStart + content.length
 
@@ -533,8 +534,8 @@ Details:
     const closeEnd = newerRegex.lastIndex
     // const finIndentation = (lineOpen === lineClose) ? '' : indent
 
-    const lineOpen = contents.substr(0, openStart).split('\n').length
-    const lineClose = contents.substr(0, closeEnd).split('\n').length
+    const lineOpen = getLineNumberAt(openStart)
+    const lineClose = getLineNumberAt(closeEnd)
 
     const contentStart = openStart + openTag.length // + indent.length// - shift //+ indent.length
     const contentEnd = contentStart + content.length // + finIndentation.length // + shift
@@ -632,6 +633,36 @@ Details:
 
 function findLeadingIndent(str) {
   return (str.match(LEADING_INDENT_REGEX) || [])[1]?.length || 0
+}
+
+/**
+ * Build a fast line-number resolver for character offsets
+ * @param {string} input
+ * @returns {(position: number) => number}
+ */
+function createLineNumberResolver(input) {
+  const newlineIndexes = []
+  for (let i = 0; i < input.length; i++) {
+    if (input.charCodeAt(i) === 10) {
+      newlineIndexes.push(i)
+    }
+  }
+
+  return function getLineNumberAt(position) {
+    if (position <= 0) return 1
+
+    let low = 0
+    let high = newlineIndexes.length
+    while (low < high) {
+      const mid = (low + high) >> 1
+      if (newlineIndexes[mid] < position) {
+        low = mid + 1
+      } else {
+        high = mid
+      }
+    }
+    return low + 1
+  }
 }
 
 function verifyTagsBalanced(str, open, close) {

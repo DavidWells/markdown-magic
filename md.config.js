@@ -1,4 +1,4 @@
-/* CLI markdown.config.js file example */
+/* CLI md.config.js file example */
 module.exports = {
   // handleOutputPath: (currentPath) => {
   //   const newPath =  'x' + currentPath

@@ -14,11 +14,11 @@ All transform blocks follow this basic structure:
 ```md
 <!-- matchWord transformName [options] -->
 Content to be replaced
-<!-- end-matchWord -->
+<!-- /matchWord -->
 ```
 
 Where:
-- `matchWord` is the opening keyword (default: `doc-gen`)
+- `matchWord` is the opening keyword (default: `docs`)
 - `transformName` is the name of the transform to apply
 - `options` are optional parameters for the transform
 - Content between the tags will be replaced by the transform output
@@ -30,9 +30,9 @@ Where:
 The simplest form - just specify the transform name and options:
 
 ```md
-<!-- doc-gen transformName optionOne='hello' optionTwo='there' -->
+<!-- docs transformName optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Curly Braces
@@ -40,9 +40,9 @@ content to be replaced
 Wrap the transform name in curly braces:
 
 ```md
-<!-- doc-gen {transformName} optionOne='hello' optionTwo='there' -->
+<!-- docs {transformName} optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Square Brackets
@@ -50,9 +50,9 @@ content to be replaced
 Wrap the transform name in square brackets:
 
 ```md
-<!-- doc-gen [transformName] optionOne='hello' optionTwo='there' -->
+<!-- docs [transformName] optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Parentheses
@@ -60,9 +60,9 @@ content to be replaced
 Wrap the transform name in parentheses:
 
 ```md
-<!-- doc-gen (transformName) optionOne='hello' optionTwo='there' -->
+<!-- docs (transformName) optionOne='hello' optionTwo='there' -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ### Function Style
@@ -70,34 +70,34 @@ content to be replaced
 Use function-like syntax with parentheses for options:
 
 ```md
-<!-- doc-gen transformName(
+<!-- docs transformName(
   foo='bar'
   baz=['qux', 'quux']
 ) -->
 content to be replaced
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ## Option Formats
 
 ### String Options
 ```md
-<!-- doc-gen transform option='string value' -->
+<!-- docs transform option='string value' -->
 ```
 
 ### Boolean Options
 ```md
-<!-- doc-gen transform enabled=true disabled=false -->
+<!-- docs transform enabled=true disabled=false -->
 ```
 
 ### Array Options
 ```md
-<!-- doc-gen transform items=['one', 'two', 'three'] -->
+<!-- docs transform items=['one', 'two', 'three'] -->
 ```
 
 ### Multiple Options
 ```md
-<!-- doc-gen transform 
+<!-- docs transform 
   url='https://example.com'
   format='json'
   cache=true
@@ -122,7 +122,7 @@ Then use it in your markdown:
 ```md
 <!-- auto-gen transformName -->
 content to be replaced
-<!-- end-auto-gen -->
+<!-- /auto-gen -->
 ```
 
 ## Best Practices

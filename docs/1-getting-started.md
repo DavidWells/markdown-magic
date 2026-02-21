@@ -18,9 +18,9 @@ npm install markdown-magic --save-dev
 Add comment blocks to your markdown files to define where content should be generated:
 
 ```md
-<!-- doc-gen remote url=http://url-to-raw-md-file.md -->
+<!-- docs remote url=http://url-to-raw-md-file.md -->
 This content will be dynamically replaced from the remote url
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 Then run markdown-magic to process your files.
@@ -44,7 +44,7 @@ md-magic
 
 Process specific files with custom config:
 ```bash
-md-magic --path '**/*.md' --config ./config.file.js
+md-magic --files '**/*.md' --config ./config.file.js
 ```
 
 ### NPM Scripts Integration
@@ -54,7 +54,7 @@ Add to your `package.json`:
 ```json
 {
   "scripts": {
-    "docs": "md-magic --path '**/*.md'"
+    "docs": "md-magic --files '**/*.md'"
   }
 }
 ```
@@ -63,7 +63,7 @@ Run with: `npm run docs`
 
 ### Configuration File
 
-Create a `markdown.config.js` file in your project root for automatic configuration:
+Create an `md.config.js` or `markdown.config.js` file in your project root for automatic configuration:
 
 ```js
 module.exports = {

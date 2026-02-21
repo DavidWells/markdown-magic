@@ -21,7 +21,7 @@
     "types": "tsc --emitDeclarationOnly --outDir types",
     "docs": "node examples/generate-readme.js",
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
-    "cli": "node ./cli.js --path 'README.md' --config ./markdown.config.js",
+    "cli": "node ./cli.js --files 'README.md' --config ./md.config.js",
     "bundle": "npm run bundle:all",
     "bundle:all": "npm run bundle:mac && npm run bundle:linux && npm run bundle:windows",
     "bundle:mac": "bun build ./cli.js --compile --minify --target=bun-darwin-arm64 --outfile dist/md-magic-darwin-arm64 && bun build ./cli.js --compile --minify --target=bun-darwin-x64 --outfile dist/md-magic-darwin-x64",

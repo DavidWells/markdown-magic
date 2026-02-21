@@ -14,14 +14,14 @@ This guide covers advanced patterns and techniques for using markdown-magic effe
 You can use multiple transform blocks in sequence to build complex documentation:
 
 ```md
-<!-- doc-gen code src=./src/example.js -->
-<!-- end-doc-gen -->
+<!-- docs code src=./src/example.js -->
+<!-- /docs -->
 
-<!-- doc-gen toc -->
-<!-- end-doc-gen -->
+<!-- docs toc -->
+<!-- /docs -->
 
-<!-- doc-gen remote url=https://api.github.com/repos/owner/repo -->
-<!-- end-doc-gen -->
+<!-- docs remote url=https://api.github.com/repos/owner/repo -->
+<!-- /docs -->
 ```
 
 ### Conditional Processing
@@ -32,7 +32,7 @@ Use custom transforms to conditionally include content:
 // In your config file
 module.exports = {
   transforms: {
-    conditional: (content, options) => {
+    conditional: ({ content, options }) => {
       if (process.env.NODE_ENV === options.env) {
         return options.content || content
       }
@@ -43,8 +43,8 @@ module.exports = {
 ```
 
 ```md
-<!-- doc-gen conditional env='development' content='Development-only content' -->
-<!-- end-doc-gen -->
+<!-- docs conditional env='development' content='Development-only content' -->
+<!-- /docs -->
 ```
 
 ## Error Handling
@@ -57,7 +57,7 @@ Handle errors gracefully in your transforms:
 // Custom transform with error handling
 module.exports = {
   transforms: {
-    safeRemote: async (content, options) => {
+    safeRemote: async ({ content, options }) => {
       try {
         const response = await fetch(options.url)
         return await response.text()
@@ -85,7 +85,7 @@ const validateOptions = (options, required) => {
 
 module.exports = {
   transforms: {
-    strictRemote: (content, options) => {
+    strictRemote: ({ content, options }) => {
       validateOptions(options, ['url'])
       // ... rest of transform logic
     }
@@ -104,7 +104,7 @@ const cache = new Map()
 
 module.exports = {
   transforms: {
-    cachedRemote: async (content, options) => {
+    cachedRemote: async ({ content, options }) => {
       const cacheKey = `remote:${options.url}`
       
       if (cache.has(cacheKey)) {
@@ -142,16 +142,16 @@ Promise.all(promises).then(results => {
 ### Environment-Specific Configs
 
 ```js
-// markdown.config.js
+// md.config.js
 const isDev = process.env.NODE_ENV === 'development'
 
 module.exports = {
-  matchWord: 'doc-gen',
+  matchWord: 'docs',
   outputDir: isDev ? './docs-dev' : './docs',
   transforms: {
     // Environment-specific transforms
     ...(isDev && {
-      debug: (content, options) => {
+      debug: ({ content, options }) => {
         console.log('Debug transform:', options)
         return content
       }
@@ -170,7 +170,7 @@ import markdownMagic from 'markdown-magic'
 
 // Config for documentation
 const docsConfig = {
-  matchWord: 'doc-gen',
+  matchWord: 'docs',
   transforms: { /* docs-specific transforms */ }
 }
 
@@ -192,7 +192,7 @@ markdownMagic('./README.md', readmeConfig)
 ```js
 module.exports = {
   transforms: {
-    packageInfo: (content, options) => {
+    packageInfo: ({ content, options }) => {
       const pkg = require('./package.json')
       
       return `
@@ -220,7 +220,7 @@ const mustache = require('mustache')
 
 module.exports = {
   transforms: {
-    template: (content, options) => {
+    template: ({ content, options }) => {
       const template = options.template || content
       const data = options.data || {}
       
@@ -232,9 +232,9 @@ module.exports = {
 
 Usage:
 ```md
-<!-- doc-gen template data='{"name": "John", "role": "Developer"}' -->
+<!-- docs template data='{"name": "John", "role": "Developer"}' -->
 Hello {{name}}, you are a {{role}}!
-<!-- end-doc-gen -->
+<!-- /docs -->
 ```
 
 ## Testing Custom Transforms
@@ -249,7 +249,7 @@ describe('myTransform', () => {
   it('should process content correctly', () => {
     const content = 'original'
     const options = { param: 'value' }
-    const result = myTransform(content, options)
+    const result = myTransform({ content, options })
     
     expect(result).toBe('expected output')
   })
@@ -297,7 +297,7 @@ const debug = require('debug')('markdown-magic:custom')
 
 module.exports = {
   transforms: {
-    debugTransform: (content, options) => {
+    debugTransform: ({ content, options }) => {
       debug('Processing with options:', options)
       // ... transform logic
       debug('Result:', result)

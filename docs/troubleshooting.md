@@ -56,8 +56,8 @@ npm update markdown-magic
 
 2. **Typo in transform name**:
    ```md
-   <!-- doc-gen myTransform --> ✅
-   <!-- doc-gen mytransform --> ❌ (case sensitive)
+   <!-- docs myTransform --> ✅
+   <!-- docs mytransform --> ❌ (case sensitive)
    ```
 
 3. **Transform file not found**:
@@ -75,9 +75,9 @@ npm update markdown-magic
 
 1. **Check comment syntax**:
    ```md
-   <!-- doc-gen transformName -->  ✅
-   <!--- doc-gen transformName --> ❌ (extra dash)
-   <!-- doc-gen transformName ->   ❌ (missing dash)
+   <!-- docs transformName -->  ✅
+   <!--- docs transformName --> ❌ (extra dash)
+   <!-- docs transformName ->   ❌ (missing dash)
    ```
 
 2. **Verify match word**:
@@ -90,14 +90,14 @@ npm update markdown-magic
    
    ```md
    <!-- auto-gen transformName --> ✅
-   <!-- doc-gen transformName -->  ❌ (wrong match word)
+   <!-- docs transformName -->  ❌ (wrong match word)
    ```
 
 3. **Check file glob pattern**:
    ```bash
    # Make sure your files match the pattern
-   md-magic --path '**/*.md'      # All .md files
-   md-magic --path './docs/*.md'  # Only docs folder
+   md-magic --files '**/*.md'      # All .md files
+   md-magic --files './docs/*.md'  # Only docs folder
    ```
 
 ### Options Not Parsed
@@ -108,24 +108,24 @@ npm update markdown-magic
 
 ```md
 <!-- Correct syntax -->
-<!-- doc-gen transform option='value' another=42 -->
+<!-- docs transform option='value' another=42 -->
 
 <!-- Incorrect syntax -->
-<!-- doc-gen transform option=value -->           ❌ (missing quotes)
-<!-- doc-gen transform option = 'value' -->       ❌ (spaces around =)
-<!-- doc-gen transform option='value missing' --> ❌ (unmatched quotes)
+<!-- docs transform option=value -->           ❌ (missing quotes)
+<!-- docs transform option = 'value' -->       ❌ (spaces around =)
+<!-- docs transform option='value missing' --> ❌ (unmatched quotes)
 ```
 
 **Complex options**:
 ```md
 <!-- Arrays -->
-<!-- doc-gen transform items=['a', 'b', 'c'] -->
+<!-- docs transform items=['a', 'b', 'c'] -->
 
 <!-- Objects (use JSON string) -->
-<!-- doc-gen transform config='{"key": "value"}' -->
+<!-- docs transform config='{"key": "value"}' -->
 
 <!-- Multiline -->
-<!-- doc-gen transform
+<!-- docs transform
   longOption='very long value here'
   anotherOption=true
 -->
@@ -143,7 +143,7 @@ npm update markdown-magic
    ```bash
    # Test your glob pattern
    ls **/*.md                    # Check if files exist
-   md-magic --path '**/*.md'     # Use quotes for glob
+   md-magic --files '**/*.md'     # Use quotes for glob
    ```
 
 2. **Check working directory**:
@@ -209,14 +209,14 @@ chmod 755 docs/
 **Solutions**:
 
 1. **Use correct filename**:
-   - `markdown.config.js` (auto-detected)
-   - `md.config.js` (auto-detected)
+   - `md.config.js` (auto-detected, preferred)
+   - `markdown.config.js` (auto-detected, legacy)
    - Or specify: `--config ./my-config.js`
 
 2. **Check file location**:
    ```bash
    # Config should be in project root or specify path
-   ls -la markdown.config.js
+   ls -la md.config.js
    md-magic --config ./path/to/config.js
    ```
 
@@ -420,8 +420,8 @@ module.exports = function myTransform(content, options) {
 3. **Optimize file patterns**:
    ```bash
    # More specific patterns are faster
-   md-magic --path './docs/*.md'     # ✅ Specific directory
-   md-magic --path '**/*.md'         # ❌ Searches everywhere
+   md-magic --files './docs/*.md'     # ✅ Specific directory
+   md-magic --files '**/*.md'         # ❌ Searches everywhere
    ```
 
 ## Getting Help
@@ -443,13 +443,13 @@ node --version
 npm --version
 
 # Debug output
-DEBUG=markdown-magic:* md-magic --path './problematic-file.md' 2> debug.log
+DEBUG=markdown-magic:* md-magic --files './problematic-file.md' 2> debug.log
 
 # File contents (if not sensitive)
 cat problematic-file.md
 
 # Configuration
-cat markdown.config.js
+cat md.config.js
 ```
 
 ### Minimal Reproduction
@@ -461,15 +461,15 @@ Create a minimal example that reproduces the issue:
 const markdownMagic = require('markdown-magic')
 
 const content = `
-<!-- doc-gen problemTransform option='value' -->
-<!-- end-doc-gen -->
+<!-- docs problemTransform option='value' -->
+<!-- /docs -->
 `
 
 require('fs').writeFileSync('test.md', content)
 
 markdownMagic('test.md', {
   transforms: {
-    problemTransform: (content, options) => {
+    problemTransform: ({ content, options }) => {
       // Minimal version of your problem
       return 'result'
     }

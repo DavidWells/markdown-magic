@@ -192,20 +192,18 @@ test content
   assert.is(result.isChanged, false)
 })
 
-test('should handle both srcPath and content error', async () => {
+test('should handle both srcPath and content using preloaded content', async () => {
   /** @type {ProcessFileOptions} */
   const options = {
-    srcPath: '/some/path',
-    content: 'some content',
+    srcPath: '/some/nonexistent/path',
+    content: 'preloaded content',
     dryRun: true
   }
 
-  try {
-    await processFile(options)
-    assert.unreachable('Should have thrown an error')
-  } catch (error) {
-    assert.ok(error.message.includes('Can\'t set both "srcPath" & "content"'))
-  }
+  // When both srcPath and content are provided, content is used as preloaded
+  // file contents (caching optimization) — no error should be thrown.
+  const result = await processFile(options)
+  assert.ok(result, 'Should return a result without throwing')
 })
 
 test('should handle file with output directory', async () => {
