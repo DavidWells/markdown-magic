@@ -113,7 +113,7 @@ async function blockTransformer(inputText, config) {
   // Don't default close - let undefined pass through to enable pattern mode in block-parser
   const close = opts.close !== undefined ? opts.close : (opts.open ? undefined : CLOSE_WORD)
 
-  /** @type {ParseBlocksResult} */
+  /** @type {import('comment-block-parser').ParseBlocksResult} */
   let foundBlocks = opts.parsedBlocks
   if (!foundBlocks || !Array.isArray(foundBlocks.blocks)) {
     try {
