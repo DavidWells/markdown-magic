@@ -53,6 +53,7 @@ jobs:
         github.event_name == 'issue_comment' &&
         (
           github.event.sender.login == github.repository_owner ||
+          github.event.sender.login == 'github-actions[bot]' ||
           contains(fromJSON('["COLLABORATOR", "MEMBER", "OWNER"]'), github.event.comment.author_association)
         ) &&
         contains(github.event.comment.body, '@claude')
@@ -373,17 +374,6 @@ jobs:
           echo "Has Linked PR: ${{ steps.context-info.outputs.has-linked-pr }}"
           echo "=================================="
           
-          # Check for secrets
-          if [ -z "${{ secrets.CLAUDE_CREDS_API_KEY }}" ]; then
-            echo "::error::CLAUDE_CREDS_API_KEY is not set"
-            exit 1
-          fi
-
-          if [ -z "${{ secrets.CLAUDE_CREDS_API }}" ]; then
-            echo "::error::CLAUDE_CREDS_API is not set"
-            exit 1
-          fi
-          
           echo "✅ Environment validation complete"
 
       - name: Exit early if Issue already has linked PR
@@ -497,9 +487,12 @@ jobs:
           elif echo "$TRIGGER_TEXT" | grep -qi '\bhaiku\b'; then
             echo "⚡ Haiku model requested"
             echo "model=haiku" >> $GITHUB_OUTPUT
-          else
+          elif echo "$TRIGGER_TEXT" | grep -qi '\bsonnet\b'; then
             echo "🎵 Using default Sonnet model"
             echo "model=sonnet" >> $GITHUB_OUTPUT
+          else
+            echo "🧠 Using default Opus model"
+            echo "model=opus" >> $GITHUB_OUTPUT
           fi
       
       - name: Fetch Base Branch (PR only)
@@ -566,23 +559,6 @@ jobs:
           
           echo "📊 Project summary: $framework ($total_files files)"
       
-      # Old claude code action to fetch tokens
-      # - name: Setup Env
-      #   id: setup-env
-      #   uses: DavidWells/actions/get-claude-tokens@master
-      #   with:
-      #     api-key: ${{ secrets.CLAUDE_CREDS_API_KEY }}
-      #     api-endpoint: ${{ secrets.CLAUDE_CREDS_API }}
-
-      # - name: Run Claude PR Action
-      #   uses: davidwells/claude-code-action@main
-      #   with:
-      #     use_oauth: true
-      #     claude_access_token: ${{ steps.setup-env.outputs.access-token }}
-      #     claude_refresh_token: ${{ steps.setup-env.outputs.refresh-token }}
-      #     claude_expires_at: ${{ steps.setup-env.outputs.expires-at }}
-      #     model: ${{ steps.setup-env.outputs.model || 'claude-sonnet-4-20250514' }}
-      #     allowed_tools: ${{ steps.setup-env.outputs.allowed_tools || 'Bash,Edit,Read,Write,Glob,Grep,LS,MultiEdit,NotebookRead,NotebookEdit' }}
       #     timeout_minutes: "60"
 
       - name: Run Claude Code
@@ -592,7 +568,7 @@ jobs:
         continue-on-error: true
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN || github.token }}
           # GITHUB ACTIONS (Maximum Freedom):
           settings: |
             {
