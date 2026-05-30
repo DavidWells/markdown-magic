@@ -9,7 +9,7 @@ const {
   convertToArray,
   addValue,
   customIsGlob,
-} = require('dx-args')
+} = require('@davidwells/dx-args')
 
 module.exports = {
   getGlobGroupsFromArgs,

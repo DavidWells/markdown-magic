@@ -1,5 +1,5 @@
 
-const { splitOutsideQuotes } = require('dx-args')
+const { splitOutsideQuotes } = require('@davidwells/dx-args')
 
 module.exports = {
   splitOutsideQuotes,

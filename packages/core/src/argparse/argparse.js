@@ -1,4 +1,4 @@
-const { dxParse } = require('dx-args')
+const { dxParse } = require('@davidwells/dx-args')
 
 if (require.main === module) {
   const result = dxParse(process.argv.slice(2))

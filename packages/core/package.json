@@ -45,7 +45,7 @@
     "comment-block-parser": "workspace:*",
     "comment-block-replacer": "workspace:*",
     "comment-block-transformer": "workspace:*",
-    "dx-args": "workspace:*",
+    "@davidwells/dx-args": "workspace:*",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",

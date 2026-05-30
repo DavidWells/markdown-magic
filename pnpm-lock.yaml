@@ -93,6 +93,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@davidwells/dx-args':
+        specifier: workspace:*
+        version: link:../dx-args
       '@davidwells/md-utils':
         specifier: 0.0.53
         version: 0.0.53
@@ -108,9 +111,6 @@ importers:
       comment-block-transformer:
         specifier: workspace:*
         version: link:../block-transformer
-      dx-args:
-        specifier: workspace:*
-        version: link:../dx-args
       globrex:
         specifier: ^0.1.2
         version: 0.1.2

@@ -1,5 +1,5 @@
 {
-  "name": "dx-args",
+  "name": "@davidwells/dx-args",
   "version": "0.1.0",
   "description": "A forgiving argv parser for CLIs that accepts loose key/value syntax, globs, and typo-tolerant long flags.",
   "main": "src/index.js",

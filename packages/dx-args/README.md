@@ -1,11 +1,11 @@
-# dx-args
+# @davidwells/dx-args
 
 A forgiving argv parser for CLIs that should keep working when someone types a slightly imperfect command.
 
-`dx-args` keeps `oparser` as the value parser. It adds argv normalization, file/glob grouping, single-dash long option recovery, and a predictable result shape around it.
+`@davidwells/dx-args` keeps `oparser` as the value parser. It adds argv normalization, file/glob grouping, single-dash long option recovery, and a predictable result shape around it.
 
 ```js
-const { dxParse } = require('dx-args')
+const { dxParse } = require('@davidwells/dx-args')
 
 const result = dxParse(['-files', 'README.md', '-dry'])
 
@@ -19,7 +19,7 @@ console.log(result.globGroups)
 ## Install
 
 ```sh
-npm install dx-args
+npm install @davidwells/dx-args
 ```
 
 ## API
@@ -29,7 +29,7 @@ const {
   dxParse,
   getGlobGroupsFromArgs,
   splitOutsideQuotes,
-} = require('dx-args')
+} = require('@davidwells/dx-args')
 ```
 
 ### `dxParse(argv, opts)`
@@ -130,7 +130,7 @@ The remaining fields are diagnostic:
 
 ## Glob Groups
 
-`dx-args` groups file-looking and glob-looking arguments so CLIs can handle files separately from ordinary options.
+`@davidwells/dx-args` groups file-looking and glob-looking arguments so CLIs can handle files separately from ordinary options.
 
 ```js
 dxParse(['--files', 'README.md', 'docs/**/*.md']).globGroups
@@ -238,7 +238,7 @@ Markdown Magic maps parser output like this:
 - `file`, `files`, `path`, and bare file groups become `config.files`.
 - `ignore` groups become `config.ignore`.
 - Other `mergedOptions` become Markdown Magic config overrides.
-- `output` and `outputDir` normalization happens in Markdown Magic, not `dx-args`.
+- `output` and `outputDir` normalization happens in Markdown Magic, not `@davidwells/dx-args`.
 
 Example Markdown Magic commands:
 
