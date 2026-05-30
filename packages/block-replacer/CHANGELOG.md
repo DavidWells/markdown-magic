@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.19](https://github.com/DavidWells/markdown-magic/compare/comment-block-replacer@0.1.18...comment-block-replacer@0.1.19) (2026-05-30)
+
+
+### Bug Fixes
+
+* **block-replacer:** update test to reflect preloaded-content behavior ([f1394c4](https://github.com/DavidWells/markdown-magic/commit/f1394c44a174101aac8e5972f0734c3011ca17fa))
+
+
+
+
+
 ## [0.1.18](https://github.com/DavidWells/markdown-magic/compare/comment-block-replacer@0.1.17...comment-block-replacer@0.1.18) (2026-01-19)
 
 **Note:** Version bump only for package comment-block-replacer

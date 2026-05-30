@@ -1,6 +1,6 @@
 {
   "name": "markdown-magic",
-  "version": "4.8.0",
+  "version": "4.9.0",
   "description": "Automatically update markdown files with content from external sources",
   "main": "src/index.js",
   "bin": {
@@ -40,12 +40,12 @@
     "url": "https://github.com/DavidWells/markdown-magic"
   },
   "dependencies": {
+    "@davidwells/dx-args": "workspace:*",
     "@davidwells/md-utils": "0.0.53",
     "color-convert": "^2.0.1",
     "comment-block-parser": "workspace:*",
     "comment-block-replacer": "workspace:*",
     "comment-block-transformer": "workspace:*",
-    "@davidwells/dx-args": "workspace:*",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
