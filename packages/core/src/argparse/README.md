@@ -1,11 +1,6 @@
 # Argparse
 
-WIP. A forgiven argv parser.
+Markdown Magic keeps this directory as a compatibility surface for older deep
+imports. The parser implementation now lives in the `dx-args` workspace package.
 
-See `argparse.test.js` for usage.
-
-Rules 
-
-- If single char `-x` is found, it is a boolean flag.
-- If `-x=value` is found, it is a key value pair.
-- If `--` is found, then all following args collected as a full arg `rest`
+See `packages/dx-args/README.md` and `argparse.test.js` for behavior examples.
