@@ -1,5 +1,5 @@
-const { uxParse } = require('./argparse')
+const { dxParse } = require('./argparse')
 
 module.exports = {
-  uxParse
+  dxParse,
 }

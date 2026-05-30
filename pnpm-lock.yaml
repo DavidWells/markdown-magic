@@ -49,8 +49,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       oparser:
-        specifier: ^3.0.24
-        version: 3.0.24
+        specifier: ^3.1.0
+        version: 3.1.0
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -108,6 +108,9 @@ importers:
       comment-block-transformer:
         specifier: workspace:*
         version: link:../block-transformer
+      dx-args:
+        specifier: workspace:*
+        version: link:../dx-args
       globrex:
         specifier: ^0.1.2
         version: 0.1.2
@@ -136,8 +139,8 @@ importers:
         specifier: ^2.7.0
         version: 2.7.0(encoding@0.1.13)
       oparser:
-        specifier: ^3.0.24
-        version: 3.0.24
+        specifier: ^3.1.0
+        version: 3.1.0
       punycode:
         specifier: ^2.3.1
         version: 2.3.1
@@ -165,6 +168,31 @@ importers:
         version: 5.8.3
       uvu:
         specifier: ^0.5.1
+        version: 0.5.6
+
+  packages/dx-args:
+    dependencies:
+      is-glob:
+        specifier: ^4.0.3
+        version: 4.0.3
+      is-valid-path:
+        specifier: ^0.1.1
+        version: 0.1.1
+      mri:
+        specifier: ^1.2.0
+        version: 1.2.0
+      oparser:
+        specifier: ^3.1.0
+        version: 3.1.0
+    devDependencies:
+      rimraf:
+        specifier: ^5.0.0
+        version: 5.0.10
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      uvu:
+        specifier: ^0.5.6
         version: 0.5.6
 
   packages/plugin-dependency-table:
@@ -1479,20 +1507,23 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@11.0.3:
     resolution: {integrity: sha512-2Nim7dha1KVkaiF4q6Dj+ngPPMdfvLJEOpZk/jKiUAkqKebpGAWQXAq9z1xu9HKu5lWfqw/FASuccEjyznjPaA==}
     engines: {node: 20 || >=22}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   glob@9.3.5:
     resolution: {integrity: sha512-e1LleDykUz2Iu+MTYdkSsuWX8lvAjAcs0Xef0lNIu0S2wOAzuTxCJtcd9S3cijlwYF18EsU3rzb8jPVobxDh9Q==}
     engines: {node: '>=16 || 14 >=14.17'}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globalyzer@0.1.4:
     resolution: {integrity: sha512-LeguVWaxgHN0MNbWC6YljNMzHkrCny9fzjmEUdnF1kQ7wATFD1RHFRqA1qxaX2tgxGENlcxjOflopBwj3YZiXA==}
@@ -1845,6 +1876,9 @@ packages:
 
   json-alexander@0.1.13:
     resolution: {integrity: sha512-s84SuqZwnb7mGJB03sGlcdx458FR91Uwwy2lKJBDN+TBJ7ARbyP/ssGnjW9t5QyxwG/b23W22Dz9Ga6nuyHqnA==}
+
+  json-alexander@0.1.14:
+    resolution: {integrity: sha512-gM2u2bGDQWCAplwKEOo39ETOxZspMYKSzkQPzZ2+bX2gIqOo0im9JjesAs9yKjIE2xDuwOqa5pLEJ/M/O4Mv3g==}
 
   json-parse-better-errors@1.0.2:
     resolution: {integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==}
@@ -2315,8 +2349,8 @@ packages:
   oparser@2.2.1:
     resolution: {integrity: sha512-abZhs0fqhiWXyT1Klqj8IeNGRIz08+jqaDJXmC1FM8FfEgwcxufK3RrJJm8UEjmG0XJgoyCzREeozN8eAEBezA==}
 
-  oparser@3.0.24:
-    resolution: {integrity: sha512-dBeR+X0BTWn2JI/7/YSuUxQOPOnHcNxd0ViBaoHQQLkYzkLqzYBaLraa2i7IK2hjg7Xc3rwCZNdZUucJjBuUgg==}
+  oparser@3.1.0:
+    resolution: {integrity: sha512-IWwRmlfF2b+yKXO9Ol+0q6B1LnhQAxcIuhr1GvpttIsCkJ0EKSHV46v7BdBnuFzrChydm8+I2g0vdP8CQXNkJw==}
 
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
@@ -2904,10 +2938,12 @@ packages:
   tar@6.2.1:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   tar@7.5.1:
     resolution: {integrity: sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   temp-dir@1.0.0:
     resolution: {integrity: sha512-xZFXEGbG7SNC3itwBzI3RYjq/cEhBkx2hJuKGIUOcEULmkQExXiHat2z/qkISYsuR+IKumhEfKKbV5qXmhICFQ==}
@@ -3207,13 +3243,13 @@ snapshots:
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24
-      oparser: 3.0.24
+      oparser: 3.1.0
 
   '@davidwells/md-utils@0.0.53':
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24
-      oparser: 3.0.24
+      oparser: 3.1.0
 
   '@emnapi/core@1.6.0':
     dependencies:
@@ -5008,6 +5044,8 @@ snapshots:
 
   json-alexander@0.1.13: {}
 
+  json-alexander@0.1.14: {}
+
   json-parse-better-errors@1.0.2: {}
 
   json-parse-even-better-errors@2.3.1: {}
@@ -5309,7 +5347,7 @@ snapshots:
       module-alias: 2.2.3
       mri: 1.2.0
       node-fetch: 2.7.0(encoding@0.1.13)
-      oparser: 3.0.24
+      oparser: 3.1.0
       punycode: 2.3.1
       smart-glob: 1.0.2
       string-width: 4.2.3
@@ -5363,7 +5401,7 @@ snapshots:
 
   micro-mdx-parser@1.1.24:
     dependencies:
-      oparser: 3.0.24
+      oparser: 3.1.0
 
   micromatch@4.0.8:
     dependencies:
@@ -5682,9 +5720,9 @@ snapshots:
     dependencies:
       json-alexander: 0.1.13
 
-  oparser@3.0.24:
+  oparser@3.1.0:
     dependencies:
-      json-alexander: 0.1.13
+      json-alexander: 0.1.14
 
   open@8.4.2:
     dependencies:

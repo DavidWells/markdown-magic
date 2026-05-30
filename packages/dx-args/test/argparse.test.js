@@ -1,12 +1,12 @@
 // @ts-nocheck
+const util = require('util')
 const { test } = require('uvu')
 const assert = require('uvu/assert')
-const { deepLog } = require('../utils/logs')
-const { dxParse } = require('./argparse')
+const { dxParse, getGlobGroupsFromArgs, splitOutsideQuotes } = require('../src')
 
 const DEBUG = (process.argv.includes('--debug')) ? true : false
 const logger = DEBUG ? console.log : () => {}
-const deepLogger = DEBUG ? deepLog : () => {}
+const deepLogger = DEBUG ? (label, value) => console.log(label, util.inspect(value, false, null, true)) : () => {}
 
 function logInput(rawArgs, result) {
   logger('\n───────────────────────')
@@ -24,6 +24,63 @@ function stringToArgs(str) {
 
 test('Exports API', () => {
   assert.equal(typeof dxParse, 'function', 'undefined val')
+})
+
+test('README documented examples stay accurate', () => {
+  assert.equal(dxParse(['-files', 'README.md', '-dry']).mergedOptions, {
+    files: 'README.md',
+    dry: true
+  })
+  assert.equal(dxParse(['-files', 'README.md', '-dry']).globGroups, [
+    { key: 'files', rawKey: '-files', values: ['README.md'] }
+  ])
+  assert.equal(dxParse(['--stage', 'prod', 'cool', '=', 'true']).mergedOptions, {
+    stage: 'prod',
+    cool: true
+  })
+  assert.equal(getGlobGroupsFromArgs(['--files', 'README.md', 'docs/**/*.md'], {
+    globKeys: ['files']
+  }).globGroups, [
+    { key: 'files', rawKey: '--files', values: ['README.md', 'docs/**/*.md'] }
+  ])
+  assert.equal(splitOutsideQuotes('name = "David Wells" config={ enabled: true }'), [
+    'name="David Wells"',
+    'config={ enabled: true }'
+  ])
+  assert.equal(dxParse(['README.md', 'docs/**/*.md', '--stage', 'dev']).globGroups, [
+    { key: '', rawKey: '', values: ['README.md', 'docs/**/*.md'] }
+  ])
+  assert.equal(dxParse(['README.md', 'docs/**/*.md', '--stage', 'dev']).mergedOptions, {
+    stage: 'dev'
+  })
+  assert.equal(dxParse(['--ignore', 'dist/**/*.md'], {
+    globKeys: ['files', 'file', 'path', 'ignore']
+  }).globGroups, [
+    { key: 'ignore', rawKey: '--ignore', values: ['dist/**/*.md'] }
+  ])
+  assert.equal(dxParse(['README.md', 'NOTES.md', 'build', '=', 'false']).mergedOptions, {
+    build: false
+  })
+  assert.equal(dxParse(['--stage', 'dev', '--stage', 'prod']).mergedOptions, {
+    stage: 'prod'
+  })
+  assert.equal(dxParse(['--tag', 'one', '--tag', 'two'], { accumulate: ['tag'] }).mergedOptions, {
+    tag: ['one', 'two']
+  })
+  assert.equal(dxParse(['--tag', 'one', '--tag', 'two'], { accumulateFlags: ['tag'] }).mergedOptions, {
+    tag: ['one', 'two']
+  })
+  assert.equal(dxParse(['--tag', 'one', '--tag', 'two'], { arrayKeys: ['tag'] }).mergedOptions, {
+    tag: ['one', 'two']
+  })
+  assert.equal(dxParse(['-stage', 'prod']).mergedOptions, { stage: 'prod' })
+  assert.equal(dxParse(['-config', 'md.config.js']).mergedOptions, { config: 'md.config.js' })
+  assert.equal(dxParse(['-l', '-a', '-h']).mergedOptions, { l: true, a: true, h: true })
+  assert.equal(dxParse(['-abc']).mergedOptions, { abc: true })
+  assert.equal(dxParse(['-abc'], {
+    allowShortClusters: true,
+    shortFlags: ['a', 'b', 'c']
+  }).mergedOptions, { a: true, b: true, c: true })
 })
 
 const cmd00 = stringToArgs('lol = true cool = false')
@@ -259,21 +316,21 @@ test(`Handles values with equals "CLI ${cmd12.join(' ')}"`, () => {
   }
 })
 
-const cmd15 = stringToArgs('--param=userPoolId=us-west-1_fjsPJ6Q8J --param=userPoolClientId=19vdp5je9jsjkn488ddl4jvk19')
+const cmd15 = stringToArgs('--param=userPoolId=us-west-1_fjsPJ6Q8J --param=userPoolClientId=19vdp5je9abc488ddl4jvk19')
 test(`Accumulates configured array values "CLI ${cmd15.join(' ')}"`, () => {
   const result = dxParse(cmd15, { accumulate: ['param'] })
   deepLogger('result', result)
   assert.equal(result.mergedOptions, {
-    param: ['userPoolId=us-west-1_fjsPJ6Q8J', 'userPoolClientId=19vdp5je9jsjkn488ddl4jvk19'],
+    param: ['userPoolId=us-west-1_fjsPJ6Q8J', 'userPoolClientId=19vdp5je9abc488ddl4jvk19'],
   })
 })
 
-const cmd16 = stringToArgs('--param="userPoolId=us-west-1_fjsPJ6Q8J" --param="userPoolClientId=19vdp5je9jsjkn488ddl4jvk19"')
+const cmd16 = stringToArgs('--param="userPoolId=us-west-1_fjsPJ6Q8J" --param="userPoolClientId=19vdp5je9abc488ddl4jvk19"')
 test(`Strips surrounding quotes "CLI ${cmd16.join(' ')}"`, () => {
   const result = dxParse(cmd16, { accumulate: ['param'] })
   deepLogger('result', result)
   assert.equal(result.mergedOptions, {
-    param: ['userPoolId=us-west-1_fjsPJ6Q8J', 'userPoolClientId=19vdp5je9jsjkn488ddl4jvk19'],
+    param: ['userPoolId=us-west-1_fjsPJ6Q8J', 'userPoolClientId=19vdp5je9abc488ddl4jvk19'],
   })
 })
 

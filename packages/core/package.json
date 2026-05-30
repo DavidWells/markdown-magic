@@ -45,6 +45,7 @@
     "comment-block-parser": "workspace:*",
     "comment-block-replacer": "workspace:*",
     "comment-block-transformer": "workspace:*",
+    "dx-args": "workspace:*",
     "globrex": "^0.1.2",
     "gray-matter": "^4.0.3",
     "is-glob": "^4.0.3",
@@ -54,7 +55,7 @@
     "module-alias": "^2.2.3",
     "mri": "^1.2.0",
     "node-fetch": "^2.7.0",
-    "oparser": "^3.0.24",
+    "oparser": "^3.1.0",
     "punycode": "^2.3.1",
     "smart-glob": "^1.0.2",
     "string-width": "^4.2.3"

@@ -4,11 +4,8 @@ const { loadConfig } = require('./utils/load-config')
 const { findUp } = require('./utils/fs')
 const { markdownMagic } = require('./')
 const { processFile } = require('comment-block-replacer')
-const { parse } = require('oparser')
 const defaultTransforms = require('./transforms')
-const { getGlobGroupsFromArgs } = require('./globparse')
-// const { deepLog } = require('./utils/logs')
-// const { uxParse } = require('./argparse/argparse')
+const { dxParse, getGlobGroupsFromArgs } = require('dx-args')
 const argv = process.argv.slice(2)
 const cwd = process.cwd()
 const defaultConfigPaths = ['md.config.js', 'markdown.config.js']
@@ -116,11 +113,7 @@ async function findFirstConfig(baseDir, configPaths = []) {
   }
 }
 
-function findSingleDashStrings(arr) {
-  return arr.filter(str => str.match(/^-[^-]/))
-}
-
-async function runCli(options = {}, rawArgv) {
+async function runCli(options = {}, rawArgv, deps = {}) {
   if (options.help || options.h) {
     console.log(`
 Usage: md-magic [options] [files...]
@@ -214,168 +207,9 @@ Stdin/stdout mode:
   let configFile
   let opts = {}
 
-  /*
-  const result = uxParse(rawArgv)
-  console.log('───────────────────────────────')
-  deepLog(result)
-  process.exit(1)
-  // process.exit(1)
-  /** */
-
-  /*
-  console.log('argv', argv)
-  console.log('options', options)
-  /** */
-  options.files = []
-  /* If raw args found, process them further */
-  if (argv.length && (options._ && options._.length || (options.file || options.files || options.path))) {
-    // if (isGlob(argv[0])) {
-    //   console.log('glob', argv[0])
-    //   options.glob = argv[0]
-    // }
-    const globParse = getGlobGroupsFromArgs(argv, {
-      /* CLI args that should be glob keys */
-      globKeys: ['files', 'file', 'path']
-    })
-    const { globGroups, otherOpts } = globParse
-    /*
-    console.log('globGroups', globGroups)
-    console.log('globParse', globParse)
-    // deepLog(globParse)
-    process.exit(1)
-    /** */
-    /* Parse for weird CLI inputs */
-
-    /* Handle -- and - flags */
-    let newArray = [] 
-    for (let i = 0; i < otherOpts.length; i++) {
-      const curr = otherOpts[i]
-      const prev = newArray[i - 1]
-      const next = otherOpts[i + 1] || ''
-      const isLast = otherOpts.length === i + 1
-      // console.log('curr', curr)
-      // console.log('prev', prev)
-      if (curr.match(/^-+/)) {
-        const cleanX = curr.replace(/^-+/, '')
-        if (next.match(/^-+/) || isLast) {
-          newArray.push(cleanX + '= true ')
-          continue
-        }
-        // If the current option is the last option, don't add an equal sign
-        const equal = (cleanX.indexOf('=') === -1 || isLast) ? '=' : ' '
-        const final = cleanX + equal
-        newArray.push(final)
-        continue
-      }
-      if (prev && prev.match(/=\s?$/) && (curr.match(/^\s?=/) || curr.trim() === '=')) {
-        continue
-      }
-      newArray.push(curr + ' ')
-    }
-
-    const optString = newArray.join('')
-    const extraParse = parse(optString)
-    const singleDashStrings = findSingleDashStrings(otherOpts).map((x) => x.replace(/^-+/, ''))
-    // console.log('singleDashStrings', singleDashStrings)
-    // console.log('before options', options)
-    // console.log('before extraParse', extraParse)
-    
-    const STRIP_SINGLE_DASH_OPTIONS = true
-    if (STRIP_SINGLE_DASH_OPTIONS && singleDashStrings.length) {
-      for (let i = 0; i < singleDashStrings.length; i++) {
-        const word = singleDashStrings[i]
-        // Loop over all letters of single dash options -word and remove any corresponding letter: true
-        for (let j = 0; j < word.length; j++) {
-          const letter = word[j]
-          if (options[letter]) {
-            delete options[letter]
-          }
-        }
-      }
-      // console.log('after options', options)
-    }
-
-    if (extraParse.test) {
-      /*
-      console.log('optStringArr', newArray)
-      console.log('optString', optString)
-      console.log('otherOpts strings', otherOpts)
-      console.log('nicely handed CLI args')
-      console.log('extraParse', extraParse)
-      process.exit(1)
-      /** */
-    }
-  
-
-    if (globGroups.length) {
-      const globGroupByKey = globGroups.reduce((acc, curr, i) => {
-        acc[curr.key] = globGroups[i]
-        return acc
-      }, {})
-      // console.log('globGroupByKey', globGroupByKey)
-
-  
-      if (globGroupByKey.file) {
-        options.files = options.files.concat(globGroupByKey.file.values)
-        delete options.file
-      }
-      if (globGroupByKey.files) {
-        options.files = options.files.concat(globGroupByKey.files.values)
-      } 
-      if (globGroupByKey.path) {
-        options.files = options.files.concat(globGroupByKey.path.values)
-        delete options.path
-      }
-      if (globGroupByKey['']) {
-        options.files = options.files.concat(globGroupByKey[''].values)
-      }
-
-      if (globGroupByKey.ignore) {
-        options.ignore = globGroupByKey.ignore.values
-      }
-      
-      /*
-      deepLog(options)
-      /** */
-    }
-
-    if (extraParse.file) {
-      options.files = options.files.concat(extraParse.file)
-      delete extraParse.file
-    }
-
-    if (extraParse.files) {
-      options.files = options.files.concat(extraParse.files)
-      delete extraParse.files
-    }
-
-    if (extraParse.path) {
-      options.files = options.files.concat(extraParse.path)
-      delete extraParse.path
-    }
-
-    if (extraParse['--files']) {
-      options.files = options.files.concat(extraParse['--files'])
-      delete extraParse['--files']
-    }
-
-    // console.log('options.files', options.files)
-
-    options.files = options.files.map((x) => {
-      if (typeof x === 'string' && x.match(/,/)) {
-        return x.split(',')
-      }
-      return x
-    })
-    .flat()
-    .filter(onlyUnique)
-
-    delete options._
-    opts = {
-      ...options,
-      ...extraParse
-    }
-    //console.log('opts', opts)
+  const cliArgv = Array.isArray(rawArgv) ? rawArgv : argv
+  if (cliArgv.length) {
+    opts = parseCliArgv(cliArgv)
   }
   if (opts.config) {
     configFile = opts.config
@@ -398,7 +232,75 @@ Stdin/stdout mode:
   process.exit(1)
   // return
   /** */
-  return markdownMagic(mergedConfig)
+  const runMarkdownMagic = deps.markdownMagic || markdownMagic
+  return runMarkdownMagic(mergedConfig)
+}
+
+function parseCliArgv(rawArgv = []) {
+  return normalizeCliOptions(dxParse(rawArgv, {
+    globKeys: ['files', 'file', 'path', 'ignore']
+  }))
+}
+
+function normalizeCliOptions(parsed) {
+  const mergedOptions = parsed.mergedOptions || {}
+  const opts = {
+    ...mergedOptions,
+    files: []
+  }
+  const globGroupByKey = parsed.globGroups.reduce((acc, curr) => {
+    acc[curr.key] = curr
+    return acc
+  }, {})
+
+  if (globGroupByKey.file) {
+    opts.files = opts.files.concat(globGroupByKey.file.values)
+  }
+  if (globGroupByKey.files) {
+    opts.files = opts.files.concat(globGroupByKey.files.values)
+  }
+  if (globGroupByKey.path) {
+    opts.files = opts.files.concat(globGroupByKey.path.values)
+  }
+  if (globGroupByKey['']) {
+    opts.files = opts.files.concat(globGroupByKey[''].values)
+  }
+  if (globGroupByKey.ignore) {
+    opts.ignore = globGroupByKey.ignore.values
+  }
+
+  if (mergedOptions.file) {
+    opts.files = opts.files.concat(mergedOptions.file)
+    delete opts.file
+  }
+  if (mergedOptions.files) {
+    opts.files = opts.files.concat(mergedOptions.files)
+  }
+  if (mergedOptions.path) {
+    opts.files = opts.files.concat(mergedOptions.path)
+    delete opts.path
+  }
+  if (mergedOptions['--files']) {
+    opts.files = opts.files.concat(mergedOptions['--files'])
+    delete opts['--files']
+  }
+
+  delete opts._
+  delete opts.file
+  delete opts.path
+  opts.files = normalizeFileList(opts.files)
+  return opts
+}
+
+function normalizeFileList(files = []) {
+  return files.map((x) => {
+    if (typeof x === 'string' && x.match(/,/)) {
+      return x.split(',')
+    }
+    return x
+  })
+  .flat()
+  .filter(onlyUnique)
 }
 
 function onlyUnique(value, index, self) {
@@ -407,5 +309,7 @@ function onlyUnique(value, index, self) {
 
 module.exports = {
   getGlobGroupsFromArgs,
+  parseCliArgv,
+  normalizeCliOptions,
   runCli
 }

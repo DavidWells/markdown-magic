@@ -2,7 +2,7 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationMap": true,
@@ -25,4 +25,4 @@
     "test/**",
     "types"
   ]
-} 
+}

@@ -1,0 +1,61 @@
+{
+  "name": "dx-args",
+  "version": "0.1.0",
+  "description": "A forgiving argv parser for CLIs that accepts loose key/value syntax, globs, and typo-tolerant long flags.",
+  "main": "src/index.js",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "bin": {
+    "dx-args": "src/index.js"
+  },
+  "files": [
+    "src",
+    "types",
+    "README.md",
+    "package.json"
+  ],
+  "keywords": [
+    "argv",
+    "args",
+    "cli",
+    "parser",
+    "forgiving",
+    "glob"
+  ],
+  "author": "David Wells",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DavidWells/markdown-magic",
+    "directory": "packages/dx-args"
+  },
+  "scripts": {
+    "test": "uvu test '.test.([mc]js|[jt]sx?)$'",
+    "types": "tsc --emitDeclarationOnly --outDir types",
+    "build": "pnpm run types",
+    "clean": "rimraf types coverage .nyc_output"
+  },
+  "dependencies": {
+    "is-glob": "^4.0.3",
+    "is-valid-path": "^0.1.1",
+    "mri": "^1.2.0",
+    "oparser": "^3.1.0"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.0",
+    "uvu": "^0.5.6"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

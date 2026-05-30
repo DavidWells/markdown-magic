@@ -22,7 +22,7 @@ const CLOSE_WORD = '/block'
  */
 
 /**
- * Transform function API. 
+ * Transform function API.
  * This is the object passed to the transform function.
  * @typedef {Object} TransformApi
  * @property {string} transform - Name of the transform
@@ -89,6 +89,11 @@ const CLOSE_WORD = '/block'
  */
 
 /**
+ * Backwards-compatible result type name used by comment-block-replacer.
+ * @typedef {BlockTransformerResult} ProcessContentResult
+ */
+
+/**
  * Transform markdown blocks based on configured transforms
  * @param {string} inputText - The text content to process
  * @param {ProcessContentConfig} config - Configuration options
@@ -113,7 +118,7 @@ async function blockTransformer(inputText, config) {
   // Don't default close - let undefined pass through to enable pattern mode in block-parser
   const close = opts.close !== undefined ? opts.close : (opts.open ? undefined : CLOSE_WORD)
 
-  /** @type {import('comment-block-parser').ParseBlocksResult} */
+  /** @type {import('comment-block-parser').ParseBlocksResult|undefined} */
   let foundBlocks = opts.parsedBlocks
   if (!foundBlocks || !Array.isArray(foundBlocks.blocks)) {
     try {
@@ -128,6 +133,9 @@ async function blockTransformer(inputText, config) {
       const errMsg = (srcPath) ? `in ${srcPath}` : inputText
       throw new Error(`${e.message}\nFix content in ${errMsg}\n`)
     }
+  }
+  if (!foundBlocks) {
+    throw new Error('Unable to parse comment blocks')
   }
 
 
@@ -155,7 +163,7 @@ async function blockTransformer(inputText, config) {
   let missingTransforms = []
   // Track cumulative offset changes as we modify the text
   let cumulativeOffset = 0
-  
+
   let updatedContents = await transformsToRun.reduce(async (contentPromise, originalMatch) => {
     const updatedText = await contentPromise
     /* Apply leading middleware */
@@ -163,7 +171,7 @@ async function blockTransformer(inputText, config) {
     const { block, content, open, close, transform, options, context, index } = match
     const closeTag = close.value
     const openTag = open.value
-    
+
     let tempContent = content.value
     const currentTransformFn = getTransform(transform, transforms)
 
@@ -272,22 +280,22 @@ async function blockTransformer(inputText, config) {
     if (!context.isMultiline && fix.indexOf('\n') > -1) {
       fixWrapper = '\n'
     }
-  
+
     // console.log('updatedText', block.value)
-    
+
     const indent = addLeadingNewline + indentString(fix, preserveIndent) + addTrailingNewline
     const newCont = `${openTag}${fixWrapper}${indent}${fixWrapper}${closeTag}`
-    
+
     // Use position-based replacement to handle duplicate block content
     const adjustedStart = block.start + cumulativeOffset
     const adjustedEnd = block.end + cumulativeOffset
     const before = updatedText.substring(0, adjustedStart)
     const after = updatedText.substring(adjustedEnd)
     const newContents = before + newCont + after
-    
+
     // Update offset for next iteration
     cumulativeOffset += (newCont.length - block.value.length)
-    
+
     return Promise.resolve(newContents)
   }, Promise.resolve(inputText))
 
@@ -503,4 +511,4 @@ module.exports = {
   blockTransformer,
   indentString,
   normalizeBlankLines,
-} 
+}
