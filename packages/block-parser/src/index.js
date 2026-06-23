@@ -556,7 +556,7 @@ Details:
       if (paramString[0] === '(' && paramString[paramString.length - 1] === ')') {
         paramString = paramString.replace(/^\(/, '').replace(/\)$/g, '')
       }
-      options = parse(paramString)
+      options = paramString ? parse(paramString) : {}
     }
 
     // console.log('open start', openStart)

@@ -39,21 +39,30 @@ function dedentStringBasic(str) {
  * @param {boolean} [options.preserveEmptyLines=false] - Whether to preserve leading/trailing empty lines
  * @returns {{ minIndent: number, text: string }} A string without the indentation
  */
+const NON_WHITESPACE = /\S/
+
 function dedentString(text, options = {}) {
   const { preserveEmptyLines = false } = options
-  
+
   if (!text) return { minIndent: 0, text: '' }
   const lines = text.split('\n')
   let minIndent = null
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    if (line.trim() === '') continue
+    if (!NON_WHITESPACE.test(line)) continue
     let indent = 0
     while (indent < line.length && (line[indent] === ' ' || line[indent] === '\t')) indent++
     if (minIndent === null || indent < minIndent) minIndent = indent
+    if (minIndent === 0) break // 0 is the floor, no line can lower it further
   }
   if (minIndent === null) return { minIndent: 0, text: text.trim() }
-  
+
+  /* minIndent 0 means nothing to strip; rejoined lines equal the original text */
+  if (minIndent === 0) {
+    const cleanResult = preserveEmptyLines ? text : text.replace(/^[\r\n]+|[\r\n]+$/g, '')
+    return { minIndent: 0, text: cleanResult }
+  }
+
   let result = ''
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
