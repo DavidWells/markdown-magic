@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.10.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.9.0...markdown-magic@4.10.0) (2026-06-23)
+
+
+### Features
+
+* **markdown:** add section extraction options ([4107bac](https://github.com/DavidWells/markdown-magic/commit/4107baca2deb73611cda087c7c707a27aa9b61fd))
+
+
+
+
+
 # [4.9.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.8.0...markdown-magic@4.9.0) (2026-05-30)
 
 
