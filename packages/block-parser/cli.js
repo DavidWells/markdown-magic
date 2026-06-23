@@ -14,6 +14,7 @@ const options = mri(argv, {
   },
 })
 
+
 /**
  * Read all data from stdin
  * @returns {Promise<string>}
