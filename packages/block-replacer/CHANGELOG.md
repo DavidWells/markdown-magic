@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.23](https://github.com/DavidWells/markdown-magic/compare/comment-block-replacer@0.1.22...comment-block-replacer@0.1.23) (2026-06-23)
+
+**Note:** Version bump only for package comment-block-replacer
+
+
+
+
+
 ## [0.1.22](https://github.com/DavidWells/markdown-magic/compare/comment-block-replacer@0.1.21...comment-block-replacer@0.1.22) (2026-06-23)
 
 **Note:** Version bump only for package comment-block-replacer
