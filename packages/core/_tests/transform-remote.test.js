@@ -1,6 +1,7 @@
 // Tests for remote transform
 
 const fs = require('fs')
+const http = require('http')
 const path = require('path')
 const { test } = require('uvu')
 const assert = require('uvu/assert')
@@ -22,6 +23,23 @@ function ensureDir(dir) {
 }
 
 const SILENT = true
+
+function listen(server) {
+  return new Promise((resolve) => {
+    server.listen(0, () => {
+      resolve(server.address().port)
+    })
+  })
+}
+
+function close(server) {
+  return new Promise((resolve, reject) => {
+    server.close((err) => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+}
 
 test('remote - fetches content from URL', async () => {
   const fileName = 'transform-remote.md'
@@ -139,6 +157,65 @@ original
     newContent.includes('JSDoc') || newContent.includes('types') || newContent.includes('TypeScript'),
     'remote GitHub content fetched'
   )
+})
+
+test('remote - extracts markdown sections and heading levels', async () => {
+  const server = http.createServer((req, res) => {
+    res.setHeader('content-type', 'text/markdown')
+    res.end(`# Package
+
+## Install
+
+Install docs.
+
+### Browser
+
+Browser docs.
+
+## Usage
+
+Usage docs.
+
+## License
+
+MIT.
+`)
+  })
+
+  const port = await listen(server)
+
+  try {
+    const content = `<!-- docs remote
+  url='http://127.0.0.1:${port}/README.md'
+  sections="Install"
+  headings={[3]}
+  removeLeadingH1
+  shiftHeaders=1
+-->
+original
+<!-- /docs -->`
+
+    ensureDir(TEMP_FIXTURE_DIR)
+    const tempFile = path.join(TEMP_FIXTURE_DIR, 'remote-sections.md')
+    fs.writeFileSync(tempFile, content)
+
+    const result = await markdownMagic(tempFile, {
+      open: 'docs',
+      close: '/docs',
+      outputDir: OUTPUT_DIR,
+      applyTransformsToSource: false,
+      silent: SILENT
+    })
+
+    const newContent = fs.readFileSync(getNewFile(result), 'utf8')
+    assert.ok(newContent.includes('### Install'), 'selected section was included and shifted')
+    assert.ok(newContent.includes('#### Browser'), 'nested heading was included and shifted')
+    assert.is(newContent.match(/Browser docs/g).length, 1, 'nested heading content was not duplicated')
+    assert.not.ok(newContent.includes('## Usage'), 'unselected sibling was excluded')
+    assert.not.ok(newContent.includes('## License'), 'unselected license was excluded')
+  } finally {
+    await close(server)
+  }
 })
 
 test.run()

@@ -9,6 +9,34 @@ This guide covers advanced patterns and techniques for using markdown-magic effe
 
 ## Complex Transform Combinations
 
+### Sync Selected README Sections
+
+Use `sections` when you want to include only specific README sections:
+
+```md
+<!-- docs REMOTE
+  src="https://raw.githubusercontent.com/DavidWells/example/master/README.md"
+  sections="Installation,Usage,API"
+  removeLeadingH1
+  shiftHeaders=1
+-->
+<!-- /docs -->
+```
+
+Use `headings` when you want to include every section at specific heading levels:
+
+```md
+<!-- docs FILE
+  src="./README.md"
+  headings={[2,3]}
+  removeLeadingH1
+  shiftHeaders=1
+-->
+<!-- /docs -->
+```
+
+`sections` matches normalized heading text. `headings={[2,3]}` includes all H2 and H3 sections without duplicating nested sections that are already part of a selected parent.
+
 ### Chaining Transforms
 
 You can use multiple transform blocks in sequence to build complex documentation:

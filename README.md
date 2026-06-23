@@ -392,6 +392,11 @@ Get local file contents.
 
 **Options:**
 - `src`: The relative path to the file to pull in
+- `sections`: Comma-separated list or array of markdown section headings to include
+- `section`: Single markdown section heading to include
+- `headings`: Array of markdown heading levels to include, such as `headings={[2,3]}`
+- `removeLeadingH1`: Remove the first H1 from imported markdown
+- `shiftHeaders`: Shift imported markdown headings up or down by a number
 
 **Example:**
 ```md
@@ -415,6 +420,12 @@ Get any remote Data and put in markdown
 
 **Options:**
 - `url`: The URL of the remote content to pull in
+- `src`: Alias for `url`
+- `sections`: Comma-separated list or array of markdown section headings to include
+- `section`: Single markdown section heading to include
+- `headings`: Array of markdown heading levels to include, such as `headings={[2,3]}`
+- `removeLeadingH1`: Remove the first H1 from imported markdown
+- `shiftHeaders`: Shift imported markdown headings up or down by a number
 
 **Example:**
 ```md
