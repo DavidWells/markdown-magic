@@ -49,8 +49,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       oparser:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^3.1.1
+        version: 3.1.1
     devDependencies:
       typescript:
         specifier: ^5.0.0
@@ -179,8 +179,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       oparser:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^3.1.1
+        version: 3.1.1
     devDependencies:
       rimraf:
         specifier: ^5.0.0
@@ -2346,8 +2346,8 @@ packages:
   oparser@2.2.1:
     resolution: {integrity: sha512-abZhs0fqhiWXyT1Klqj8IeNGRIz08+jqaDJXmC1FM8FfEgwcxufK3RrJJm8UEjmG0XJgoyCzREeozN8eAEBezA==}
 
-  oparser@3.1.0:
-    resolution: {integrity: sha512-IWwRmlfF2b+yKXO9Ol+0q6B1LnhQAxcIuhr1GvpttIsCkJ0EKSHV46v7BdBnuFzrChydm8+I2g0vdP8CQXNkJw==}
+  oparser@3.1.1:
+    resolution: {integrity: sha512-gESndQMHLfymx2xXgFdxqcyYJ7qKDF5ZHcbbt8DGLSBGIg01dEusRDlcGEkvgwvRdM4u2hGXrnUOFgancT3bLQ==}
 
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
@@ -3240,13 +3240,13 @@ snapshots:
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24
-      oparser: 3.1.0
+      oparser: 3.1.1
 
   '@davidwells/md-utils@0.0.53':
     dependencies:
       gray-matter: 4.0.3
       micro-mdx-parser: 1.1.24
-      oparser: 3.1.0
+      oparser: 3.1.1
 
   '@emnapi/core@1.6.0':
     dependencies:
@@ -5344,7 +5344,7 @@ snapshots:
       module-alias: 2.2.3
       mri: 1.2.0
       node-fetch: 2.7.0(encoding@0.1.13)
-      oparser: 3.1.0
+      oparser: 3.1.1
       punycode: 2.3.1
       smart-glob: 1.0.2
       string-width: 4.2.3
@@ -5398,7 +5398,7 @@ snapshots:
 
   micro-mdx-parser@1.1.24:
     dependencies:
-      oparser: 3.1.0
+      oparser: 3.1.1
 
   micromatch@4.0.8:
     dependencies:
@@ -5717,7 +5717,7 @@ snapshots:
     dependencies:
       json-alexander: 0.1.13
 
-  oparser@3.1.0:
+  oparser@3.1.1:
     dependencies:
       json-alexander: 0.1.14
 
