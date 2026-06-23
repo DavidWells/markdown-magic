@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.2](https://github.com/DavidWells/markdown-magic/compare/comment-block-parser@1.6.1...comment-block-parser@1.6.2) (2026-06-23)
+
+
+### Performance Improvements
+
+* **block-parser:** fast-path dedentString and guard empty option parse ([a67062e](https://github.com/DavidWells/markdown-magic/commit/a67062eb5b7c484f9ef255cb805f430a788da28d))
+
+
+
+
+
 ## [1.6.1](https://github.com/DavidWells/markdown-magic/compare/comment-block-parser@1.6.0...comment-block-parser@1.6.1) (2026-06-23)
 
 **Note:** Version bump only for package comment-block-parser
