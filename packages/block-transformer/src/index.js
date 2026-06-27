@@ -161,8 +161,10 @@ async function blockTransformer(inputText, config) {
   const transformsToRun = sortTransforms(blocksWithTransforms, transforms)
 
   let missingTransforms = []
-  // Track cumulative offset changes as we modify the text
-  let cumulativeOffset = 0
+  // Track applied length changes by original document position so replacements
+  // stay correct even when blocks are processed out of document order
+  // (TOC/sectionToc are sorted to run last but may sit above other blocks).
+  const appliedChanges = []
 
   let updatedContents = await transformsToRun.reduce(async (contentPromise, originalMatch) => {
     const updatedText = await contentPromise
@@ -286,15 +288,20 @@ async function blockTransformer(inputText, config) {
     const indent = addLeadingNewline + indentString(fix, preserveIndent) + addTrailingNewline
     const newCont = `${openTag}${fixWrapper}${indent}${fixWrapper}${closeTag}`
 
-    // Use position-based replacement to handle duplicate block content
-    const adjustedStart = block.start + cumulativeOffset
-    const adjustedEnd = block.end + cumulativeOffset
+    // Position-based replacement (handles duplicate block content). The offset
+    // is the sum of length deltas from blocks positioned before this one, so the
+    // math stays correct regardless of the order blocks are processed in.
+    const offsetBefore = appliedChanges.reduce((sum, change) => {
+      return (change.start < block.start) ? sum + change.delta : sum
+    }, 0)
+    const adjustedStart = block.start + offsetBefore
+    const adjustedEnd = block.end + offsetBefore
     const before = updatedText.substring(0, adjustedStart)
     const after = updatedText.substring(adjustedEnd)
     const newContents = before + newCont + after
 
-    // Update offset for next iteration
-    cumulativeOffset += (newCont.length - block.value.length)
+    // Record this block's length change at its original document position
+    appliedChanges.push({ start: block.start, delta: newCont.length - block.value.length })
 
     return Promise.resolve(newContents)
   }, Promise.resolve(inputText))
