@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.5](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.8.4...comment-block-transformer@0.8.5) (2026-06-27)
+
+
+### Bug Fixes
+
+* **block-transformer:** correct offset when blocks process out of order ([f8c1682](https://github.com/DavidWells/markdown-magic/commit/f8c1682773cd4ffba642be91713c44156dce1764))
+
+
+
+
+
 ## [0.8.4](https://github.com/DavidWells/markdown-magic/compare/comment-block-transformer@0.8.3...comment-block-transformer@0.8.4) (2026-06-23)
 
 **Note:** Version bump only for package comment-block-transformer
