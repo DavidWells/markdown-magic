@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.11.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.10.5...markdown-magic@4.11.0) (2026-06-29)
+
+
+### Features
+
+* **core:** cache remote GitHub fetches ([a41aa9e](https://github.com/DavidWells/markdown-magic/commit/a41aa9e001878b38a043930258da5149784165e6))
+
+
+
+
+
 ## [4.10.5](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.10.4...markdown-magic@4.10.5) (2026-06-27)
 
 **Note:** Version bump only for package markdown-magic
