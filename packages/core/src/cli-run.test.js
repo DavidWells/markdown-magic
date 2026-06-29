@@ -52,6 +52,41 @@ test('CLI parser maps file/path globs and ignore groups into markdown-magic opti
   })
 })
 
+test('CLI parser maps private GitHub opt-in flag', () => {
+  const result = parseCliArgv([
+    '--allow-private-github',
+    '--files',
+    'README.md'
+  ])
+  deepLogger('result', result)
+  assert.equal(result, {
+    files: ['README.md'],
+    allowPrivateGithub: true
+  })
+})
+
+test('CLI parser maps cache disable flags', () => {
+  const noCache = parseCliArgv([
+    '--no-cache',
+    '--files',
+    'README.md'
+  ])
+  const noRemoteCache = parseCliArgv([
+    '--no-remote-cache',
+    '--files',
+    'README.md'
+  ])
+
+  assert.equal(noCache, {
+    files: ['README.md'],
+    remoteCache: false
+  })
+  assert.equal(noRemoteCache, {
+    files: ['README.md'],
+    remoteCache: false
+  })
+})
+
 test('CLI parser keeps shell-expanded files out of command options', () => {
   const rawArgv = [
     'CONTRIBUTING.md',

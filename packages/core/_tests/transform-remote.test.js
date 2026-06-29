@@ -128,6 +128,8 @@ original content
   } catch (err) {
     threw = true
     assert.ok(err.message.includes('status 404') || err.message.includes('404'), 'throws HTTP status error')
+    assert.ok(err.message.includes(`Source markdown: ${tempFile}:1:0`), 'includes source markdown block location')
+    assert.ok(err.message.includes(`Fix "https://raw.githubusercontent.com/DavidWells/markdown-magic/master/THIS_FILE_DOES_NOT_EXIST.md" value in ${tempFile}:1:0`), 'includes fix location')
   }
   assert.ok(threw, 'should throw on 404 response')
 })
@@ -157,6 +159,30 @@ original
     newContent.includes('JSDoc') || newContent.includes('types') || newContent.includes('TypeScript'),
     'remote GitHub content fetched'
   )
+})
+
+test('remote - fetches markdown from GitHub blob URL', async () => {
+  const content = `<!-- docs remote url='https://github.com/DavidWells/markdown-magic/blob/master/README.md' removeLeadingH1 -->
+original
+<!-- /docs -->`
+
+  ensureDir(TEMP_FIXTURE_DIR)
+  const tempFile = path.join(TEMP_FIXTURE_DIR, 'remote-github-blob.md')
+  fs.writeFileSync(tempFile, content)
+
+  const result = await markdownMagic(tempFile, {
+    open: 'docs',
+    close: '/docs',
+    outputDir: OUTPUT_DIR,
+    applyTransformsToSource: false,
+    silent: SILENT
+  })
+
+  const outputFile = getNewFile(result)
+  assert.ok(outputFile, 'result has output path')
+  const newContent = fs.readFileSync(outputFile, 'utf8')
+  assert.ok(newContent.includes('Markdown Magic'), 'remote GitHub blob content fetched')
+  assert.not.ok(newContent.includes('# Markdown Magic'), 'markdown formatting options still apply')
 })
 
 test('remote - extracts markdown sections and heading levels', async () => {

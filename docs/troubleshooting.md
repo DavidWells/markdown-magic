@@ -354,6 +354,116 @@ chmod 755 docs/
    }
    ```
 
+### Private GitHub Remote Files
+
+**Problem**: A `REMOTE` transform points at a GitHub `blob` or `raw.githubusercontent.com` URL and fails with a 404, even though you can view the file in a browser.
+
+This usually means the file is in a private repository or requires authenticated GitHub access. Markdown Magic resolves public GitHub file URLs through anonymous raw GitHub content first. Authenticated GitHub reads are disabled by default and must be enabled for a trusted run.
+
+**Solutions**:
+
+1. **Enable private GitHub reads for trusted runs only**:
+   ```js
+   module.exports = {
+     allowPrivateGithub: true
+   }
+   ```
+
+   Or for a single CLI run:
+   ```bash
+   md-magic --allow-private-github --files README.md
+   ```
+
+2. **Use a standard GitHub token environment variable in CI or local scripts**:
+   ```md
+   <!-- docs REMOTE
+     src='https://github.com/owner/private-repo/blob/main/README.md'
+   -->
+   <!-- /docs -->
+   ```
+
+   When private GitHub reads are enabled, Markdown Magic checks `GITHUB_ACCESS_TOKEN` and `GITHUB_TOKEN` automatically. Prefer those environment variables over putting a token value in markdown.
+
+3. **Use GitHub CLI auth locally**:
+   ```bash
+   gh auth status
+   md-magic --allow-private-github --files README.md
+   ```
+
+4. **Disable GitHub CLI fallback in CI**:
+   ```bash
+   MARKDOWN_MAGIC_GH_CLI=0 md-magic --files README.md
+   ```
+
+5. **Check the source path**: GitHub `blob` URLs work, but the owner, repo, branch, and file path must point at a real file. If a branch name contains slashes, prefer a raw URL or pass explicit `ref` and `path` options.
+
+Private files fetched this way become generated Markdown if you commit the output. Review generated diffs before publishing public documentation.
+
+### Remote Cache
+
+**Problem**: A `REMOTE` or remote `CODE` block keeps showing content from a recent request.
+
+Markdown Magic caches successful remote responses outside the project directory by default. Normal remote responses are reused for 5 minutes. GitHub files pinned to a full 40-character commit SHA use a longer immutable cache TTL.
+
+**Solutions**:
+
+1. **Disable the cache while debugging**:
+   ```js
+   module.exports = {
+     remoteCache: false
+   }
+   ```
+
+   The equivalent object form is:
+   ```js
+   module.exports = {
+     remoteCache: {
+       enabled: false
+     }
+   }
+   ```
+
+2. **Force one CLI run to refetch everything**:
+   ```bash
+   md-magic --no-cache --files README.md
+   ```
+
+   `--no-remote-cache` is an equivalent alias.
+
+3. **Use a shorter TTL for frequently changing sources**:
+   ```js
+   module.exports = {
+     remoteCache: {
+       ttl: 30 * 1000
+     }
+   }
+   ```
+
+4. **Move the cache to a known local path**:
+   ```js
+   module.exports = {
+     remoteCache: {
+       directory: '.cache/markdown-magic-remote'
+     }
+   }
+   ```
+
+5. **Clear the cache manually**: remove `markdown-magic/remote-cache-v1` from your OS cache directory, such as `~/Library/Caches/markdown-magic/remote-cache-v1` on macOS or `~/.cache/markdown-magic/remote-cache-v1` on Linux. If `XDG_CACHE_HOME` is set, check `$XDG_CACHE_HOME/markdown-magic/remote-cache-v1`.
+
+6. **Keep private reads memory-only**:
+   ```js
+   module.exports = {
+     allowPrivateGithub: true,
+     remoteCache: {
+       cachePrivate: false
+     }
+   }
+   ```
+
+   `allowPrivateGithub` controls whether private GitHub content may be resolved. `remoteCache.cachePrivate` only controls whether authenticated private responses are written to disk. When both private GitHub reads and private caching are enabled, private fetched content can persist in the local cache until it expires or is manually removed.
+
+Cache hits are logged as `Getting remote (from cache):` when remote request logging is enabled. Set `logRemoteRequests: false` to hide all remote request logs, or `remoteCache: { logHits: false }` to hide only cache-hit logs.
+
 ## Debug Mode
 
 Enable debug logging to troubleshoot issues:

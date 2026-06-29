@@ -1,4 +1,6 @@
 const fetch = require('node-fetch')
+const { logRemoteRequest } = require('./remote-log')
+const { withRemoteCache } = require('./remote-cache')
 
 function formatUrl(url = '') {
   if (typeof url !== 'string') return ''
@@ -24,29 +26,38 @@ async function remoteRequest(url, settings = {}, srcPath) {
     return
   }
 
-  let response
-  try {
-    response = await fetch(finalUrl)
-  } catch (e) {
-    console.log(`⚠️  WARNING: REMOTE URL "${finalUrl}" NOT FOUND`)
-    const msg = (e.message || '').split('\n')[0] + fixText
-    console.log(msg)
-    if (settings.failOnMissingRemote) {
-      throw new Error(msg)
+  return withRemoteCache({
+    privacyMode: 'public',
+    settings,
+    source: 'generic',
+    url: finalUrl
+  }, async () => {
+    let response
+    try {
+      logRemoteRequest(finalUrl, settings)
+      response = await fetch(finalUrl)
+    } catch (e) {
+      console.log(`⚠️  WARNING: REMOTE URL "${finalUrl}" NOT FOUND`)
+      const msg = (e.message || '').split('\n')[0] + fixText
+      console.log(msg)
+      if (settings.failOnMissingRemote) {
+        throw new Error(msg)
+      }
+      return
     }
-    return
-  }
 
-  if (!response.ok) {
-    const msg = `Remote request failed with status ${response.status} (${response.statusText}) for "${finalUrl}"${fixText}`
-    console.log(`⚠️  WARNING: ${msg}`)
-    if (settings.failOnMissingRemote) {
-      throw new Error(msg)
+    if (!response || !response.ok) {
+      if (!response) return
+      const msg = `Remote request failed with status ${response.status} (${response.statusText}) for "${finalUrl}"${fixText}`
+      console.log(`⚠️  WARNING: ${msg}`)
+      if (settings.failOnMissingRemote) {
+        throw new Error(msg)
+      }
+      return
     }
-    return
-  }
 
-  return response.text()
+    return response.text()
+  })
 }
 
 module.exports = {

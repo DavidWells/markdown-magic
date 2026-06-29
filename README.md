@@ -299,6 +299,22 @@ Below is the main config for `markdown-magic`
 | `applyTransformsToSource` (optional) | `boolean` | Apply transforms to source file. Default is true. Default: `true` |
 | `failOnMissingTransforms` (optional) | `boolean` | Fail if transform functions are missing. Default skip blocks. Default: `false` |
 | `failOnMissingRemote` (optional) | `boolean` | Fail if remote file is missing. Default: `true` |
+| `allowPrivateGithub` (optional) | `boolean` | Allow REMOTE/CODE blocks to use GitHub tokens or gh auth for private repository files. Default: `false` |
+| `logRemoteRequests` (optional) | `boolean` | Log each unique remote HTTP request as it is attempted. Default: `true` |
+| `remoteCache` (optional) | `RemoteCacheOptions or boolean` | Remote fetch cache options. Use `false` or `{ enabled: false }` to disable. |
+
+#### `RemoteCacheOptions`
+
+Remote fetch cache options
+
+| Name | Type | Description |
+|:---------------------------|:---------------:|:-----------|
+| `enabled` (optional) | `boolean` | Enable the remote fetch cache. Default: `true` |
+| `directory` (optional) | `string` | Cache directory. Defaults to the user's OS cache directory outside the project. |
+| `ttl` (optional) | `number` | Milliseconds to reuse normal remote responses. Default is 5 minutes. Default: `300000` |
+| `immutableTtl` (optional) | `number` | Milliseconds to reuse GitHub files pinned to a full 40-character commit SHA. Default is 30 days. |
+| `cachePrivate` (optional) | `boolean` | Persist authenticated private GitHub responses. Set false to keep private reads memory-only for the current run. Default: `true` |
+| `logHits` (optional) | `boolean` | Log cache hits as remote requests marked with `(from cache)`. Default: `true` |
 
 #### `OutputConfig`
 
@@ -421,6 +437,9 @@ Get any remote Data and put in markdown
 **Options:**
 - `url`: The URL of the remote content to pull in
 - `src`: Alias for `url`
+- `githubToken`: Optional token value for private GitHub files. Only used when private GitHub reads are enabled.
+- `useGhCli`: For GitHub URLs, allow fallback to `gh api` when private GitHub reads are enabled. Default: `true`
+- `preferGhCli`: Try `gh api` before the GitHub contents API. Default: `false`
 - `sections`: Comma-separated list or array of markdown section headings to include
 - `section`: Single markdown section heading to include
 - `headings`: Array of markdown heading levels to include, such as `headings={[2,3]}`
@@ -433,6 +452,37 @@ Get any remote Data and put in markdown
 This content will be dynamically replaced from the remote url
 <!-- /docs -->
 ```
+
+GitHub `blob` and `raw.githubusercontent.com` file URLs are resolved with GitHub-aware fallbacks. Public files use anonymous raw GitHub content first. Private files are opt-in and can be fetched with `GITHUB_ACCESS_TOKEN`, `GITHUB_TOKEN`, `githubToken`, or an authenticated GitHub CLI session only when `allowPrivateGithub` is enabled:
+
+```md
+<!-- docs REMOTE
+  src='https://github.com/owner/private-repo/blob/main/README.md'
+  removeLeadingH1
+-->
+Existing content is kept if failOnMissingRemote is false.
+<!-- /docs -->
+```
+
+Enable private GitHub reads from config:
+
+```js
+module.exports = {
+  allowPrivateGithub: true
+}
+```
+
+Or for a single CLI run:
+
+```bash
+md-magic --allow-private-github --files README.md
+```
+
+To use local GitHub CLI auth instead of a token, run `gh auth status` first. Set `MARKDOWN_MAGIC_GH_CLI=0` to disable `gh api` fallback in CI or locked-down environments.
+
+Remote requests are logged once per unique URL as they are attempted. Set `logRemoteRequests: false` in config to disable this output.
+
+Successful remote responses are cached outside the project in the user's OS cache directory by default. Normal responses are reused for 5 minutes. GitHub files pinned to a full 40-character commit SHA use a longer immutable cache TTL. Set `remoteCache: false` or `remoteCache: { enabled: false }` to disable the cache, or pass `--no-cache` / `--no-remote-cache` for a single CLI run. Set `remoteCache.cachePrivate: false` to avoid persisting authenticated private GitHub responses to disk. Cache hits are logged as `Getting remote (from cache):` unless `remoteCache.logHits` or `logRemoteRequests` is disabled.
 
 Default `matchWord` is `docs`
 

@@ -143,7 +143,7 @@ function matchInnerContent(str, open, close) {
 }
 ```
 
-<!-- doc-genx CODE src="github.com/DavidWells/notes/blob/master/cognito.md" accessToken='process.env.GITHUB_LAST_EDITED_TOKEN' isPrivate -->
+<!-- doc-genx CODE src="github.com/DavidWells/notes/blob/master/cognito.md" isPrivate -->
 ```md
 # AWS Cognito Notes.
 

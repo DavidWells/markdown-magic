@@ -148,6 +148,9 @@ importers:
         specifier: ^4.2.3
         version: 4.2.3
     devDependencies:
+      '@types/minimatch':
+        specifier: ^3.0.5
+        version: 3.0.5
       concordance:
         specifier: ^5.0.1
         version: 5.0.4

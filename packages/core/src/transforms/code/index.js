@@ -10,7 +10,7 @@ const {
   stripSingleLineDoubleSlashComments,
   stripHTMLComments
 } = require('../../utils/text')
-const { resolveGithubContents, isGithubLink } = require('./resolve-github-file')
+const { resolveGithubContents, isGithubLink } = require('../../utils/github-file')
 
 const GITHUB_LINK = /https:\/\/github\.com\/([^/\s]*)\/([^/\s]*)\/blob\//
 const GIST_LINK = /https:\/\/gist\.github\.com\/([^/\s]*)\/([^/\s]*)(\/)?/
@@ -221,6 +221,15 @@ async function resolveRemoteContent(options, settings, srcPath) {
     remoteContent = await resolveGithubContents({
       repoFilePath: src,
       accessToken,
+      githubToken: options.githubToken,
+      allowPrivateGithub: isPrivateGithubAllowed(settings),
+      useGhCli: resolveGithubOption(options.useGhCli, settings.github && settings.github.useGhCli),
+      preferGhCli: resolveGithubOption(options.preferGhCli, settings.github && settings.github.preferGhCli),
+      debug: resolveGithubOption(options.debugGithub, settings.github && settings.github.debug),
+      cwd: settings.cwd,
+      remoteCache: settings.remoteCache,
+      silent: settings.silent,
+      logRemoteRequests: settings.logRemoteRequests,
       // debug: true
     })
   }
@@ -231,6 +240,19 @@ async function resolveRemoteContent(options, settings, srcPath) {
   }
 
   return remoteContent
+}
+
+function resolveGithubOption(blockValue, settingsValue) {
+  if (typeof blockValue !== 'undefined') return blockValue
+  return settingsValue
+}
+
+function isPrivateGithubAllowed(settings = {}) {
+  const github = settings.github || {}
+  return settings.allowPrivateGithub === true
+    || settings.allowGithubPrivate === true
+    || github.allowPrivate === true
+    || github.allowPrivateGithub === true
 }
 
 

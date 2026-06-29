@@ -52,6 +52,88 @@ You can use multiple transform blocks in sequence to build complex documentation
 <!-- /docs -->
 ```
 
+GitHub file URLs can point at `blob` or `raw.githubusercontent.com` paths. Public files are fetched anonymously by default. Private files require an explicit run-level opt-in before Markdown Magic will use `GITHUB_ACCESS_TOKEN`, `GITHUB_TOKEN`, `githubToken`, or local `gh` authentication:
+
+```md
+<!-- docs remote
+  src='https://github.com/owner/private-repo/blob/main/README.md'
+  removeLeadingH1
+-->
+<!-- /docs -->
+```
+
+Set `MARKDOWN_MAGIC_GH_CLI=0` if CI should never fall back to `gh api`.
+
+Enable private GitHub reads in config:
+
+```js
+module.exports = {
+  allowPrivateGithub: true
+}
+```
+
+Or enable them for one CLI run:
+
+```bash
+md-magic --allow-private-github --files README.md
+```
+
+### Remote Cache
+
+`REMOTE` and remote `CODE` fetches use a small local cache by default. The cache is outside your project directory in the current user's OS cache location, such as `~/Library/Caches/markdown-magic/remote-cache-v1` on macOS, `$XDG_CACHE_HOME/markdown-magic/remote-cache-v1` on Linux when set, or `~/.cache/markdown-magic/remote-cache-v1` otherwise.
+
+Normal remote responses are reused for 5 minutes. GitHub file URLs pinned to a full 40-character commit SHA are treated as immutable and use a longer 30-day TTL. Branch names, tags, and short SHAs use the normal TTL because they can move.
+
+```js
+module.exports = {
+  remoteCache: {
+    ttl: 5 * 60 * 1000,
+    immutableTtl: 30 * 24 * 60 * 60 * 1000,
+    directory: '.cache/markdown-magic-remote'
+  }
+}
+```
+
+Disable the cache for a run with either form:
+
+```js
+module.exports = {
+  remoteCache: false
+  // or remoteCache: { enabled: false }
+}
+```
+
+Or disable it for one CLI run:
+
+```bash
+md-magic --no-cache --files README.md
+# alias: md-magic --no-remote-cache --files README.md
+```
+
+Private GitHub reads and caching are separate controls. `allowPrivateGithub: true` opts into resolving private repository content. `remoteCache.cachePrivate` controls whether authenticated private responses are persisted to disk:
+
+```js
+module.exports = {
+  allowPrivateGithub: true,
+  remoteCache: {
+    cachePrivate: false
+  }
+}
+```
+
+With `cachePrivate: false`, duplicate private requests are still reused in memory during the current process, but private response bodies are not written to the cache directory. When both private GitHub reads and private caching are enabled, private fetched content can persist in the local cache until it expires or is manually removed. Do not put token values in markdown files; use environment variables or an authenticated `gh` session for trusted runs.
+
+Remote requests are logged as they happen. Cache hits keep the same shape and are marked explicitly:
+
+```text
+🌐   Getting remote (from cache):
+  https://raw.githubusercontent.com/owner/repo/main/README.md
+```
+
+Set `logRemoteRequests: false` to suppress remote request and cache-hit logs, or `remoteCache: { logHits: false }` to keep network request logs while hiding cache-hit logs.
+
+To clear the default cache, remove the `markdown-magic/remote-cache-v1` directory from your OS cache location. To clear a custom cache, remove the directory configured in `remoteCache.directory`.
+
 ### Conditional Processing
 
 Use custom transforms to conditionally include content:

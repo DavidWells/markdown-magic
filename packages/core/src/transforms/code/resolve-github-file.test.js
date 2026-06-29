@@ -13,7 +13,7 @@ repoFilePath = 'github.com/DavidWells/notes/blob/master/cognito.md'
 resolveGithubContents({
   repoFilePath,
   debug: true,
-  //accessToken: process.env.GITHUB_LAST_EDITED_TOKEN
+  allowPrivateGithub: true
 })
   .then(console.log)
   .catch(console.error);
@@ -24,8 +24,7 @@ getGitHubFileContentsRaw({
   repoOwner: 'DavidWells', 
   repoName: 'notes',
   filePath: 'cognito.md', 
-  branch: 'master', 
-  accessToken: process.env.GITHUB_LAST_EDITED_TOKEN
+  branch: 'master'
 })
   .then(console.log)
   .catch(console.error);

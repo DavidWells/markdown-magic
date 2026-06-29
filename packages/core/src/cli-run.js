@@ -129,6 +129,10 @@ Options:
   --pretty           Render output with ANSI styling
   --dry              Dry run - show what would be changed
   --debug            Show debug output
+  --no-cache, --no-remote-cache
+                      Disable remote fetch cache for this run
+  --allow-private-github
+                      Allow authenticated GitHub reads for private repo files
   --help, -h         Show this help message
   --version, -v      Show version
 
@@ -280,6 +284,19 @@ function normalizeCliOptions(parsed) {
     opts.files = opts.files.concat(mergedOptions.path)
     delete opts.path
   }
+  if (typeof mergedOptions['allow-private-github'] !== 'undefined') {
+    opts.allowPrivateGithub = mergedOptions['allow-private-github']
+    delete opts['allow-private-github']
+  }
+  if (typeof mergedOptions['allow-github-private'] !== 'undefined') {
+    opts.allowPrivateGithub = mergedOptions['allow-github-private']
+    delete opts['allow-github-private']
+  }
+  if (mergedOptions.cache === false || mergedOptions['remote-cache'] === false) {
+    opts.remoteCache = false
+  }
+  delete opts.cache
+  delete opts['remote-cache']
   if (mergedOptions['--files']) {
     opts.files = opts.files.concat(mergedOptions['--files'])
     delete opts['--files']

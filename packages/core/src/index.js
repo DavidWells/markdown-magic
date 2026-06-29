@@ -78,10 +78,26 @@ const defaultOptions = {
  * @property {boolean} [dry = false] - See planned execution of matched blocks
  * @property {boolean} [debug = false] - See debug details
  * @property {boolean} [silent = false] - Silence all console output
+ * @property {boolean} [logRemoteRequests = true] - Log each unique remote HTTP request as it is attempted. Set false to disable.
  * @property {boolean} [applyTransformsToSource = true] - Apply transforms to source file. Default is true.
  * @property {boolean} [failOnMissingTransforms = false] - Fail if transform functions are missing. Default skip blocks.
  * @property {boolean} [failOnMissingRemote = true] - Fail if remote file is missing.
+ * @property {boolean} [allowPrivateGithub = false] - Allow REMOTE/CODE blocks to use GitHub tokens or gh auth for private repository files. Default is false.
+ * @property {RemoteCacheOptions|boolean} [remoteCache] - Remote fetch cache options. Use false or `{ enabled: false }` to disable.
+ * @property {Object}  [github] - GitHub resolver options.
  * @property {string}  [outputDir] - Deprecated: Use `output` instead. Output directory path.
+ */
+
+/**
+ * Remote fetch cache options
+ *
+ * @typedef {object} RemoteCacheOptions
+ * @property {boolean} [enabled = true] - Enable the remote fetch cache.
+ * @property {string}  [directory] - Cache directory. Defaults to the user's OS cache directory outside the project.
+ * @property {number}  [ttl = 300000] - Milliseconds to reuse normal remote responses. Default is 5 minutes.
+ * @property {number}  [immutableTtl] - Milliseconds to reuse GitHub files pinned to a full 40-character commit SHA. Default is 30 days.
+ * @property {boolean} [cachePrivate = true] - Persist authenticated private GitHub responses. Set false to keep private reads memory-only for the current run.
+ * @property {boolean} [logHits = true] - Log cache hits as remote requests marked with `(from cache)`.
  */
 
 /**
