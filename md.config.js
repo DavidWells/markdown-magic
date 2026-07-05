@@ -1,5 +1,6 @@
 /* CLI md.config.js file example */
 module.exports = {
+  // outputDir: './docs',
   // handleOutputPath: (currentPath) => {
   //   const newPath =  'x' + currentPath
   //   return newPath
