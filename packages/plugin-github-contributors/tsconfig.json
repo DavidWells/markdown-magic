@@ -4,7 +4,8 @@
     "rootDir": "./",
     "noEmit": false,
     "declarationDir": "./types",
-    "types": ["node"]
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": ["index.js"],
   "exclude": ["node_modules", "dist", "test", "*.test.js", "**/*.bench.js"]

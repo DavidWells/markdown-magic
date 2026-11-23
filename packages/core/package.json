@@ -8,7 +8,7 @@
     "md-magic": "./cli.js",
     "mdm": "./cli.js"
   },
-  "types": "types/index.d.ts",
+  "types": "types/src/index.d.ts",
   "files": [
     "README.md",
     "package.json",

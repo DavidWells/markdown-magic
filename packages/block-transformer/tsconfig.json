@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": "./src",
     "noEmit": false,
-    "declarationDir": "./types"
+    "declarationDir": "./types",
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*.test.js", "**/*.bench.js"]

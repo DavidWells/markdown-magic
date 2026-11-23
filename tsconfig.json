@@ -19,7 +19,8 @@
     "declaration": true,
     "declarationDir": "types",
     "noEmit": true,
-    "noEmitOnError": false
+    "noEmitOnError": false,
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "./packages/**/*.js",
