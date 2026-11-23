@@ -300,7 +300,8 @@ function getLeadingCommands(args = []) {
 function dxParse(_rawArgv = [], opts = {}) {
   const parseOptions = normalizeParseOptions(opts)
   const { stripSingleDashOptions = true } = parseOptions
-  const debug = parseOptions.debug ? console.log : () => {}
+  const isDebug = Boolean(parseOptions.debug)
+  const debug = isDebug ? console.log : () => {}
   const rawArgv = _rawArgv
   /* mri turns an empty value into 0, so it never sees empty tokens. extraParse carries them. */
   const stringKeys = getStringKeys(parseOptions)
@@ -312,8 +313,9 @@ function dxParse(_rawArgv = [], opts = {}) {
   let leadingCommands = []
   const mriOptionsClean = Object.assign({}, mriOptionsOriginal)
 
-  const _singleDashOptions = findSingleDashStrings(rawArgv)
-  debug('_singleDashOptions', _singleDashOptions)
+  if (isDebug) {
+    debug('_singleDashOptions', findSingleDashStrings(rawArgv))
+  }
 
   if (!rawArgv || !rawArgv.length) {
     return {
@@ -367,14 +369,16 @@ function dxParse(_rawArgv = [], opts = {}) {
       const next = otherOpts[i + 1] || ''
       const nextNext = otherOpts[i + 2] || ''
       const isLast = otherOpts.length === i + 1
-      const opt = cleanOption(curr)
-      debug('--------------------------------')
-      debug(`current  "${curr}"`)
-      debug(`cleaned  "${opt}"`)
-      debug(`previous "${opt}"`, prev)
-      debug(`next for "${opt}"`, next)
-      debug(`nextNext "${opt}"`, nextNext)
-      debug('--------------------------------')
+      if (isDebug) {
+        const opt = cleanOption(curr)
+        debug('--------------------------------')
+        debug(`current  "${curr}"`)
+        debug(`cleaned  "${opt}"`)
+        debug(`previous "${opt}"`, prev)
+        debug(`next for "${opt}"`, next)
+        debug(`nextNext "${opt}"`, nextNext)
+        debug('--------------------------------')
+      }
 
       if (dashDashSet) {
         rest.push(curr)
