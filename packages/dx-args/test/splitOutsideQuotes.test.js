@@ -97,4 +97,13 @@ test('splitOutsideQuotes', () => {
   }
 })
 
+test('splitOutsideQuotes keeps brackets inside quotes and leaves other characters alone', () => {
+  assert.equal(splitOutsideQuotes('a="x } y" b=\'[ z\' c=∆▽▸◂ d={ k: "}" }'), [
+    'a="x } y"',
+    'b=\'[ z\'',
+    'c=∆▽▸◂',
+    'd={ k: "}" }',
+  ])
+})
+
 test.run()

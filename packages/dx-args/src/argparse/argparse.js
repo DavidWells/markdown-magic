@@ -2,6 +2,7 @@ const mri = require('mri')
 const { parse } = require('oparser')
 const { getGlobGroupsFromArgs } = require('../globparse')
 const { splitOutsideQuotes } = require('./splitOutsideQuotes')
+const { IS_NEGATIVE_NUMBER } = require('../utils/regex')
 /*
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
@@ -10,7 +11,10 @@ const { hideBin } = require('yargs/helpers')
 
 const IS_KEY_VALUE_IN_QUOTES = /^([A-Za-z0-9_.]*)=\s?("|')(.*)(\2)$/
 const IS_KEY_VALUE_START_WITH_QUOTE = /^([A-Za-z0-9_.]*)=\s?("|')?(.*)/
-const IS_NEGATIVE_NUMBER = /^-\d/
+const SHELL_QUOTED_KEY_VALUE = /^\s*-*([A-Za-z0-9_.-]+)=([\s\S]*)$/
+const SIMPLE_KEY = /^[^\s=]+$/
+const IS_EMPTY_KEY_VALUE = /^-*([A-Za-z0-9_.-]+)=$/
+const STARTS_WITH_KEY_VALUE = /^-*[A-Za-z0-9_.-]+=/
 
 /**
  * @typedef {Object} GlobGroup
@@ -28,6 +32,7 @@ const IS_NEGATIVE_NUMBER = /^-\d/
  * @property {string[]|Record<string, boolean>} [accumulateFlags]
  * @property {string[]|Record<string, boolean>} [arrayKeys]
  * @property {boolean} [noPrefix]
+ * @property {string[]|Record<string, boolean>} [string]
  * @property {string[]} [globKeys]
  * @property {boolean} [debug]
  */
@@ -68,6 +73,97 @@ function isNegativeNumber(input) {
 }
 
 /**
+ * A token that contains whitespace can only reach argv if the shell quoted it,
+ * so it is one value and must never be re-split.
+ * @param {unknown} token
+ */
+function isShellQuoted(token) {
+  return typeof token === 'string' && /\s/.test(token) && token.trim() !== '='
+}
+
+/* An empty token only reaches argv from explicit quotes (`--name ""`), so it is a real value */
+function isWholeValue(token) {
+  return token === '' || token === '-' || isShellQuoted(token)
+}
+
+/**
+ * mri reads `-5` as a flag named `5` and ignores `-` as a value. Attach either one to the
+ * option before it (`--count -5` becomes `--count=-5`) and drop it anywhere else.
+ * @param {string[]} argv
+ */
+function getMriArgv(argv, stringKeys = new Set()) {
+  const out = []
+  for (let i = 0; i < argv.length; i++) {
+    const token = argv[i]
+    const prevToken = out[out.length - 1]
+    if (
+      i > 0
+      && prevToken === argv[i - 1]
+      && isOptionLike(prevToken)
+      && !prevToken.includes('=')
+      && stringKeys.has(prevToken.replace(/^-+/, ''))
+    ) {
+      out[out.length - 1] = `${prevToken}=${token}`
+      continue
+    }
+    if (token === '') continue
+    if (isNegativeNumber(token) || token === '-') {
+      const prev = out[out.length - 1]
+      if (prev === argv[i - 1] && isOptionLike(prev) && prev !== '--' && prev !== '-' && !prev.includes('=')) {
+        out[out.length - 1] = `${prev}=${token}`
+      }
+      continue
+    }
+    out.push(token)
+  }
+  return out
+}
+
+function isOptionLike(token = '') {
+  return /^-+/.test(token) && !isNegativeNumber(token)
+}
+
+function countChar(str, char) {
+  return str.split(char).length - 1
+}
+
+/* True when quotes or brackets do not pair up, e.g. `[abc` or `it's` */
+function isUnbalanced(str = '') {
+  return countChar(str, '[') !== countChar(str, ']')
+    || countChar(str, '{') !== countChar(str, '}')
+    || countChar(str, '"') % 2 === 1
+    || countChar(str, "'") % 2 === 1
+}
+
+/**
+ * Resolve a whole (shell-quoted) value without re-splitting it.
+ * @param {string} raw
+ * @param {boolean} [alwaysStripQuotes] - strip wrapping quotes even when the same quote is used inside
+ */
+function parseWholeValue(raw, alwaysStripQuotes) {
+  const trimmed = raw.trim()
+  const first = trimmed[0]
+  const last = trimmed[trimmed.length - 1]
+  if (trimmed.length > 1 && (first === '"' || first === "'") && first === last) {
+    const inner = trimmed.slice(1, -1)
+    if (alwaysStripQuotes || !inner.includes(first)) {
+      return inner
+    }
+  }
+  if ((first === '{' && last === '}') || (first === '[' && last === ']')) {
+    try {
+      const parsed = parse(`v=${trimmed}`)
+      if (parsed && typeof parsed.v === 'object' && parsed.v !== null) {
+        return parsed.v
+      }
+    } catch (e) {
+      // not object/array syntax, keep the string
+    }
+  }
+  return raw
+}
+
+/**
  * @param {ParseOptions|boolean} [opts]
  * @returns {ParseOptions}
  */
@@ -102,11 +198,36 @@ function isShortCluster(word = '', opts = {}) {
  * @param {ParseOptions} [opts]
  */
 function getAccumulatorKeys(opts = {}) {
-  const keys = opts.accumulate || opts.accumulateFlags || opts.arrayKeys || []
+  return toKeySet(opts.accumulate || opts.accumulateFlags || opts.arrayKeys)
+}
+
+/**
+ * @param {string[]|Record<string, boolean>} [keys]
+ * @returns {Set<string>}
+ */
+function toKeySet(keys = []) {
   if (Array.isArray(keys)) {
     return new Set(keys)
   }
   return new Set(Object.keys(keys).filter((key) => keys[key]))
+}
+
+/**
+ * Keys that always take the next token as a string value. Glob keys keep their file grouping.
+ * @param {ParseOptions} [opts]
+ */
+function getStringKeys(opts = {}) {
+  const keys = toKeySet(opts.string)
+  ;(opts.globKeys || []).forEach((key) => keys.delete(key))
+  return keys
+}
+
+function stripWrappingQuotes(value) {
+  const first = value[0]
+  if (value.length > 1 && (first === '"' || first === "'") && first === value[value.length - 1]) {
+    return value.slice(1, -1)
+  }
+  return value
 }
 
 /**
@@ -133,6 +254,10 @@ function mergeOptionPieces(pieces = [], opts = {}) {
   const accumulatorKeys = getAccumulatorKeys(opts)
   return pieces.reduce((acc, piece) => {
     const rawKey = Object.keys(piece)[0]
+    /* oparser returns nothing usable for some tokens (e.g. `__proto__=x`) */
+    if (typeof rawKey === 'undefined') {
+      return acc
+    }
     const normalized = normalizeNoPrefix(rawKey, piece[rawKey], opts)
     if (accumulatorKeys.has(normalized.key)) {
       acc[normalized.key] = (acc[normalized.key] || []).concat(normalized.value)
@@ -152,6 +277,7 @@ function getLeadingCommands(args = []) {
   for (let i = 0; i < args.length; i++) {
     const curr = args[i]
     const next = args[i + 1] || ''
+    if (curr === '') continue
     if (
       typeof curr !== 'string'
       || curr.match(/^-|^=$/)
@@ -172,12 +298,13 @@ function getLeadingCommands(args = []) {
  * @returns {ParseResult}
  */
 function dxParse(_rawArgv = [], opts = {}) {
-  /* Trim empty strings */
   const parseOptions = normalizeParseOptions(opts)
   const { stripSingleDashOptions = true } = parseOptions
   const debug = parseOptions.debug ? console.log : () => {}
-  const rawArgv = _rawArgv.filter(x => x !== '')
-  let mriOptionsOriginal = mri(rawArgv)
+  const rawArgv = _rawArgv
+  /* mri turns an empty value into 0, so it never sees empty tokens. extraParse carries them. */
+  const stringKeys = getStringKeys(parseOptions)
+  let mriOptionsOriginal = mri(getMriArgv(rawArgv, stringKeys), { string: Array.from(stringKeys) })
 
   const yargsParsed = 'not enabled' //yargs(_rawArgv).parse()
   let extraParse = {}
@@ -211,7 +338,8 @@ function dxParse(_rawArgv = [], opts = {}) {
     // }
     const globParse = getGlobGroupsFromArgs(rawArgv, {
       /* CLI args that should be glob keys */
-      globKeys: parseOptions.globKeys
+      globKeys: parseOptions.globKeys,
+      stringKeys: Array.from(stringKeys)
     })
     globGroups = globParse.globGroups
     const { otherOpts } = globParse
@@ -232,7 +360,8 @@ function dxParse(_rawArgv = [], opts = {}) {
     let dashDashSet = false
     let rest = []
     for (let i = 0; i < otherOpts.length; i++) {
-      const curr = otherOpts[i].trim()
+      const rawCurr = otherOpts[i]
+      const curr = rawCurr.trim()
       const currIsNegativeNumber = isNegativeNumber(curr)
       const prev = newArray[i - 1]
       const next = otherOpts[i + 1] || ''
@@ -257,13 +386,77 @@ function dxParse(_rawArgv = [], opts = {}) {
         continue
       }
 
+      /* Declared string keys take their value verbatim: `--env NODE_ENV=production`, `--grep -v` */
+      if (stringKeys.size) {
+        const hasNext = i + 1 < otherOpts.length
+        const spacedEquals = hasNext && next.trim() === '=' && i + 2 < otherOpts.length
+        const optionKey = curr.match(/^-+([^\s=]+)$/)
+        const keyValue = rawCurr.match(SHELL_QUOTED_KEY_VALUE)
+        let stringKey
+        let stringValue
+        if ((optionKey && stringKeys.has(optionKey[1])) || (stringKeys.has(curr) && spacedEquals)) {
+          stringKey = optionKey ? optionKey[1] : curr
+          stringValue = ''
+          if (spacedEquals) {
+            stringValue = otherOpts[i + 2]
+            i += 2
+          } else if (hasNext) {
+            stringValue = otherOpts[i + 1]
+            i += 1
+          }
+        } else if (keyValue && stringKeys.has(keyValue[1])) {
+          stringKey = keyValue[1]
+          stringValue = keyValue[2]
+        }
+        if (stringKey) {
+          newArray.push({ piece: { [stringKey]: stripWrappingQuotes(stringValue) } })
+          continue
+        }
+      }
+
       let currentIsSingleDashOption = false
       if (curr.match(/^-[^-]/) && !currIsNegativeNumber) {
         debug('single dash option', curr)
         currentIsSingleDashOption = true
       }
       if (currIsNegativeNumber) {
-        newArray.push(curr)
+        const last = newArray[newArray.length - 1]
+        const isValueOfKey = typeof last === 'string' && /=\s?$/.test(last)
+        /* `--count -5` is a value. A bare `-5` is a positional, like any other word. */
+        newArray.push(isValueOfKey ? curr + ' ' : { piece: { [curr]: true } })
+        continue
+      }
+      /* A lone dash (stdin by convention) that is not the value of a key */
+      if (curr === '-') {
+        newArray.push({ piece: { '-': true } })
+        continue
+      }
+      /* Shell-quoted tokens stay whole instead of going through the string round-trip */
+      if (curr === '') {
+        /* Empty or blank token that is not the value of a key */
+        continue
+      }
+      /* `name= stage=prod`: two separate tokens, so name is empty and stage is its own pair.
+         `name= value` still joins further down. */
+      const emptyKeyValue = curr.match(IS_EMPTY_KEY_VALUE)
+      if (emptyKeyValue && STARTS_WITH_KEY_VALUE.test(next)) {
+        newArray.push({ piece: { [emptyKeyValue[1]]: '' } })
+        continue
+      }
+      if (isShellQuoted(rawCurr)) {
+        const keyValue = rawCurr.match(SHELL_QUOTED_KEY_VALUE)
+        if (keyValue) {
+          newArray.push({ piece: { [keyValue[1]]: parseWholeValue(keyValue[2], true) } })
+          continue
+        }
+        if (!curr.match(/^-/)) {
+          newArray.push({ piece: { [curr]: true } })
+          continue
+        }
+      }
+      if (SIMPLE_KEY.test(curr) && !curr.match(/^-/) && next.trim() === '=' && isWholeValue(otherOpts[i + 2])) {
+        newArray.push({ piece: { [curr]: parseWholeValue(otherOpts[i + 2]) } })
+        i += 2
         continue
       }
       // console.log('prev', prev)
@@ -282,6 +475,28 @@ function dxParse(_rawArgv = [], opts = {}) {
           continue
         }
         debug('cleanX', cleanX)
+        if (cleanX && SIMPLE_KEY.test(cleanX)) {
+          const rawNext = otherOpts[i + 1]
+          if (next.trim() === '=' && isWholeValue(otherOpts[i + 2])) {
+            newArray.push({ piece: { [cleanX]: parseWholeValue(otherOpts[i + 2]) } })
+            i += 2
+            continue
+          }
+          const nextIsQuotedValue = rawNext === ''
+            || rawNext === '-'
+            || (isShellQuoted(rawNext) && !rawNext.match(SHELL_QUOTED_KEY_VALUE))
+          /* `--pat [abc --stage prod`: nothing can close the bracket, so it is a plain value */
+          const nextIsUnclosedValue = next
+            && !next.match(/^-/)
+            && !next.includes('=')
+            && isUnbalanced(next)
+            && (i + 2 >= otherOpts.length || isOptionLike(nextNext))
+          if (nextIsQuotedValue || nextIsUnclosedValue) {
+            newArray.push({ piece: { [cleanX]: parseWholeValue(rawNext) } })
+            i += 1
+            continue
+          }
+        }
         if (nextItemIsOption || isLast) {
           if (cleanX.match(IS_KEY_VALUE_IN_QUOTES) || cleanX.match(IS_KEY_VALUE_START_WITH_QUOTE)) {
             newArray.push(cleanX + ' ')
@@ -309,7 +524,7 @@ function dxParse(_rawArgv = [], opts = {}) {
         newArray.push(final)
         continue
       }
-      if (prev && prev.match(/=\s?$/) && (curr.match(/^\s?=/) || curr.trim() === '=')) {
+      if (typeof prev === 'string' && prev.match(/=\s?$/) && (curr.match(/^\s?=/) || curr.trim() === '=')) {
         continue
       }
 
@@ -318,16 +533,31 @@ function dxParse(_rawArgv = [], opts = {}) {
     }
     debug('newArray', newArray)
     debug('rest', rest)
-    const optString = newArray.join('')
-    debug('optString', optString)
-    const optParts = splitOutsideQuotes(optString)
-    debug('optParts', optParts)
-    const optStringPieces = optParts
-      .filter(Boolean)
-      .map((x) => {
+    /* Loose tokens are joined and re-split so forms like `word = bond` recover.
+       Whole pieces break the run so nothing merges across them. */
+    const optStringPieces = []
+    let looseTokens = []
+    const flushLooseTokens = () => {
+      if (!looseTokens.length) return
+      const optString = looseTokens.join('')
+      looseTokens = []
+      debug('optString', optString)
+      const optParts = splitOutsideQuotes(optString)
+      debug('optParts', optParts)
+      optParts.filter(Boolean).forEach((x) => {
         debug('x', x)
-        return parse(x)
+        optStringPieces.push(parse(x))
       })
+    }
+    newArray.forEach((item) => {
+      if (typeof item === 'string') {
+        looseTokens.push(item)
+        return
+      }
+      flushLooseTokens()
+      optStringPieces.push(item.piece)
+    })
+    flushLooseTokens()
     debug('optStringPieces', optStringPieces)
     extraParse = mergeOptionPieces(optStringPieces, parseOptions)
     globGroups.forEach((group) => {
@@ -364,7 +594,7 @@ function dxParse(_rawArgv = [], opts = {}) {
         for (let j = 0; j < word.length; j++) {
           const letter = word[j]
           // console.log('letter', letter)
-          if (shouldStrip && mriOptionsClean[letter]) {
+          if (shouldStrip && letter in mriOptionsClean) {
             delete mriOptionsClean[letter]
           }
           if (mriOptionsClean[letter] === extraParse[word]) {

@@ -1,16 +1,6 @@
 
 function splitOutsideQuotes(str) {
 
-  str = str
-    .replace(/}(?=(?:(?:[^"]*(?:")){2})*[^"]*(?:")[^"]*$)/g, '∆')  // For } in double " quotes
-    .replace(/}(?=(?:(?:[^']*(?:')){2})*[^']*(?:')[^']*$)/g, '∆')  // For } in single ' quotes
-    .replace(/{(?=(?:(?:[^']*(?:')){2})*[^']*(?:')[^']*$)/g, '▽')  // For { in single ' quotes
-    .replace(/{(?=(?:(?:[^"]*(?:")){2})*[^"]*(?:")[^"]*$)/g, '▽')  // For { in double " quotes
-    .replace(/\[(?=(?:(?:[^']*(?:')){2})*[^']*(?:')[^']*$)/g, '▸') // For [ in single ' quotes
-    .replace(/\[(?=(?:(?:[^"]*(?:")){2})*[^"]*(?:")[^"]*$)/g, '▸') // For [ in double " quotes
-    .replace(/\](?=(?:(?:[^']*(?:')){2})*[^']*(?:')[^']*$)/g, '◂') // For ] in single ' quotes
-    .replace(/\](?=(?:(?:[^"]*(?:")){2})*[^"]*(?:")[^"]*$)/g, '◂') // For ] in double " quotes
-
   let parts = []
   let current = ''
   let inQuotes = false
@@ -27,16 +17,16 @@ function splitOutsideQuotes(str) {
       inQuotes = false
       quoteChar = ''
       current += char
-    } else if (char === '{') {
+    } else if (char === '{' && !inQuotes) {
       braceCount++
       current += char
-    } else if (char === '}') {
+    } else if (char === '}' && !inQuotes) {
       braceCount--
       current += char
-    } else if (char === '[') {
+    } else if (char === '[' && !inQuotes) {
       bracketCount++
       current += char
-    } else if (char === ']') {
+    } else if (char === ']' && !inQuotes) {
       bracketCount--
       current += char
     } else if (char === ' ' && !inQuotes && !braceCount && !bracketCount) {
@@ -48,13 +38,7 @@ function splitOutsideQuotes(str) {
   }
 
   if (current) parts.push(current)
-  return parts.map((x) => {
-    return x
-      .replace(/∆/g, '}')
-      .replace(/▽/g, '{')
-      .replace(/▸/g, '[')
-      .replace(/◂/g, ']')
-  })
+  return parts
   /* combineEquals */
   .reduce((acc, item, i) => {
     if (item.startsWith('=')) {

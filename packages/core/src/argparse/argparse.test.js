@@ -19,7 +19,8 @@ function logInput(rawArgs, result) {
 }
 
 function stringToArgs(str) {
-  return str.split(' ') //.map(x => x.trim()).filter(x => x !== '')
+  /* A shell never produces empty tokens from extra spaces, only from explicit quotes like `--name ""` */
+  return str.split(' ').filter(x => x !== '')
 }
 
 test('Exports API', () => {

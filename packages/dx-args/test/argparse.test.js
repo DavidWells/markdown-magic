@@ -19,7 +19,8 @@ function logInput(rawArgs, result) {
 }
 
 function stringToArgs(str) {
-  return str.split(' ') //.map(x => x.trim()).filter(x => x !== '')
+  /* A shell never produces empty tokens from extra spaces, only from explicit quotes like `--name ""` */
+  return str.split(' ').filter(x => x !== '')
 }
 
 test('Exports API', () => {
@@ -500,6 +501,197 @@ test(`basic int parsing "CLI ${cmd31.join(' ')}"`, () => {
   assert.equal(result.mergedOptions, {
     int: -5
   })
+})
+
+/* Real argv arrays. A token containing whitespace was quoted by the shell and must stay whole. */
+const shellQuotedCases = [
+  ['value with spaces', ['--name', 'David Wells'], { name: 'David Wells' }],
+  ['value with spaces before another option', ['--msg', 'hello world', '--stage', 'prod'], { msg: 'hello world', stage: 'prod' }],
+  ['single-dash option value with spaces', ['-m', 'fix the bug', '-stage', 'prod'], { m: 'fix the bug', stage: 'prod' }],
+  ['inner double quotes', ['--msg', 'say "hi" now', '--stage', 'prod'], { msg: 'say "hi" now', stage: 'prod' }],
+  ['parentheses', ['--msg', 'wow (cool)', '--stage', 'prod'], { msg: 'wow (cool)', stage: 'prod' }],
+  ['newlines and tabs', ['--msg', 'line1\nline2', '--t', 'a\tb'], { msg: 'line1\nline2', t: 'a\tb' }],
+  ['whitespace-only value', ['--name', ' ', '--stage', 'prod'], { name: ' ', stage: 'prod' }],
+  ['value starting with a dash', ['--msg', '-hello world'], { msg: '-hello world' }],
+  ['literal wrapping quotes are stripped', ['--name', '"David Wells"'], { name: 'David Wells' }],
+  ['key=value with brackets and spaces', ['title=[WIP] fix bug', 'stage=prod'], { title: '[WIP] fix bug', stage: 'prod' }],
+  ['key=value with inner quotes', ['q=say "hi"', "msg=it's fine"], { q: 'say "hi"', msg: "it's fine" }],
+  ['spaced equals with quoted value', ['name', '=', 'David Wells', 'stage', '=', 'prod'], { name: 'David Wells', stage: 'prod' }],
+  ['flag, spaced equals, quoted value', ['--name', '=', 'David Wells', '--x', '1'], { name: 'David Wells', x: 1 }],
+  ['flag followed by quoted key=value', ['--cool', 'name=David Wells'], { cool: true, name: 'David Wells' }],
+  ['quoted JSON still parses', ['--config', '{"a": 1, "b": "x y"}', '--arr', '["a b","c"]'], { config: { a: 1, b: 'x y' }, arr: ['a b', 'c'] }],
+  ['positional with spaces stays one key', ['commit', 'fix the bug', '--dry'], { dry: true, commit: true, 'fix the bug': true }],
+  ['unclosed bracket value', ['--pat', '[abc', '--stage', 'prod'], { pat: '[abc', stage: 'prod' }],
+  ['unclosed brace value', ['--pat', '{abc', '--stage', 'prod'], { pat: '{abc', stage: 'prod' }],
+  ['unclosed bracket value at end', ['--pat', '[abc'], { pat: '[abc' }],
+  ['splitter placeholder characters survive', ['--name', '∆▽▸◂'], { name: '∆▽▸◂' }],
+  ['last quoted value wins', ['--msg', 'a b', '--msg', 'c'], { msg: 'c' }],
+  /* String-split fixtures must keep recovering */
+  ['split quoted string is rejoined', ['--name', '"David', 'Wells"'], { name: 'David Wells' }],
+  ['split array is rejoined', ['--items', '[1,', '2,', '3]', '--stage', 'prod'], { items: [1, 2, 3], stage: 'prod' }],
+]
+
+shellQuotedCases.forEach(([label, argv, expected]) => {
+  test(`Shell-quoted argv: ${label}`, () => {
+    const result = dxParse(argv)
+    deepLogger('result', result)
+    assert.equal(result.mergedOptions, expected)
+  })
+})
+
+/* An empty token can only come from explicit empty quotes, so it is a value */
+const emptyValueCases = [
+  ['empty value before another option', ['--name', '', '--stage', 'prod'], { name: '', stage: 'prod' }],
+  ['empty value does not swallow the next word', ['--name', '', 'build'], { name: '', build: true }],
+  ['empty value at the end', ['--name', ''], { name: '' }],
+  ['single-dash option with empty value', ['-name', '', '-x'], { name: '', x: true }],
+  ['spaced equals with empty value', ['name', '=', '', 'stage', '=', 'prod'], { name: '', stage: 'prod' }],
+  ['flag, spaced equals, empty value', ['--name', '=', ''], { name: '' }],
+  ['empty value after bare files', ['README.md', '--name', '', '--dry'], { name: '', dry: true }],
+  ['stray empty token is ignored', ['build', '', '--x', '1'], { x: 1, build: true }],
+  ['literal empty quotes', ['--name', '""', '--nick', "''"], { name: '', nick: '' }],
+  ['bare key= followed by another pair', ['name=', 'stage=prod'], { name: '', stage: 'prod' }],
+  ['flag key= followed by another pair', ['--name=', 'stage=prod'], { name: '', stage: 'prod' }],
+  ['several empty pairs in a row', ['a=', 'b=', 'c=1'], { a: '', b: '', c: 1 }],
+  ['key= followed by a plain word still joins', ['name=', 'value'], { name: 'value' }],
+  ['empty value for a glob key is ignored', ['--files', '', 'README.md'], { files: 'README.md' }],
+  ['empty value before a file keeps the file bare', ['--out', '', 'a.js', '--dry'], { out: '', dry: true }],
+  ['single-dash empty value before a file', ['-config', '', 'md.config.js'], { config: '' }],
+]
+
+emptyValueCases.forEach(([label, argv, expected]) => {
+  test(`Empty value: ${label}`, () => {
+    const result = dxParse(argv)
+    deepLogger('result', result)
+    assert.equal(result.mergedOptions, expected)
+  })
+})
+
+test('Empty value: accumulates and stays out of leading commands', () => {
+  assert.equal(dxParse(['--tag', '', '--tag', 'a'], { accumulate: ['tag'] }).mergedOptions, { tag: ['', 'a'] })
+  assert.equal(dxParse(['build', '', '--x', '1']).leadingCommands, ['build'])
+})
+
+test('Empty value: files after an empty value are grouped as bare files', () => {
+  assert.equal(dxParse(['--out', '', 'a.js']).globGroups, [{ key: '', rawKey: '', values: ['a.js'] }])
+  assert.equal(dxParse(['--files', '', 'README.md', 'docs/*.md']).globGroups, [
+    { key: 'files', rawKey: '--files', values: ['README.md', 'docs/*.md'] }
+  ])
+})
+
+const negativeNumberCases = [
+  ['value before another option', ['--count', '-5', '--foo', 'bar'], { count: -5, foo: 'bar' }],
+  ['value at the end', ['--count', '-5'], { count: -5 }],
+  ['single-dash option with negative float', ['-count', '-5.5', '-x'], { count: -5.5, x: true }],
+  ['spaced equals', ['count', '=', '-5', 'x=1'], { count: -5, x: 1 }],
+  ['leading-dot and exponent forms', ['--offset', '-.5', '--exp', '-1e3'], { offset: -0.5, exp: -1000 }],
+  ['last value wins', ['--n', '-5', '--n', '-6'], { n: -6 }],
+  ['bare negative number is a positional', ['add', '-5', '3'], { add: true, '-5': true, 3: true }],
+  ['bare negative number does not merge with the next pair', ['-5', 'foo=bar'], { '-5': true, foo: 'bar' }],
+  ['digit-leading option is not a number', ['-2fa', '--stage', 'prod'], { '2fa': true, stage: 'prod' }],
+  ['file after a negative value is a bare file', ['--range', '-5', 'README.md'], { range: -5 }],
+]
+
+negativeNumberCases.forEach(([label, argv, expected]) => {
+  test(`Negative number: ${label}`, () => {
+    const result = dxParse(argv)
+    deepLogger('result', result)
+    assert.equal(result.mergedOptions, expected)
+  })
+})
+
+test('Negative number: does not capture files that follow it', () => {
+  assert.equal(dxParse(['--range', '-5', 'README.md']).globGroups, [{ key: '', rawKey: '', values: ['README.md'] }])
+})
+
+const loneDashCases = [
+  ['value of an option', ['--file', '-', '--stage', 'prod'], { file: '-', stage: 'prod' }],
+  ['value of a single-dash option', ['-input', '-'], { input: '-' }],
+  ['spaced equals', ['input', '=', '-'], { input: '-' }],
+  ['positional', ['cat', '-'], { cat: true, '-': true }],
+  ['after a pair', ['foo=bar', '-'], { foo: 'bar', '-': true }],
+  ['first token', ['-', '--x', '1'], { x: 1, '-': true }],
+]
+
+loneDashCases.forEach(([label, argv, expected]) => {
+  test(`Lone dash: ${label}`, () => {
+    const result = dxParse(argv)
+    deepLogger('result', result)
+    assert.equal(result.mergedOptions, expected)
+  })
+})
+
+test('Lone dash: joins a glob key group and does not capture bare files', () => {
+  assert.equal(dxParse(['--files', '-', 'a.md']).globGroups, [{ key: 'files', rawKey: '--files', values: ['-', 'a.md'] }])
+  assert.equal(dxParse(['cat', '-', 'README.md']).globGroups, [{ key: '', rawKey: '', values: ['README.md'] }])
+  assert.equal(dxParse(['--out', '-', 'a.js']).mergedOptions, { out: '-' })
+})
+
+test('Tokens oparser cannot key are skipped instead of throwing', () => {
+  assert.equal(dxParse(['__proto__=y', '--x', '1']).mergedOptions, { x: 1 })
+})
+
+/* `string` keys always take the next token as their value, kept as a string */
+const stringKeyOptions = { string: ['env', 'url', 'grep', 'id', 'config'] }
+const stringKeyCases = [
+  ['value containing =', ['--env', 'NODE_ENV=production', '--stage', 'prod'], { env: 'NODE_ENV=production', stage: 'prod' }],
+  ['url with query string', ['--url', 'https://example.com/p?x=1&y=2'], { url: 'https://example.com/p?x=1&y=2' }],
+  ['value starting with a dash', ['--grep', '-v', '--dry'], { grep: '-v', dry: true }],
+  ['value that looks like an option', ['--grep', '--env', 'x'], { grep: '--env', x: true }],
+  ['single-dash option', ['-env', 'A=B', '-x'], { env: 'A=B', x: true }],
+  ['key=value form', ['--env=A=B'], { env: 'A=B' }],
+  ['spaced equals', ['--env', '=', 'A=B', 'x=1'], { env: 'A=B', x: 1 }],
+  ['bare key with spaced equals', ['env', '=', 'C=D'], { env: 'C=D' }],
+  ['leading zeros are kept', ['--id', '007'], { id: '007' }],
+  ['large ids keep every digit', ['--id=12345678901234567890'], { id: '12345678901234567890' }],
+  ['exponent-looking value stays a string', ['id=1e10', '--stage', '3'], { id: '1e10', stage: 3 }],
+  ['boolean-looking value stays a string', ['--env', 'true', '--id', 'null'], { env: 'true', id: 'null' }],
+  ['negative number stays a string', ['--env', '-5'], { env: '-5' }],
+  ['missing value is an empty string', ['--env'], { env: '' }],
+  ['empty value', ['--env', '', '--x'], { env: '', x: true }],
+  ['quoted value with spaces', ['--env', 'hello world'], { env: 'hello world' }],
+  ['wrapping quotes are stripped', ['--env', '"quoted"'], { env: 'quoted' }],
+  ['file-looking value is not grouped as a file', ['--config', 'md.config.js', 'README.md'], { config: 'md.config.js' }],
+]
+
+stringKeyCases.forEach(([label, argv, expected]) => {
+  test(`String key: ${label}`, () => {
+    const result = dxParse(argv, stringKeyOptions)
+    deepLogger('result', result)
+    assert.equal(result.mergedOptions, expected)
+  })
+})
+
+test('String key: files after the value are bare files', () => {
+  assert.equal(dxParse(['--config', 'md.config.js', 'README.md'], stringKeyOptions).globGroups, [
+    { key: '', rawKey: '', values: ['README.md'] }
+  ])
+})
+
+test('String key: works with accumulate and the object form', () => {
+  assert.equal(dxParse(['--env', 'A=1', '--env', 'B=2'], { string: ['env'], accumulate: ['env'] }).mergedOptions, {
+    env: ['A=1', 'B=2']
+  })
+  assert.equal(dxParse(['--env', 'A=1'], { string: { env: true } }).mergedOptions, { env: 'A=1' })
+})
+
+test('String key: glob keys keep their file grouping', () => {
+  const result = dxParse(['--files', 'a.md', 'b.md'], { string: ['files'] })
+  assert.equal(result.globGroups, [{ key: 'files', rawKey: '--files', values: ['a.md', 'b.md'] }])
+})
+
+test('String key: undeclared keys keep the forgiving default', () => {
+  assert.equal(dxParse(['--cool', 'wild=yolo']).mergedOptions, { cool: true, wild: 'yolo' })
+})
+
+test('Shell-quoted argv: accumulates quoted values', () => {
+  const result = dxParse(['--tag', 'a b', '--tag', 'c d'], { accumulate: ['tag'] })
+  assert.equal(result.mergedOptions, { tag: ['a b', 'c d'] })
+})
+
+test('Shell-quoted argv: long quoted value is not re-parsed', () => {
+  const long = 'word '.repeat(10000)
+  assert.is(dxParse(['--msg', long]).mergedOptions.msg, long)
 })
 
 test.run()
