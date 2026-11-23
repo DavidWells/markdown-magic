@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "types": "tsc --emitDeclarationOnly --outDir types",
+    "prepack": "pnpm run types",
     "docs": "node examples/generate-readme.js",
     "test": "uvu . '.test.([mc]js|[jt]sx?)$'",
     "cli": "node ./cli.js --files 'README.md' --config ./md.config.js",
