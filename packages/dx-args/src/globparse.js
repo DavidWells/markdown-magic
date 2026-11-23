@@ -113,8 +113,12 @@ function getGlobGroupsFromArgs(args, opts = {}) {
     )
     const looksLikeFile = stringLooksLikeFile(arg)
 
+    /* A file that was just collected: every branch below would only re-add a value
+       that is already in the collection, so the glob checks and the scan can be skipped. */
+    let alreadyCollected = false
     if (looksLikeFile && typeof cacheKey !== 'undefined') {
       collection.push(arg)
+      alreadyCollected = !isArrayLike(arg)
     } else if (isOptionName(arg) && !arg.match(/=/)) {
       cacheKey = arg
       if (collection.length) {
@@ -146,7 +150,9 @@ function getGlobGroupsFromArgs(args, opts = {}) {
       preceding = ['', '']
     }
 
-    if (isDefinedGlobKey && (isGlob(arg) || looksLikeFile || arg === '-')) {
+    if (alreadyCollected) {
+      // nothing left to do for this arg
+    } else if (isDefinedGlobKey && (isGlob(arg) || looksLikeFile || arg === '-')) {
       collection = addValue(arg, collection)
     } else {
       const notObjectLike = arg.match(NOT_OBJECT_LIKE) && !isArrayLike(arg)
