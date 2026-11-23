@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.11.1](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.11.0...markdown-magic@4.11.1) (2026-11-23)
+
+
+### Bug Fixes
+
+* **dx-args:** harden parser against real shell argv ([8380110](https://github.com/DavidWells/markdown-magic/commit/8380110b1eec16237ae41e9c93f3d1b0978414b9))
+
+
+
+
+
 # [4.11.0](https://github.com/DavidWells/markdown-magic/compare/markdown-magic@4.10.5...markdown-magic@4.11.0) (2026-06-29)
 
 
