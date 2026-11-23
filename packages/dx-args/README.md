@@ -43,6 +43,17 @@ console.log(result.mergedOptions)
 // { stage: 'prod', cool: true }
 ```
 
+Options:
+
+| Option | Type | Default | What it does |
+| --- | --- | --- | --- |
+| `globKeys` | `string[]` | `['files', 'file', 'path']` | Keys whose values are grouped as files and globs. |
+| `string` | `string[]` or `Record<string, boolean>` | none | Keys that always take the next token as a string value. See [String Keys](#string-keys). |
+| `accumulate` | `string[]` or `Record<string, boolean>` | none | Keys that collect repeated values into an array. |
+| `allowShortClusters` | `boolean` | `false` | Read `-abc` as `-a -b -c`. |
+| `shortFlags` | `string[]` | `[]` | Limits short clusters to these letters. |
+| `debug` | `boolean` | `false` | Log each parsing step. |
+
 ### `getGlobGroupsFromArgs(argv, opts)`
 
 Extracts file and glob-like values into grouped collections.
@@ -79,6 +90,10 @@ splitOutsideQuotes('name = "David Wells" config={ enabled: true }')
 | `--no-cache` | `{ cache: false }` |
 | `--count 3` | `{ count: 3 }` |
 | `--items=[1,2,3]` | `{ items: [1, 2, 3] }` |
+| `--name "David Wells"` | `{ name: 'David Wells' }` |
+| `--name ""` | `{ name: '' }` |
+| `--count -5` | `{ count: -5 }` |
+| `--file -` | `{ file: '-' }` |
 
 File and glob-like values are also exposed through `globGroups`.
 
