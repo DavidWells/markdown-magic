@@ -268,10 +268,6 @@ function mergeOptionPieces(pieces = [], opts = {}) {
   }, {})
 }
 
-function hasObjectDiff(left, right) {
-  return JSON.stringify(left) !== JSON.stringify(right)
-}
-
 function getLeadingCommands(args = []) {
   const leadingCommands = []
   for (let i = 0; i < args.length; i++) {
@@ -312,6 +308,8 @@ function dxParse(_rawArgv = [], opts = {}) {
   let globGroups = []
   let leadingCommands = []
   const mriOptionsClean = Object.assign({}, mriOptionsOriginal)
+  /* mriOptionsClean only ever loses keys, so it differs exactly when one was deleted */
+  let mriDiff = false
 
   if (isDebug) {
     debug('_singleDashOptions', findSingleDashStrings(rawArgv))
@@ -600,8 +598,13 @@ function dxParse(_rawArgv = [], opts = {}) {
           // console.log('letter', letter)
           if (shouldStrip && letter in mriOptionsClean) {
             delete mriOptionsClean[letter]
+            mriDiff = true
           }
           if (mriOptionsClean[letter] === extraParse[word]) {
+            /* Only an own key changes the object; deleting a missing one is a no-op */
+            if (Object.prototype.hasOwnProperty.call(mriOptionsClean, letter)) {
+              mriDiff = true
+            }
             delete mriOptionsClean[letter]
           }
         }
@@ -632,7 +635,7 @@ function dxParse(_rawArgv = [], opts = {}) {
     extraParse,
     mriOptionsOriginal,
     mriOptionsClean,
-    mriDiff: hasObjectDiff(mriOptionsOriginal, mriOptionsClean),
+    mriDiff,
     yargsParsed,
     mergedOptions
   }
