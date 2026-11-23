@@ -193,6 +193,26 @@ The parser currently accepts three option names for accumulation:
 
 Prefer `accumulate` in new code.
 
+## String Keys
+
+By default the parser guesses. A token containing `=` is read as its own pair, and a token starting with `-` is read as another option:
+
+```js
+dxParse(['--env', 'NODE_ENV=production']).mergedOptions
+// { env: true, NODE_ENV: 'production' }
+```
+
+List a key in `string` when it must always take the next token as its value. The value is kept as a string, with no number or boolean coercion:
+
+```js
+dxParse(['--env', 'NODE_ENV=production', '--grep', '-v', '--id', '007'], {
+  string: ['env', 'grep', 'id']
+}).mergedOptions
+// { env: 'NODE_ENV=production', grep: '-v', id: '007' }
+```
+
+A string key with no value is an empty string. Keys listed in `globKeys` keep their file grouping even if they are also listed in `string`.
+
 ## Single Dash Policy
 
 Multi-character single-dash options are treated as forgiving long options:

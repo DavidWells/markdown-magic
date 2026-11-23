@@ -3,7 +3,7 @@ const isGlob = require('is-glob')
 const isValidFilePath = require('is-valid-path')
 const { parse } = require('oparser')
 const { getFirstCharacter } = require('./utils/text')
-const { REGEX_REGEX, escapeRegexString } = require('./utils/regex')
+const { REGEX_REGEX, IS_NEGATIVE_NUMBER, escapeRegexString } = require('./utils/regex')
 
 const ARRAY_REGEX = /^\[(.*)\]$/
 const NOT_OBJECT_LIKE = /^{[^:,]*}/
@@ -25,6 +25,11 @@ function stringLooksLikeFile(value) {
       path.basename(value).indexOf('.') > -1 // has period
       || getFirstCharacter(value) === '_' // starts with _
     )
+}
+
+/* `-` (stdin) and negative numbers are values, not option names */
+function isOptionName(arg) {
+  return /^-+/.test(arg) && arg !== '-' && !IS_NEGATIVE_NUMBER.test(arg)
 }
 
 function getValue(val) {
@@ -77,6 +82,9 @@ function customIsGlob(arg) {
 
 function getGlobGroupsFromArgs(args, opts = {}) {
   const globKeys = opts.globKeys || []
+  /* Keys whose next token is always their value, whatever it looks like */
+  const stringKeys = new Set(opts.stringKeys || [])
+  let nextIsStringValue = false
   let preceding = ['', '']
   let collection = []
   let globGroups = []
@@ -88,11 +96,30 @@ function getGlobGroupsFromArgs(args, opts = {}) {
     const isLastArg = (args.length - 1) === i
     const arg = args[i]
     const prevArg = args[i - 1]
+    if (nextIsStringValue) {
+      /* Pass the value through untouched. `--env = value` keeps waiting past the `=`. */
+      otherOpts.push(arg)
+      nextIsStringValue = arg.trim() === '='
+      if (!nextIsStringValue) {
+        cacheKey = ''
+        preceding = ['', '']
+      }
+      continue
+    }
+    const nextArg = args[i + 1]
+    nextIsStringValue = !isLastArg && (
+      (isOptionName(arg) && !arg.match(/=/) && stringKeys.has(trimLeadingDashes(arg)))
+      || (stringKeys.has(arg) && typeof nextArg === 'string' && nextArg.trim() === '=')
+    )
     const looksLikeFile = stringLooksLikeFile(arg)
 
+    /* A file that was just collected: every branch below would only re-add a value
+       that is already in the collection, so the glob checks and the scan can be skipped. */
+    let alreadyCollected = false
     if (looksLikeFile && typeof cacheKey !== 'undefined') {
       collection.push(arg)
-    } else if (arg.match(/^-+/) && !arg.match(/=/)) {
+      alreadyCollected = !isArrayLike(arg)
+    } else if (isOptionName(arg) && !arg.match(/=/)) {
       cacheKey = arg
       if (collection.length) {
         const val = getValue(preceding)
@@ -109,10 +136,23 @@ function getGlobGroupsFromArgs(args, opts = {}) {
       cacheKey = undefined
     }
 
-    const cleanKey = trimLeadingDashes(cacheKey || '')
-    const isDefinedGlobKey = globKeys.includes(cleanKey) || globKeys.includes(cacheKey)
+    let cleanKey = trimLeadingDashes(cacheKey || '')
+    let isDefinedGlobKey = globKeys.includes(cleanKey) || globKeys.includes(cacheKey)
 
-    if (isDefinedGlobKey && (isGlob(arg) || looksLikeFile)) {
+    /* `--out "" a.js` or `--range -5 a.js`: the option already has its value, so files after it are bare files */
+    const isPlainValue = arg === ''
+      || IS_NEGATIVE_NUMBER.test(arg)
+      || (arg === '-' && !isDefinedGlobKey)
+    if (isPlainValue && cacheKey && prevArg === cacheKey && !isDefinedGlobKey) {
+      cacheKey = ''
+      cleanKey = ''
+      isDefinedGlobKey = false
+      preceding = ['', '']
+    }
+
+    if (alreadyCollected) {
+      // nothing left to do for this arg
+    } else if (isDefinedGlobKey && (isGlob(arg) || looksLikeFile || arg === '-')) {
       collection = addValue(arg, collection)
     } else {
       const notObjectLike = arg.match(NOT_OBJECT_LIKE) && !isArrayLike(arg)
@@ -151,7 +191,7 @@ function getGlobGroupsFromArgs(args, opts = {}) {
 
   return {
     globGroups,
-    otherOpts: otherOpts.filter((opt) => !reserved.includes(opt))
+    otherOpts: otherOpts.filter((opt) => opt === '' || !reserved.includes(opt))
   }
 }
 
