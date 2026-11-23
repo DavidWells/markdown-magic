@@ -123,16 +123,23 @@ function isOptionLike(token = '') {
   return /^-+/.test(token) && !isNegativeNumber(token)
 }
 
-function countChar(str, char) {
-  return str.split(char).length - 1
-}
-
 /* True when quotes or brackets do not pair up, e.g. `[abc` or `it's` */
 function isUnbalanced(str = '') {
-  return countChar(str, '[') !== countChar(str, ']')
-    || countChar(str, '{') !== countChar(str, '}')
-    || countChar(str, '"') % 2 === 1
-    || countChar(str, "'") % 2 === 1
+  let brackets = 0
+  let braces = 0
+  let doubleQuotes = 0
+  let singleQuotes = 0
+  for (let i = 0; i < str.length; i++) {
+    switch (str.charCodeAt(i)) {
+      case 91: brackets++; break // [
+      case 93: brackets--; break // ]
+      case 123: braces++; break // {
+      case 125: braces--; break // }
+      case 34: doubleQuotes++; break // "
+      case 39: singleQuotes++; break // '
+    }
+  }
+  return brackets !== 0 || braces !== 0 || doubleQuotes % 2 === 1 || singleQuotes % 2 === 1
 }
 
 /**
@@ -491,8 +498,8 @@ function dxParse(_rawArgv = [], opts = {}) {
           const nextIsUnclosedValue = next
             && !next.match(/^-/)
             && !next.includes('=')
-            && isUnbalanced(next)
             && (i + 2 >= otherOpts.length || isOptionLike(nextNext))
+            && isUnbalanced(next)
           if (nextIsQuotedValue || nextIsUnclosedValue) {
             newArray.push({ piece: { [cleanX]: parseWholeValue(rawNext) } })
             i += 1
